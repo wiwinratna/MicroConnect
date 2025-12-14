@@ -2,103 +2,188 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Umkm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Umkm; // <-- kalau model kamu namanya beda (misal UmkmUsaha), ganti di sini
-
 
 class AuthController extends Controller
 {
-    // Tampilkan form login
-    public function showLoginForm()
+    // =========================
+    // FORM LOGIN
+    // =========================
+    public function showUmkmLoginForm()
     {
-        return view('auth.login'); // resources/views/auth/login.blade.php
+        return view('auth.login', [
+            'formAction' => route('umkm.login.process'),
+            'title'      => 'Login UMKM',
+            'subtitle'   => 'Login untuk pelaku usaha',
+        ]);
     }
 
-    // Proses login
-    public function login(Request $request)
+
+    public function showAdminLoginForm()
     {
-        // Validasi input
+        return view('auth.admin-login'); // login Admin
+    }
+
+    // =========================
+    // LOGIN UMKM
+    // =========================
+    public function loginUmkm(Request $request)
+    {
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required|min:6',
         ]);
 
-        // Coba login (tanpa cek role dulu)
-        if (!Auth::attempt([
-            'email'    => $request->email,
-            'password' => $request->password,
-        ], $request->boolean('remember'))) {
-
+        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return back()->withErrors([
                 'email' => 'Email atau password salah.',
             ])->onlyInput('email');
         }
 
-        // Regenerasi session
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        // cegah admin login lewat halaman UMKM
+        if (auth()->user()->user_group !== 'pelakuusaha') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        // Arahkan sesuai role
-        if ($user->user_group === 'admin') {
-            return redirect()->route('admin.dashboard');
+            return back()->withErrors([
+                'email' => 'Akun ini bukan akun UMKM.',
+            ])->onlyInput('email');
         }
 
-        // Kalau bukan admin, anggap UMKM
         return redirect()->route('umkm.dashboard');
     }
 
-    // Logout
-    public function logout(Request $request)
+    // =========================
+    // LOGIN ADMIN
+    // =========================
+    public function loginAdmin(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|min:6',
+        ]);
 
-        return redirect()->route('login');
+        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah.',
+            ])->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+
+        // cegah UMKM login lewat halaman admin
+        if (auth()->user()->user_group !== 'admin') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'Akun ini bukan akun Admin.',
+            ])->onlyInput('email');
+        }
+
+        return redirect()->route('admin.dashboard');
     }
 
-    // (OPSIONAL) Tampilkan form register (kalau mau)
+    // =========================
+    // REGISTER UMKM
+    // =========================
     public function showRegisterForm()
     {
-        return view('auth.register'); 
+        return view('auth.register'); // register UMKM
     }
 
     public function register(Request $request)
     {
-        // 1. VALIDASI
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        // 2. BUAT USER BARU (GROUP = UMKM)
+        // Buat user UMKM (dipaksa)
         $user = User::create([
             'name'       => $request->name,
             'email'      => $request->email,
             'password'   => Hash::make($request->password),
-            'user_group' => 'umkm',
+            'user_group' => 'pelakuusaha', // ✅ jangan diganti dulu
         ]);
 
-        // 🔹 3. DAPATKAN KODE UMKM BARU
+        // Buat data UMKM default
         $kodeUmkm = Umkm::getKodeUmkm();
 
-        // 🔹 4. BUAT RECORD UMKM DENGAN KODE & LEVEL NULL
         Umkm::create([
             'kode_umkm' => $kodeUmkm,
             'user_id'   => $user->id,
             'level_id'  => null,
         ]);
 
-        // 5. LOGIN OTOMATIS
         Auth::login($user);
+        $request->session()->regenerate();
 
-        // 6. ARAHKAN KE PILIH LEVEL
         return redirect()->route('umkm.level.choose')
             ->with('success', 'Akun berhasil dibuat, silakan pilih level UMKM.');
+    }
+
+    // =========================
+    // REGISTER ADMIN (opsional)
+    // =========================
+    public function showAdminRegisterForm()
+    {
+        return view('auth.admin-register');
+    }
+
+    public function registerAdmin(Request $request)
+    {
+        $request->validate([
+            'name'       => 'required|string|max:100',
+            'email'      => 'required|email|unique:users,email',
+            'password'   => 'required|min:6|confirmed',
+            'admin_code' => 'required',
+        ]);
+
+        // pengaman: harus ada kode
+        if ($request->admin_code !== env('ADMIN_REGISTER_CODE')) {
+            return back()->withErrors(['admin_code' => 'Kode admin salah'])->withInput();
+        }
+
+        $user = User::create([
+            'name'       => $request->name,
+            'email'      => $request->email,
+            'password'   => Hash::make($request->password),
+            'user_group' => 'admin',
+        ]);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('admin.dashboard');
+    }
+
+    // =========================
+    // LOGOUT
+    // =========================
+    public function logout(Request $request)
+    {
+        $role = auth()->check() ? auth()->user()->user_group : null;
+
+        auth()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // arahkan sesuai role terakhir
+        if ($role === 'admin') {
+            return redirect()->route('admin.login');
+        }
+
+        return redirect()->route('umkm.login');
     }
 }

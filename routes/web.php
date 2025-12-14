@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\UmkmProfileController;
 use App\Http\Controllers\UmkmLevelController;
 use App\Http\Controllers\BahanBakuController;
@@ -12,131 +13,108 @@ use App\Http\Controllers\ProduksiController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\UmkmDashboardController;
 use App\Http\Controllers\Umkm\LaporanKeuanganController;
+use App\Http\Controllers\Umkm\CoaController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UmkmController;
+
+
+
 
 // ROOT
 Route::get('/', function () {
-    if (auth()->check()) {
-        // pakai user_group (bukan role) sesuai AuthController-mu
-        if (auth()->user()->user_group === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
+    if (!auth()->check()) return redirect()->route('umkm.login');
 
-        return redirect()->route('umkm.dashboard');
-    }
-
-    return redirect()->route('login');
+    return auth()->user()->user_group === 'admin'
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('umkm.dashboard');
 });
 
-// ================== GUEST (belum login) ==================
+// ================== GUEST ==================
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+    Route::get('/umkm/login', [AuthController::class, 'showUmkmLoginForm'])->name('umkm.login');
+    Route::post('/umkm/login', [AuthController::class, 'loginUmkm'])->name('umkm.login.process');
+
+    Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [AuthController::class, 'loginAdmin'])->name('admin.login.process');
 
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.process');
+
+    Route::get('/admin/register', [AuthController::class, 'showAdminRegisterForm'])->name('admin.register');
+    Route::post('/admin/register', [AuthController::class, 'registerAdmin'])->name('admin.register.process');
+
+    Route::get('/login', fn () => redirect()->route('umkm.login'))->name('login');
+
 });
 
 // ================== LOGOUT ==================
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ================== ADMIN AREA ==================
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+// ================== ADMIN AREA (3 menu) ==================
+ Route::prefix('admin')->name('admin.')->middleware(['auth','adminonly'])->group(function () {
 
-    // route khusus admin lain taruh di sini
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('umkm')->name('umkm.')->group(function () {
+        Route::get('/', [UmkmController::class, 'index'])->name('index');
+        Route::get('/create', [UmkmController::class, 'create'])->name('create');
+        Route::get('/{id}', [UmkmController::class, 'show'])->name('show');
+    });
+
+    // iuran (kalau masih dummy gapapa)
+    Route::get('/iuran', fn() => view('admin.iuran.index'))->name('iuran.index');
 });
 
+
 // ================== UMKM AREA ==================
-Route::middleware(['auth', 'pelakuusaha'])->group(function () {
+Route::prefix('umkm')->name('umkm.')->middleware(['auth','pelakuusaha'])->group(function () {
 
-    // 1) HALAMAN 3 CARD PILIH LEVEL
-    Route::get('/umkm/pilih-level', [UmkmLevelController::class, 'index'])
-        ->name('umkm.level.choose');
+    // pilih level
+    Route::get('/pilih-level', [UmkmLevelController::class, 'index'])->name('level.choose');
+    Route::post('/pilih-level', [UmkmLevelController::class, 'store'])->name('level.store');
 
-    Route::post('/umkm/pilih-level', [UmkmLevelController::class, 'store'])
-        ->name('umkm.level.store');
+    // dashboard (CUMA 1!)
+    Route::get('/dashboard', [UmkmDashboardController::class, 'index'])->name('dashboard');
 
-    // 2) DASHBOARD UMKM
-    Route::get('/umkm/dashboard', function () {
-        return view('umkm.dashboard');
-    })->name('umkm.dashboard');
+    // profil
+    Route::get('/profile', [UmkmProfileController::class, 'edit'])->name('profile');
+    Route::put('/profile', [UmkmProfileController::class, 'update'])->name('profile.update');
 
-    // 3) PROFIL UMKM
-    Route::get('/umkm/profile', [UmkmProfileController::class, 'edit'])
-        ->name('umkm.profile');
+    // bahan baku
+    Route::get('/bahan-baku', [BahanBakuController::class, 'index'])->name('bahan.index');
+    Route::get('/bahan-baku/create', [BahanBakuController::class, 'create'])->name('bahan.create');
+    Route::post('/bahan-baku', [BahanBakuController::class, 'store'])->name('bahan.store');
+    Route::get('/bahan-baku/{bahan}/edit', [BahanBakuController::class, 'edit'])->name('bahan.edit');
+    Route::put('/bahan-baku/{bahan}', [BahanBakuController::class, 'update'])->name('bahan.update');
+    Route::delete('/bahan-baku/{bahan}', [BahanBakuController::class, 'destroy'])->name('bahan.destroy');
 
-    Route::put('/umkm/profile', [UmkmProfileController::class, 'update'])
-        ->name('umkm.profile.update');
+    // produk
+    Route::resource('/produk', ProdukController::class)->names('produk')->except(['show']);
+    Route::post('/produk/{produk}/hitung-hpp', [ProdukController::class, 'hitungHpp'])->name('produk.hitungHpp');
 
-    // 4) MASTER DATA BAHAN BAKU
-    // URL:   /umkm/bahan-baku
-    // Route: umkm.bahan.index, umkm.bahan.create, umkm.bahan.edit, ...
-    // 4) MASTER DATA BAHAN BAKU
-    Route::get('/umkm/bahan-baku', [BahanBakuController::class, 'index'])
-        ->name('umkm.bahan.index');
+    // pembelian
+    Route::get('/pembelian', [PembelianController::class, 'index'])->name('pembelian.index');
+    Route::get('/pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create');
+    Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
 
-    Route::get('/umkm/bahan-baku/create', [BahanBakuController::class, 'create'])
-        ->name('umkm.bahan.create');
+    // anggaran
+    Route::get('/anggaran', [UmkmAnggaranController::class, 'index'])->name('anggaran.index');
+    Route::post('/anggaran', [UmkmAnggaranController::class, 'store'])->name('anggaran.store');
 
-    Route::post('/umkm/bahan-baku', [BahanBakuController::class, 'store'])
-        ->name('umkm.bahan.store');
+    // produksi
+    Route::get('/produksi', [ProduksiController::class, 'index'])->name('produksi.index');
+    Route::get('/produksi/create', [ProduksiController::class, 'create'])->name('produksi.create');
+    Route::post('/produksi', [ProduksiController::class, 'store'])->name('produksi.store');
 
-    Route::get('/umkm/bahan-baku/{bahan}/edit', [BahanBakuController::class, 'edit'])
-        ->name('umkm.bahan.edit');
+    // penjualan
+    Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
+    Route::get('/penjualan/create', [PenjualanController::class, 'create'])->name('penjualan.create');
+    Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store');
 
-    Route::put('/umkm/bahan-baku/{bahan}', [BahanBakuController::class, 'update'])
-        ->name('umkm.bahan.update');
+    // laporan
+    Route::get('/laporan', [LaporanKeuanganController::class, 'index'])->name('laporan.index');
 
-    Route::delete('/umkm/bahan-baku/{bahan}', [BahanBakuController::class, 'destroy'])
-        ->name('umkm.bahan.destroy');
-
-    // 5) MASTER DATA PRODUK JADI
-    // URL dasar: /umkm/produk
-    // Nama route: umkm.produk.index, umkm.produk.create, dst.
-    Route::resource('umkm/produk', ProdukController::class)
-        ->names('umkm.produk')
-        ->except(['show']);
-
-        // PEMBELIAN BAHAN BAKU
-    Route::get('/umkm/pembelian', [PembelianController::class, 'index'])
-        ->name('umkm.pembelian.index');
-
-    Route::get('/umkm/pembelian/create', [PembelianController::class, 'create'])
-        ->name('umkm.pembelian.create');
-
-    Route::post('/umkm/pembelian', [PembelianController::class, 'store'])
-        ->name('umkm.pembelian.store');
-
-    Route::post('/umkm/produk/{produk}/hitung-hpp', [ProdukController::class, 'hitungHpp'])
-        ->name('umkm.produk.hitungHpp');
-
-    Route::get('/umkm/anggaran', [UmkmAnggaranController::class, 'index'])->name('umkm.anggaran.index');
-    Route::post('/umkm/anggaran', [UmkmAnggaranController::class, 'store'])->name('umkm.anggaran.store');
-
-    Route::get('/umkm/produksi', [ProduksiController::class, 'index'])
-    ->name('umkm.produksi.index');
-
-    Route::get('/umkm/produksi/create', [ProduksiController::class, 'create'])
-        ->name('umkm.produksi.create');
-
-    Route::post('/umkm/produksi', [ProduksiController::class, 'store'])
-        ->name('umkm.produksi.store');
-
-
-    Route::get('/umkm/dashboard', [UmkmDashboardController::class, 'index'])->name('umkm.dashboard');
-    // FORM PENJUALAN (dummy, cuma supaya route() nggak error)
-    Route::prefix('umkm')->name('umkm.')->middleware('auth')->group(function () {
-        Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
-        Route::get('/penjualan/create', [PenjualanController::class, 'create'])->name('penjualan.create');
-        Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store');
-    });
-
-    Route::prefix('umkm')->middleware('auth')->group(function () {
-        Route::get('/laporan', [LaporanKeuanganController::class, 'index'])
-            ->name('umkm.laporan.index');
-    });
+    // coa (JANGAN DOBEL)
+    Route::resource('/coa', CoaController::class)->names('coa')->except(['show']);
+    Route::get('/coa/preview', [CoaController::class, 'preview'])->name('coa.preview');
 });

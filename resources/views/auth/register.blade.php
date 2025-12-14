@@ -70,7 +70,7 @@
 						</div>
 
 						<div class="text-center mt-3">
-							Already have an account? <a href="{{ route('login') }}">Sign In</a>
+							Already have an account? <a href="{{ route('umkm.login') }}">Sign In</a>
 						</div>
 
 					</div>

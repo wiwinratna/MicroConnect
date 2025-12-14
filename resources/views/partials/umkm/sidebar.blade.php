@@ -44,10 +44,11 @@
 					<span class="align-middle">Produk Jadi</span>
 				</a>
 			</li>
-			<li class="sidebar-item {{ request()->routeIs('umkm.produksi*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.produksi.index') }}">
-					<i class="align-middle" data-feather="tool"></i>
-					<span class="align-middle">Produksi</span>
+
+			<li class="sidebar-item {{ request()->routeIs('umkm.coa.*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.coa.index') }}">
+					<i class="align-middle" data-feather="book"></i>
+					<span class="align-middle">COA</span>
 				</a>
 			</li>
 
@@ -58,6 +59,14 @@
 				<i class="align-middle" data-feather="clipboard"></i>
 				<span class="align-middle">Anggaran Bulanan</span>
 			</a>
+			</li>
+
+			
+			<li class="sidebar-item {{ request()->routeIs('umkm.produksi*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.produksi.index') }}">
+					<i class="align-middle" data-feather="tool"></i>
+					<span class="align-middle">Produksi</span>
+				</a>
 			</li>
 
 			{{-- PEMBELIAN BAHAN --}}

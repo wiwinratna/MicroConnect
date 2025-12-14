@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Umkm; // <-- kalau model kamu namanya beda (misal UmkmUsaha), ganti di sini
+
 
 class AuthController extends Controller
 {
@@ -67,24 +69,36 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // VALIDASI
+        // 1. VALIDASI
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        // BUAT USER BARU UMKM
+        // 2. BUAT USER BARU (GROUP = UMKM)
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_group' => 'umkm', // 🟩 default pelaku usaha
+            'name'       => $request->name,
+            'email'      => $request->email,
+            'password'   => Hash::make($request->password),
+            'user_group' => 'umkm',
         ]);
 
-        // LOGIN OTOMATIS SETELAH REGISTER
+        // 🔹 3. DAPATKAN KODE UMKM BARU
+        $kodeUmkm = Umkm::getKodeUmkm();
+
+        // 🔹 4. BUAT RECORD UMKM DENGAN KODE & LEVEL NULL
+        Umkm::create([
+            'kode_umkm' => $kodeUmkm,
+            'user_id'   => $user->id,
+            'level_id'  => null,
+        ]);
+
+        // 5. LOGIN OTOMATIS
         Auth::login($user);
 
-        return redirect()->route('umkm.dashboard')->with('success', 'Akun berhasil dibuat!');
+        // 6. ARAHKAN KE PILIH LEVEL
+        return redirect()->route('umkm.level.choose')
+            ->with('success', 'Akun berhasil dibuat, silakan pilih level UMKM.');
     }
 }

@@ -13,7 +13,7 @@ class CoaController extends Controller
         'Aset'       => 111,
         'Kewajiban'  => 211,
         'Modal'      => 311,
-        'Pendapatan' => 401,
+        'Pendapatan' => 400,
         'Beban'      => 501,
     ];
 

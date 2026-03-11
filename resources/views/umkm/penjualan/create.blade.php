@@ -26,20 +26,45 @@
 <div class="card border-0 shadow-sm">
   <div class="card-body">
     <div class="row g-3">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label">Tanggal</label>
         <input type="date" name="tanggal" class="form-control" required
                value="{{ old('tanggal', date('Y-m-d')) }}">
       </div>
-      <div class="col-md-4">
-        <label class="form-label">Pembeli (opsional)</label>
-        <input type="text" name="pembeli" class="form-control"
-               value="{{ old('pembeli') }}" placeholder="Nama pembeli">
+      
+      <div class="col-md-3">
+        <label class="form-label">Metode Pembayaran</label>
+        <select name="metode_pembayaran" id="metode_pembayaran" class="form-select" onchange="togglePiutangFields()">
+          <option value="tunai" {{ old('metode_pembayaran') == 'tunai' ? 'selected' : '' }}>Tunai</option>
+          <option value="piutang" {{ old('metode_pembayaran') == 'piutang' ? 'selected' : '' }}>Piutang (Kredit)</option>
+        </select>
       </div>
-      <div class="col-md-4">
+
+      <div class="col-md-3">
         <label class="form-label">Catatan (opsional)</label>
         <input type="text" name="catatan" class="form-control"
                value="{{ old('catatan') }}" placeholder="Catatan...">
+      </div>
+    </div>
+
+    {{-- Form Tambahan Khusus Piutang --}}
+    <div class="row g-3 mt-1" id="piutang_fields" style="display: none; background: #fdfbf7; padding: 15px; border-radius: 8px; border: 1px dashed #f59e0b;">
+      <div class="col-md-6">
+        <label class="form-label text-warning fw-bold">Pelanggan (Wajib untuk Piutang)</label>
+        <select name="pelanggan_id" id="pelanggan_id" class="form-select">
+          <option value="">-- Pilih Pelanggan --</option>
+          {{-- Diisi via controller kalau ada data pelanggan --}}
+          @if(isset($pelanggan))
+            @foreach($pelanggan as $plg)
+              <option value="{{ $plg->id }}" {{ old('pelanggan_id') == $plg->id ? 'selected' : '' }}>{{ $plg->nama_pelanggan }} ({{ $plg->no_whatsapp ?? '-' }})</option>
+            @endforeach
+          @endif
+        </select>
+        <div class="form-text">Pelanggan harus didaftarkan dulu di menu Piutang > Referensi Pelanggan.</div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-warning fw-bold">Tanggal Jatuh Tempo</label>
+        <input type="date" name="jatuh_tempo" id="jatuh_tempo" class="form-control" value="{{ old('jatuh_tempo') }}">
       </div>
     </div>
 
@@ -74,8 +99,25 @@
 
   </div>
 </div>
+</form>
 
 <script>
+function togglePiutangFields() {
+  const method = document.getElementById('metode_pembayaran').value;
+  const fields = document.getElementById('piutang_fields');
+  
+  if (method === 'piutang') {
+    fields.style.display = 'flex';
+  } else {
+    fields.style.display = 'none';
+  }
+}
+
+// Call on load in case of validation errors
+window.addEventListener('DOMContentLoaded', () => {
+    togglePiutangFields();
+});
+
 function addRow() {
   const rows = document.getElementById('rows');
   const div = document.createElement('div');
@@ -92,7 +134,7 @@ function addRow() {
     <div class="col-md-3">
       <input type="number" step="0.001" name="qty[]" class="form-control" placeholder="Qty">
     </div>
-    <div class="col-md-1">
+    <div class="col-md-1 d-flex align-items-end">
       <button type="button" class="btn btn-danger w-100" onclick="removeRow(this)">×</button>
     </div>
   `;

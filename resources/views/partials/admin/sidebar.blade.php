@@ -28,6 +28,13 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.tickets.index') }}">
+                    <i class="align-middle" data-feather="message-square"></i>
+                    <span class="align-middle">Ticketing UMKM</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 </nav>

@@ -137,9 +137,26 @@
                             </div>
 
                             {{-- ALAMAT --}}
-                            <div>
+                            <div class="mb-3">
                                 <label class="form-label">Alamat Usaha</label>
-                                <textarea name="alamat" class="form-control" rows="3">{{ old('alamat', $umkm->alamat) }}</textarea>
+                                <textarea name="alamat" class="form-control" rows="2">{{ old('alamat', $umkm->alamat) }}</textarea>
+                            </div>
+
+                            {{-- JENIS USAHA --}}
+                            <div class="mb-3">
+                                <label class="form-label">Jenis Usaha</label>
+                                <input type="text" name="jenis_usaha" class="form-control"
+                                       value="{{ old('jenis_usaha', $umkm->jenis_usaha) }}"
+                                       placeholder="Contoh: Kuliner, Jasa, Perdagangan...">
+                            </div>
+
+                            {{-- NO WHATSAPP --}}
+                            <div class="mb-3">
+                                <label class="form-label">No. WhatsApp Pemilik</label>
+                                <input type="text" name="no_whatsapp" class="form-control"
+                                       value="{{ old('no_whatsapp', $umkm->no_whatsapp) }}"
+                                       placeholder="08xxxxxxxxxx">
+                                <div class="form-text">Digunakan untuk menerima notifikasi sistem.</div>
                             </div>
 
                             <p class="small text-muted mt-2 mb-0">
@@ -149,6 +166,51 @@
                     </div>
                 </div>
             </div>
+
+            {{-- =========================
+                KONFIGURASI INVENTORI
+            ========================== --}}
+            <div class="mt-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header fw-semibold" style="background: linear-gradient(120deg, #f0fdf4, #f9fafb);">
+                        ⚙️ Konfigurasi Metode Pencatatan Persediaan
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">
+                            Pilihan metode ini mempengaruhi cara sistem menghitung nilai stok dan HPP (Harga Pokok Produksi).
+                            Setelah disimpan, semua perhitungan baru akan menggunakan metode yang dipilih.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Metode Pencatatan Stok</label>
+                                <select name="recording_method" class="form-select">
+                                    <option value="periodik" {{ ($umkm->recording_method ?? 'periodik') === 'periodik' ? 'selected' : '' }}>
+                                        Periodik — stok dihitung di akhir periode
+                                    </option>
+                                    <option value="perpetual" {{ $umkm->recording_method === 'perpetual' ? 'selected' : '' }}>
+                                        Perpetual — stok dicatat setiap transaksi
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Metode Penilaian Persediaan</label>
+                                <select name="inventory_method" class="form-select">
+                                    <option value="Average" {{ ($umkm->inventory_method ?? 'Average') === 'Average' ? 'selected' : '' }}>
+                                        Average (Rata-rata) — direkomendasikan untuk UMKM
+                                    </option>
+                                    <option value="FIFO" {{ $umkm->inventory_method === 'FIFO' ? 'selected' : '' }}>
+                                        FIFO — barang masuk pertama, keluar pertama
+                                    </option>
+                                    <option value="LIFO" {{ $umkm->inventory_method === 'LIFO' ? 'selected' : '' }}>
+                                        LIFO — barang masuk terakhir, keluar pertama
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             {{-- =========================
                 BAR — LEVEL UMKM SAAT INI

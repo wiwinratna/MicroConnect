@@ -59,7 +59,9 @@ public function create()
         ->orderBy('nama_bahan')
         ->get();
 
-    return view('umkm.produk.create', compact('kode', 'bahanBaku', 'overheadPerUnit'));
+    $satuanOptions = \App\Helpers\UnitConverter::getUiOptions();
+
+    return view('umkm.produk.create', compact('kode', 'bahanBaku', 'overheadPerUnit', 'satuanOptions'));
 }
 
     public function store(Request $request)
@@ -158,8 +160,9 @@ public function create()
 
         // komposisi yang sudah ada
         $komposisi = $produk->komposisi()->with('bahan')->get();
+        $satuanOptions = \App\Helpers\UnitConverter::getUiOptions();
 
-        return view('umkm.produk.edit', compact('produk', 'bahanBaku', 'komposisi'));
+        return view('umkm.produk.edit', compact('produk', 'bahanBaku', 'komposisi', 'satuanOptions'));
     }
 
     public function update(Request $request, Produk $produk)
@@ -262,25 +265,47 @@ public function create()
             ->with('success', 'Produk berhasil dihapus.');
     }
 
-public function hitungHpp(Produk $produk)
+public function hitungHpp(Produk $produk, Request $request)
 {
     $umkm = auth()->user()->umkm;
     if ($produk->umkm_id !== $umkm->id) abort(403);
 
-    // 1) hitung biaya bahan dari komposisi
-    $biayaBahan = 0.0;
+    // === 1. Detail biaya bahan dari resep ===
+    $detailBahan = [];
+    $biayaBahan  = 0.0;
 
     $komposisi = $produk->komposisi()->with('bahan')->get();
+
     foreach ($komposisi as $row) {
-        if (!$row->bahan) continue;
+        $bahan = $row->bahan;
+        if (!$bahan) continue;
 
-        $hargaUnitBahan = (float) $row->bahan->hargaBeliTerakhir(); // ambil dari pembelian_detail terbaru
-        $qtyPakai       = (float) $row->qty; // diasumsikan qty resep sudah dalam satuan bahan
+        $satuanResep   = $row->satuan ?? $bahan->satuan;
+        $satuanDasar   = $bahan->satuan;
+        $qtyResep      = (float) $row->qty;
 
-        $biayaBahan += ($qtyPakai * $hargaUnitBahan);
+        // Konversi qty resep ke satuan dasar bahan
+        $qtyBase = \App\Helpers\UnitConverter::isCompatible($satuanResep, $satuanDasar)
+            ? \App\Helpers\UnitConverter::convert($qtyResep, $satuanResep, $satuanDasar)
+            : $qtyResep;
+
+        // Harga beli terakhir (per satuan dasar)
+        $hargaUnit = (float) $bahan->hargaBeliTerakhir();
+        $biaya     = $qtyBase * $hargaUnit;
+        $biayaBahan += $biaya;
+
+        $detailBahan[] = [
+            'nama_bahan'    => $bahan->nama_bahan,
+            'qty_resep'     => $qtyResep,
+            'satuan_resep'  => $satuanResep,
+            'qty_base'      => round($qtyBase, 3),
+            'satuan_dasar'  => $satuanDasar,
+            'harga_unit'    => $hargaUnit,
+            'biaya'         => round($biaya, 2),
+        ];
     }
 
-    // 2) overhead per unit dari anggaran bulan ini (YYYY-MM)
+    // === 2. Overhead per unit dari anggaran bulan ini ===
     $periode = now()->format('Y-m');
     $anggaran = AnggaranBulanan::where('umkm_id', $umkm->id)
         ->where('periode', $periode)
@@ -293,18 +318,40 @@ public function hitungHpp(Produk $produk)
         $overheadPerUnit = $target > 0 ? ($total / $target) : 0.0;
     }
 
-    // 3) HPP final
-    $hpp = $biayaBahan + $overheadPerUnit;
+    // === 3. HPP Estimasi total ===
+    $hpp = round($biayaBahan + $overheadPerUnit, 2);
 
-    // 4) simpan ke produk (pilih kolom kamu: harga_pokok / hpp)
-    $produk->update([
-        'harga_pokok' => $hpp,   // atau 'hpp' kalau kolomnya itu
-    ]);
+    // === 4. Margin & Saran Harga Jual ===
+    $marginTarget = (float) ($request->input('margin', 0));
+    $saranHarga   = $hpp > 0 ? round($hpp * (1 + $marginTarget / 100)) : 0;
+
+    $hargaJualNow  = (float) ($produk->harga_jual ?? 0);
+    $marginAktual  = ($hpp > 0 && $hargaJualNow > 0)
+        ? round((($hargaJualNow - $hpp) / $hpp) * 100, 1)
+        : null;
+
+    // === 5. Simpan HPP estimasi ke produk ===
+    $produk->update(['harga_pokok' => $hpp]);
+
+    // === 6. Response ===
+    if ($request->expectsJson()) {
+        return response()->json([
+            'hpp'             => $hpp,
+            'biaya_bahan'     => round($biayaBahan, 2),
+            'overhead'        => round($overheadPerUnit, 2),
+            'detail_bahan'    => $detailBahan,
+            'margin_target'   => $marginTarget,
+            'saran_harga'     => $saranHarga,
+            'margin_aktual'   => $marginAktual,
+            'harga_jual_now'  => $hargaJualNow,
+            'periode_overhead'=> $periode,
+        ]);
+    }
 
     return redirect()
         ->route('umkm.produk.edit', $produk->id)
-        ->with('success', 'HPP berhasil dihitung: Rp ' . number_format($hpp, 0, ',', '.'));
+        ->with('success', 'HPP Estimasi: Rp ' . number_format($hpp, 0, ',', '.') .
+            ($overheadPerUnit > 0 ? ' (termasuk overhead Rp ' . number_format($overheadPerUnit, 0, ',', '.') . '/unit)' : ''));
 }
-
 
 }

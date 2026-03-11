@@ -80,32 +80,39 @@ class PembelianController extends Controller
                 'subtotal'     => $subtotal,
             ]);
 
-            // UPDATE STOK & HARGA RATA2
+            // MENCATAT MUTASI STOK BAHAN BAKU 
+            \App\Models\StokMutasi::create([
+                'umkm_id'      => $umkm->id,
+                'bahan_id'     => $bahanId,
+                'tanggal'      => $pembelian->tanggal,
+                'jenis'        => 'MASUK',
+                'qty'          => $qty,
+                'harga_unit'   => $harga,
+                'ref_tipe'     => 'pembelian',
+                'ref_id'       => $pembelian->id,
+                'ref_detail_id'=> $pembelian->id // Sementara pakai ID header, kalau butuh detail ID nanti disesuaikan
+            ]);
+
+            // STOK AWAL BahanBaku BISA DIKOSONGKAN atau DIUPDATE untuk caching.
+            // Sesuai sistem, kita akan gunakan $bahan->stok_awal sebagai cache visual saja.
             $bahan = BahanBaku::find($bahanId);
-
-            $stokLama = $bahan->stok_awal ?? 0;
-            $hargaRataLama = $bahan->harga_rata2 ?? 0;
-
-            $stokBaru = $stokLama + $qty;
-
-            if ($stokBaru > 0) {
-                $hargaRataBaru =
-                    (($stokLama * $hargaRataLama) + ($qty * $harga))
-                    / $stokBaru;
-            } else {
-                $hargaRataBaru = $harga;
-            }
-
+            $stokBaru = ($bahan->stok_awal ?? 0) + $qty;
+            
             $bahan->update([
                 'stok_awal' => $stokBaru,
-                'harga_rata2' => $hargaRataBaru,
             ]);
         }
 
         $pembelian->update(['total' => $total]);
 
+        // ======================
+        // (E) DELEGATE POSTING JURNAL KE ACCOUNTING SERVICE
+        // ======================
+        $accService = new \App\Services\AccountingService();
+        $accService->jurnalPembelian($umkm, $pembelian, $total);
+
         return redirect()
             ->route('umkm.pembelian.index')
-            ->with('success', 'Pembelian berhasil disimpan dan stok diperbarui.');
+            ->with('success', 'Pembelian berhasil disimpan, mutasi stok tercatat, dan jurnal otomatis terbentuk.');
     }
 }

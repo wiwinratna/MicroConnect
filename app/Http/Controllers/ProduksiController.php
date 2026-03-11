@@ -60,6 +60,12 @@ class ProduksiController extends Controller
             return back()->withErrors(['detail' => 'Minimal isi 1 produk & qty produksi.'])->withInput();
         }
 
+        // =================================================================================
+        // FITUR PRODUKSI DINONAKTIFKAN UNTUK MVP
+        // Sesuai design final, stok bahan baku berkurang otomatis pada saat Penjualan.
+        // =================================================================================
+        return back()->with('error', 'Fitur Produksi dinonaktifkan untuk versi MVP. Stok bahan otomatis berkurang saat Penjualan.');
+
         DB::transaction(function () use ($request, $umkm) {
 
             $produksi = Produksi::create([
@@ -101,27 +107,51 @@ class ProduksiController extends Controller
                     }
                 }
 
-                // 3) kurangi stok bahan
+                // 3) kurangi stok bahan & catat mutasi KELUAR bahan
                 foreach ($kebutuhan as $bahanId => $qtyButuh) {
                     $bahan = BahanBaku::where('umkm_id', $umkm->id)->findOrFail($bahanId);
                     $bahan->update([
                         'stok' => (float)($bahan->stok ?? 0) - $qtyButuh
                     ]);
+                    
+                    \App\Models\StokMutasi::create([
+                        'umkm_id'      => $umkm->id,
+                        'bahan_id'     => $bahan->id,
+                        'tanggal'      => $produksi->tanggal,
+                        'jenis'        => 'KELUAR',
+                        'qty'          => $qtyButuh,
+                        'harga_unit'   => $bahan->stok > 0 ? ($bahan->hargaBeliTerakhir() ?? 0) : 0, 
+                        'ref_tipe'     => 'produksi',
+                        'ref_id'       => $produksi->id,
+                    ]);
                 }
 
-                // 4) tambah stok produk jadi
+                // 4) tambah stok produk jadi & simpan produksi detail
                 $produk->update([
                     'stok' => (float)($produk->stok ?? 0) + $qtyHasil
                 ]);
 
                 // 5) simpan produksi detail + snapshot HPP produk (kalau sudah ada)
                 $hppUnit = (float) ($produk->harga_pokok ?? 0);
-                ProduksiDetail::create([
+                $prodDetail = ProduksiDetail::create([
                     'produksi_id' => $produksi->id,
                     'produk_id' => $produk->id,
                     'qty_hasil' => $qtyHasil,
                     'hpp_per_unit' => $hppUnit,
                     'hpp_total' => $hppUnit * $qtyHasil,
+                ]);
+                
+                // 6) catat mutasi MASUK produk jadi
+                \App\Models\StokMutasi::create([
+                    'umkm_id'      => $umkm->id,
+                    'produk_id'    => $produk->id,
+                    'tanggal'      => $produksi->tanggal,
+                    'jenis'        => 'MASUK',
+                    'qty'          => $qtyHasil,
+                    'harga_unit'   => $hppUnit, 
+                    'ref_tipe'     => 'produksi',
+                    'ref_id'       => $produksi->id,
+                    'ref_detail_id'=> $prodDetail->id
                 ]);
             }
         });

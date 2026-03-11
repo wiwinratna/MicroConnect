@@ -4,12 +4,15 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\UmkmLevel;
+use Illuminate\Support\Facades\Schema;
 
 class UmkmLevelSeeder extends Seeder
 {
     public function run(): void
     {
+        Schema::disableForeignKeyConstraints();
         UmkmLevel::truncate(); // biar bersih kalau di-run ulang
+        Schema::enableForeignKeyConstraints();
 
         UmkmLevel::create([
             'kode'         => 'L1',

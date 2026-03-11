@@ -27,6 +27,7 @@
 			</li>
 
 
+			@if($level >= 3)
 			<li class="sidebar-header">Master Data</li>
 
 			{{-- BAHAN BAKU --}}
@@ -34,6 +35,14 @@
 				<a class="sidebar-link" href="{{ route('umkm.bahan.index') }}">
 					<i class="align-middle" data-feather="archive"></i>
 					<span class="align-middle">Bahan Baku</span>
+				</a>
+			</li>
+
+			{{-- KARTU STOK --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.laporan.kartu_stok') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.laporan.kartu_stok') }}">
+					<i class="align-middle" data-feather="layers"></i>
+					<span class="align-middle">Kartu Stok</span>
 				</a>
 			</li>
 
@@ -51,24 +60,21 @@
 					<span class="align-middle">COA</span>
 				</a>
 			</li>
+			@endif
 
 
-			<li class="sidebar-header">Transaksi</li>
+			@if($level >= 3)
+			<li class="sidebar-header">Anggaran & Produksi</li>
 			<li class="sidebar-item {{ request()->routeIs('umkm.anggaran*') ? 'active' : '' }}">
 			<a class="sidebar-link" href="{{ route('umkm.anggaran.index') }}">
 				<i class="align-middle" data-feather="clipboard"></i>
-				<span class="align-middle">Anggaran Bulanan</span>
+				<span class="align-middle">Anggaran (Estimasi Harga)</span>
 			</a>
 			</li>
+			@endif
 
+			<li class="sidebar-header">Transaksi Utama</li>
 			
-			<li class="sidebar-item {{ request()->routeIs('umkm.produksi*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.produksi.index') }}">
-					<i class="align-middle" data-feather="tool"></i>
-					<span class="align-middle">Produksi</span>
-				</a>
-			</li>
-
 			{{-- PEMBELIAN BAHAN --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.pembelian*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.pembelian.index') }}">
@@ -85,8 +91,47 @@
 				</a>
 			</li>
 
+			@if($level >= 2)
+			{{-- PIUTANG PELANGGAN --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.piutang*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.piutang.index') }}">
+					<i class="align-middle" data-feather="credit-card"></i>
+					<span class="align-middle">Piutang Pelanggan</span>
+				</a>
+			</li>
+			@endif
 
-			<li class="sidebar-header">Laporan</li>
+
+			<li class="sidebar-header">Keuangan & Iuran</li>
+
+			@if($level >= 2)
+			{{-- BEBAN OPERASIONAL AKTUAL --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.beban*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.beban.index') }}">
+					<i class="align-middle" data-feather="trending-down"></i>
+					<span class="align-middle">Beban Aktual (Pengeluaran)</span>
+				</a>
+			</li>
+			@endif
+
+			{{-- IURAN BULANAN --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.iuran*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.iuran.index') }}">
+					<i class="align-middle" data-feather="calendar"></i>
+					<span class="align-middle">Iuran Bulanan</span>
+				</a>
+			</li>
+
+
+			<li class="sidebar-header">Akuntansi & Laporan</li>
+
+			{{-- JURNAL UMUM --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.jurnal*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.jurnal.index') }}">
+					<i class="align-middle" data-feather="book-open"></i>
+					<span class="align-middle">Jurnal Umum</span>
+				</a>
+			</li>
 
 			{{-- LAPORAN --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.laporan*') ? 'active' : '' }}">
@@ -96,7 +141,18 @@
 				</a>
 			</li>
 
+			<li class="sidebar-header">Pengaturan & Bantuan</li>
+
+			{{-- TICKETING --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.tickets*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.tickets.index') }}">
+					<i class="align-middle" data-feather="message-circle"></i>
+					<span class="align-middle">Pengaduan & Konsultasi</span>
+				</a>
+			</li>
+
 		</ul>
+
 
 	</div>
 </nav>

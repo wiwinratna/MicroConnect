@@ -1,12 +1,12 @@
 @extends('layouts.umkm')
 
-@section('title', 'Anggaran Bulanan')
+@section('title', 'Anggaran Estimasi Overhead')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h1 class="h3 mb-1"><strong>Anggaran</strong> Bulanan</h1>
-        <p class="text-muted mb-0">Estimasi overhead untuk patokan HPP (tidak masuk jurnal).</p>
+        <h1 class="h3 mb-1"><strong>Anggaran Estimasi</strong> Overhead</h1>
+        <p class="text-muted mb-0">Estimasi bulanan biaya operasional untuk membantu simulasi harga jual produk. <br><span class="text-danger fw-semibold">Penting:</span> Input di sini <strong>TIDAK</strong> menjurnal pengeluaran/beban aktual di Laporan Keuangan.</p>
     </div>
 </div>
 

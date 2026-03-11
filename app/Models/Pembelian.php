@@ -21,7 +21,7 @@ class Pembelian extends Model
         'total',
     ];
 
-    public function detail()
+    public function details()
     {
         return $this->hasMany(PembelianDetail::class);
     }

@@ -7,7 +7,7 @@
         <div>
             <h1 class="h3 mb-1"><strong>Tambah</strong> Produk</h1>
             <p class="text-muted mb-0">
-                Daftarkan produk jadi yang akan dijual, beserta komposisi bahan per 1 unit + estimasi HPP dari anggaran bulanan.
+                Daftarkan produk jadi yang akan dijual, beserta komposisi bahan per 1 unit + simulasi harga jual dari estimasi overhead anggaran.
             </p>
         </div>
         <a href="{{ route('umkm.produk.index') }}" class="btn btn-outline-secondary">
@@ -82,18 +82,19 @@
                         <small class="text-muted">Ini satuan output produk jadi.</small>
                     </div>
 
-                    {{-- HARGA POKOK (readonly, hasil hitung) --}}
+                    {{-- HARGA POKOK ESTIMASI (readonly, hasil hitung) --}}
                     <div class="col-md-4">
-                        <label class="form-label">Harga Pokok / Unit (Rp)</label>
+                        <label class="form-label text-primary fw-semibold">HPP Estimasi (Untuk Simulasi)</label>
                         <input type="text"
                                id="harga_pokok_display"
-                               class="form-control"
+                               class="form-control bg-light"
                                value="{{ old('harga_pokok') ? number_format(old('harga_pokok'), 0, ',', '.') : '' }}"
                                readonly
-                               placeholder="Klik Hitung HPP dulu">
+                               placeholder="Klik tombol Simulasi dulu">
                         <input type="hidden" name="harga_pokok" id="harga_pokok" value="{{ old('harga_pokok') }}">
-                        <small class="text-muted">
-                            HPP = biaya bahan (dari resep) + overhead/unit (dari anggaran bulanan).
+                        <small class="text-muted mt-1 d-block lh-sm" style="font-size:0.8rem">
+                            HPP Estimasi = biaya bahan (resep) + overhead/unit.<br>
+                            <span class="text-danger fw-semibold">Hanya untuk Simulasi Harga Jual.</span> Laporan Keuangan Aktual tetap menggunakan harga pokok stok fisik yang keluar (FIFO/LIFO/Average).
                         </small>
                     </div>
 
@@ -135,17 +136,22 @@
 
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                     <div>
-                        <h5 class="mb-1">Komposisi per 1 unit produk</h5>
+                        <h5 class="mb-1">Komposisi / Resep per 1 unit produk</h5>
                         <p class="text-muted small mb-0">
                             Tambahkan bahan baku untuk membuat <strong>1 unit</strong> produk ini.
-                            Ketik nama bahan & satuan, nanti muncul daftar saran.
+                            <span class="text-danger fw-semibold">Wajib diisi</span> agar HPP dan stok bahan terhitung otomatis saat penjualan.
                         </p>
                     </div>
 
                     {{-- tombol hitung HPP --}}
                     <button type="button" class="btn btn-outline-primary" id="btn-hitung-hpp">
-                        Hitung HPP
+                        Simulasi Harga Jual
                     </button>
+                </div>
+
+                <div class="alert alert-warning d-flex gap-2 align-items-start mt-2 py-2" id="alert-no-resep" style="display:none;">
+                    <span>⚠️</span>
+                    <div class="small">Produk tanpa komposisi bahan akan memiliki <strong>HPP = Rp 0</strong> dan stok bahan <strong>tidak berkurang</strong> saat penjualan.</div>
                 </div>
 
                 <div class="mt-3" id="hpp-breakdown" style="display:none;">
@@ -209,18 +215,15 @@
                                    placeholder="Qty">
                         </div>
 
-                        <div class="col-md-2 position-relative">
+                        <div class="col-md-2">
                             <label class="form-label small mb-1">Satuan</label>
-                            <input type="text"
-                                   name="satuan[]"
-                                   class="form-control satuan-input"
-                                   placeholder="ml/gram/pcs"
-                                   autocomplete="off">
-
-                            <div class="autocomplete-panel list-group shadow-sm unit-panel"
-                                 style="position:absolute; z-index:30; top:100%; left:0; right:0;
-                                        max-height:200px; overflow:auto; display:none;">
-                            </div>
+                            <select name="satuan[]" class="form-select satuan-input">
+                                <option value="">-- pilih --</option>
+                                @foreach($satuanOptions as $opt)
+                                    <option value="{{ $opt['value'] }}">{{ $opt['label'] }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Satuan pemakaian resep ini</small>
                         </div>
 
                         {{-- NEW: harga per unit --}}

@@ -1,0 +1,26 @@
+
+   INFO  Running migrations.  
+
+  2026_03_11_191748_create_tickets_table  33.07ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000]: General error: 1005 Can't create table `bismillah_kadin_final`.`tickets` (errno: 150 "Foreign key constraint is incorrectly formed") (Connection: mysql, SQL: alter table `tickets` add constraint `tickets_umkm_id_foreign` foreign key (`umkm_id`) references `umkms` (`id`) on delete cascade)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:822
+    818▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    819▕                 );
+    820▕             }
+    821▕ 
+  ➜ 822▕             throw new QueryException(
+    823▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    824▕             );
+    825▕         }
+    826▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:568
+      PDOException::("SQLSTATE[HY000]: General error: 1005 Can't create table `bismillah_kadin_final`.`tickets` (errno: 150 "Foreign key constraint is incorrectly formed")")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:568
+      PDOStatement::execute()
+

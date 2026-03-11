@@ -18,21 +18,35 @@ class Umkm extends Model
         'nib',
         'alamat',
         'no_telepon',
+        // Fields baru
+        'jenis_usaha',
+        'no_whatsapp',
+        'recording_method',
+        'inventory_method',
+        'status',
     ];
 
-    public static function getKodeUmkm()
+    protected $attributes = [
+        'recording_method' => 'periodik',
+        'inventory_method' => 'Average',
+        'status'           => 'aktif',
+    ];
+
+    // ===================== HELPERS =====================
+
+    public static function getKodeUmkm(): string
     {
-        // ambil UMKM terakhir berdasarkan created_at
         $last = self::orderByDesc('created_at')->first();
-
-        // kalau belum ada satupun → mulai dari 0
         $lastNumber = $last ? (int) substr($last->kode_umkm, -5) : 0;
-
-        $nextNumber = $lastNumber + 1;
-
-        // hasil: UM00001, UM00002, dst.
-        return 'UM' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        return 'UM' . str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
     }
+
+    public function isAktif(): bool
+    {
+        return $this->status === 'aktif';
+    }
+
+    // ===================== RELASI =====================
 
     public function user()
     {
@@ -54,4 +68,33 @@ class Umkm extends Model
         return $this->hasMany(Produk::class, 'umkm_id');
     }
 
+    public function pembelian()
+    {
+        return $this->hasMany(Pembelian::class, 'umkm_id');
+    }
+
+    public function penjualan()
+    {
+        return $this->hasMany(Penjualan::class, 'umkm_id');
+    }
+
+    public function stokMutasi()
+    {
+        return $this->hasMany(StokMutasi::class, 'umkm_id');
+    }
+
+    public function pelanggan()
+    {
+        return $this->hasMany(Pelanggan::class, 'umkm_id');
+    }
+
+    public function piutang()
+    {
+        return $this->hasMany(Piutang::class, 'umkm_id');
+    }
+
+    public function iuranBulanan()
+    {
+        return $this->hasMany(IuranBulanan::class, 'umkm_id');
+    }
 }

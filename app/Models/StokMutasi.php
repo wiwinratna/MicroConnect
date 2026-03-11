@@ -20,5 +20,13 @@ class StokMutasi extends Model
         'ref_id',
         'ref_detail_id',
     ];
-}
+    public function bahan()
+    {
+        return $this->belongsTo(BahanBaku::class, 'bahan_id');
+    }
 
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
+}

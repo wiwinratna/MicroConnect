@@ -17,6 +17,19 @@
 	@stack('styles')
 </head>
 <body>
+	@php
+		$user = auth()->user();
+		$level = 1; // Default
+		if ($user && $user->umkm && $user->umkm->level) {
+			
+			// Misal kode level 'LVL1' atau id 1. Kita mapping simple ID ke angka level
+			// karena data realnya di UmkmLevel ID 1, 2, 3 biasanya merepresentasikan Level.
+			$level = (int) preg_replace('/[^0-9]/', '', $user->umkm->level->kode) ?: $user->umkm->level_id;
+			
+			// Fallback proteksi
+			if ($level < 1) $level = 1;
+		}
+	@endphp
 	<div class="wrapper">
 
 		{{-- SIDEBAR UMKM --}}

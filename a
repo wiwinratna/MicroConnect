@@ -1,0 +1,39 @@
+# KADIN Dashboard Revamp (UMKM Monitoring)
+
+Dashboard KADIN saat ini hanya menampilkan daftar UMKM dan omzet statis. Revisi ini akan mengubah fokus dashboard menjadi alat *monitoring* interaktif untuk melacak kesehatan bisnis, level UMKM, performa, dan tingkat keaktifan.
+
+## Proposed Changes
+
+### Controller Expansion: `Admin\DashboardController`
+- **Summary Metrics:** Menghitung total metrik secara global untuk Card Summary di atas halaman:
+  1. Total UMKM Aktif
+  2. Pembagian UMKM Level 1, Level 2, dan Level 3
+  3. Total Omzet gabungan bulan ini
+  4. Jumlah UMKM tanpa transaksi (0 trx)
+  5. Jumlah Tiket Konsultasi yang berstatus 'Open' (jika modul tersedia)
+- **Kesehatan & Status Perhatian UMKM:** Otomatis menghitung status UMKM melalui *query processing*:
+  - **Tidak Aktif**: 0 transaksi bulan ini.
+  - **Perlu Perhatian / Waspada**: Transaksi ada, namun Omzet < Rp 100.000 atau Margin Laba < 10% (atau tidak ada margin).
+  - **Sehat / Performa Bagus**: Omzet >= Rp 100.000 dan Margin >= 10%.
+- **Penarikan Data Tambahan**: Menyuntikkan relasi `level` UMKM ke dalam koleksi data agar dapat langsung dipilter dan dirender di tabel.
+
+### Level Management Audit: `Admin\UmkmController`
+- Audit field `level_id` pada model [Umkm](file:///c:/xampp/htdocs/proyek_kadin/app/Http/Controllers/Admin/UmkmController.php#15-182). Memastikan field ini tidak terblokir oleh perlindungan mass-assignment (harus `$guarded = ['id']`).
+- UI [show.blade.php](file:///c:/xampp/htdocs/proyek_kadin/resources/views/admin/umkm/show.blade.php) admin sudah memiliki *dropdown* dan rute ke [updateLevel](file:///c:/xampp/htdocs/proyek_kadin/app/Http/Controllers/Admin/UmkmController.php#145-156), sehingga modifikasi ditekankan pada validasi dan pengamanan agar pemilihannya persisten di Database. 
+
+### UI Implementation: `admin.dashboard` View
+Visual *Dashboard* akan dirombak struktur layout-nya mengacu pada kebutuhan Monitoring Dosen:
+1. **[Section Atas] Summary Cards**: Grid kartu minimalis menampilkan Total UMKM, Distribusi Level, Omzet Total, Titik Waspada (UMKM pasif, tiket open).
+2. **[Section Tengah] Performa Terbaik & Perlu Perhatian**: Dua blok bersebelahan yang mem-*highlight* 5 UMKM dengan performa teratas dan terendah.
+3. **[Section Bawah] Data Lengkap Monitoring UMKM**: Tabel responsif yang menyertakan informasi: Identitas UMKM, Level UMKM, Omzet Bulan Ini, Transaksi, Profitabilitas (Laba/Margin). Terdapat juga *Badge* Status Kesehatan secara visual (Hijau untuk Sehat, Merah untuk Waspada/Tidak Aktif) beserta tombol navigasi ke detail.
+
+## Kriteria Penentuan Status Kesehatan
+1. **Tidak Aktif (Inactive)**: Tidak ada penjualan sama sekali bulan ini.
+2. **Waspada (Need Attention)**: Ada penjualan, namun omzet berada di bawah ambang batas (contoh < 100.000) atau jika mencatat margin laba, persentasenya terlalu tipis (< 10%).
+3. **Sehat (Healthy)**: Meraup omzet solid dibantu dengan margin laba yang memadai.
+
+## Verification Plan
+- Admin membuka halaman dashboard akan melihat metrik rangkuman kalkulasi di tingkat atas.
+- Menguji bahwa 3 blok status terpampang akurat pada tabel (Sehat, Waspada, Tidak Aktif).
+- Konfirmasi *Profitabilitas* menampilkan angka absolut laba atau persentase, dan menampilkan `-` secara aman bila kolom HPP / Modal tidak tersedia di konfigurasi *inventory*.
+- Modifikasi pengaturan Level UMKM di UMKM *Detail Page* untuk membuktikan *Leveling system* teraplikasi di *database* dan segera terpampang informasinya di *dashboard* setelah pembaruan.

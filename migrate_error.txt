@@ -1,0 +1,26 @@
+
+   INFO  Running migrations.  
+
+  2026_03_11_191748_create_tickets_table  3.80ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'tickets' already exists (Connection: mysql, SQL: create table `tickets` (`id` bigint unsigned not null auto_increment primary key, `kode_ticket` varchar(255) not null, `umkm_id` bigint unsigned not null, `kategori` varchar(255) not null, `judul` varchar(255) not null, `status` enum('Open', 'In Progress', 'Resolved') not null default 'Open', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci')
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:822
+    818▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    819▕                 );
+    820▕             }
+    821▕ 
+  ➜ 822▕             throw new QueryException(
+    823▕                 $this->getName(), $query, $this->prepareBindings($bindings), $e
+    824▕             );
+    825▕         }
+    826▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:568
+      PDOException::("SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'tickets' already exists")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:568
+      PDOStatement::execute()
+

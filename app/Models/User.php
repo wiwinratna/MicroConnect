@@ -21,29 +21,38 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_group',
+        'user_group',   // 'admin' | 'pelakuusaha'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
+    }
+
+    // ===================== HELPERS =====================
+
+    public function isAdmin(): bool
+    {
+        return $this->user_group === 'admin';
+    }
+
+    public function isUmkm(): bool
+    {
+        return $this->user_group === 'pelakuusaha';
+    }
+
+    // ===================== RELASI =====================
+
+    public function umkm()
+    {
+        return $this->hasOne(Umkm::class, 'user_id');
     }
 }

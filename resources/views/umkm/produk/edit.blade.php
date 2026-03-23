@@ -52,9 +52,13 @@
                                min="0" step="1"
                                value="{{ old('harga_jual', $produk->harga_jual) }}">
                         <div class="d-flex justify-content-between align-items-center mt-1">
-                            <small class="text-muted">HPP Estimasi saat ini: <span id="text_hpp_now" class="fw-bold">Rp {{ number_format($produk->harga_pokok ?? 0, 0, ',', '.') }}</span></small>
+                            <small class="text-muted">
+                                Estimasi HPP saat ini:
+                                <span id="text_hpp_now" class="fw-bold">{{ rupiah($produk->harga_pokok ?? 0) }}</span>
+                                <span class="badge bg-warning-subtle text-warning ms-1" title="Estimasi berdasarkan histori biaya bahan, bukan HPP aktual">⚠ Estimasi</span>
+                            </small>
                             <button type="button" class="btn btn-sm btn-outline-success py-0 px-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalHpp">
-                                Simulasi Harga Jual (Estimasi)
+                                Perbarui Estimasi dari Histori Bahan
                             </button>
                         </div>
                     </div>
@@ -168,18 +172,22 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content border-0 shadow">
       <div class="modal-header bg-light border-0">
-        <h5 class="modal-title fw-bold">Kalkulator Simulasi Harga Jual</h5>
+        <h5 class="modal-title fw-bold">Estimasi Harga Pokok & Simulasi Harga Jual</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         <div class="alert alert-warning py-2 small d-flex align-items-center gap-2 mb-3">
             <div>
-                <strong>Penting:</strong> Simulasi HPP ini murni untuk membantu Anda menentukan harga jual ideal. Biaya overhead dihitung proporsional dari <em>Anggaran Estimasi</em>, dan <strong>TIDAK</strong> akan dicatat sebagai beban pengeluaran aktual di laporan keuangan.<br><br>
-                Saat penjualan riil terjadi, <strong>Jurnal Jual & HPP Otomatis</strong> akan menggunakan perhitungan Stok Aktual (metode FIFO/LIFO/Average dari stok fisik bahan baku), bukan menggunakan angka estimasi ini.
+                <strong>Penting — ini adalah ESTIMASI, bukan nilai aktual.</strong><br>
+                Estimasi Harga Pokok dihitung berdasarkan <em>histori biaya bahan baku</em> (harga beli terakhir masing-masing bahan dalam resep).
+                Ini bukan histori HPP aktual per produk.<br><br>
+                Angka estimasi ini murni untuk membantu Anda menentukan harga jual yang wajar.
+                <strong>TIDAK</strong> dicatat sebagai beban atau HPP aktual di jurnal / laporan keuangan.<br><br>
+                Saat penjualan riil terjadi, HPP aktual dihitung otomatis dari stok fisik bahan baku (metode FIFO/LIFO/Average), bukan menggunakan angka estimasi ini.
             </div>
         </div>
         <div class="alert alert-info py-2 small d-flex align-items-center gap-2">
-            ℹ️ Biaya Bahan Baku ditarik dari harga beli terakhir komposisi resep saat ini. (Jika baru mengubah resep, silakan "Simpan Perubahan" terlebih dulu).
+            ℹ️ Biaya Bahan ditarik dari harga beli terakhir masing-masing bahan dalam resep. Jika Anda baru mengubah resep, simpan perubahan terlebih dulu.
         </div>
 
         <form id="formHpp">

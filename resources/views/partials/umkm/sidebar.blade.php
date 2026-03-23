@@ -30,6 +30,14 @@
 			@if($level >= 3)
 			<li class="sidebar-header">Master Data</li>
 
+			{{-- MODE KASIR (ETALASE) --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.etalase*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.etalase.index') }}" target="_blank">
+					<i class="align-middle" data-feather="monitor"></i>
+					<span class="align-middle">Mode Kasir</span>
+				</a>
+			</li>
+
 			{{-- BAHAN BAKU --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.bahan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.bahan.index') }}">
@@ -63,7 +71,8 @@
 			@endif
 
 
-			@if($level >= 3)
+			{{-- [NONAKTIF SEMENTARA] Anggaran Estimasi - dinonaktifkan per permintaan revisi
+		@if($level >= 3)
 			<li class="sidebar-header">Anggaran & Produksi</li>
 			<li class="sidebar-item {{ request()->routeIs('umkm.anggaran*') ? 'active' : '' }}">
 			<a class="sidebar-link" href="{{ route('umkm.anggaran.index') }}">
@@ -72,14 +81,15 @@
 			</a>
 			</li>
 			@endif
+		--}}
 
 			<li class="sidebar-header">Transaksi Utama</li>
 			
-			{{-- PEMBELIAN BAHAN --}}
+			{{-- PEMBELIAN --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.pembelian*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.pembelian.index') }}">
 					<i class="align-middle" data-feather="shopping-cart"></i>
-					<span class="align-middle">Pembelian Bahan</span>
+					<span class="align-middle">Pembelian</span>
 				</a>
 			</li>
 
@@ -88,6 +98,14 @@
 				<a class="sidebar-link" href="{{ route('umkm.penjualan.index') }}">
 					<i class="align-middle" data-feather="dollar-sign"></i>
 					<span class="align-middle">Penjualan / Kas</span>
+				</a>
+			</li>
+
+			{{-- MODE ETALASE --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.etalase*') ? 'active' : '' }}">
+				<a class="sidebar-link text-primary fw-semibold" href="{{ route('umkm.etalase.index') }}">
+					<i class="align-middle text-primary" data-feather="monitor"></i>
+					<span class="align-middle">Mode Etalase (POS)</span>
 				</a>
 			</li>
 

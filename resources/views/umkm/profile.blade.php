@@ -28,7 +28,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('umkm.profile.update') }}">
+        <form method="POST" action="{{ route('umkm.profile.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -162,6 +162,61 @@
                             <p class="small text-muted mt-2 mb-0">
                                 Data akan digunakan untuk pendataan UMKM oleh KADIN.
                             </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- =========================
+                LOGO & WARNA USAHA
+            ========================== --}}
+            <div class="mt-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header fw-semibold" style="background: linear-gradient(120deg, #fefce8, #f9fafb);">
+                        🎨 Logo & Tampilan Usaha
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4 align-items-center">
+                            {{-- Logo Upload --}}
+                            <div class="col-md-7">
+                                <label class="form-label fw-semibold">Logo Usaha</label>
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    @if($umkm->logo_path)
+                                        <img src="{{ asset('storage/' . $umkm->logo_path) }}"
+                                             alt="Logo" class="rounded-circle shadow-sm"
+                                             style="width:64px; height:64px; object-fit:cover; border:2px solid #e5e7eb;"
+                                             id="logoPreview">
+                                    @else
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                                             style="width:64px; height:64px; background:#dbeafe; color:#1d4ed8; font-weight:700; font-size:1.5rem; border:2px solid #e5e7eb;"
+                                             id="logoPreview">
+                                            {{ strtoupper(substr($umkm->nama_usaha ?? 'U', 0, 2)) }}
+                                        </div>
+                                    @endif
+                                    <div>
+                                        <input type="file" name="logo" id="logoInput" class="form-control form-control-sm" accept="image/jpeg,image/png">
+                                        <div class="form-text">Format: JPG/PNG, maks 1MB. Logo akan tampil di sidebar, etalase, dan nota.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Warna Tema --}}
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold">Warna Tema Mode Etalase</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <input type="color" name="warna_tema" id="warnaTemaInput"
+                                           class="form-control form-control-color shadow-sm"
+                                           value="{{ old('warna_tema', $umkm->warna_tema ?? '#0d6efd') }}"
+                                           title="Pilih warna tema">
+                                    <div>
+                                        <span class="badge rounded-pill px-3 py-2" id="warnaTemaPreview"
+                                              style="background-color: {{ $umkm->warna_tema ?? '#0d6efd' }}; color: #fff; font-size: 0.85rem;">
+                                            {{ $umkm->warna_tema ?? '#0d6efd' }}
+                                        </span>
+                                        <div class="form-text">Hanya untuk Mode Etalase & nota.</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -337,3 +392,46 @@
     }
 </style>
 @endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Live logo file preview
+    const logoInput = document.getElementById('logoInput');
+    const logoPreview = document.getElementById('logoPreview');
+    if (logoInput && logoPreview) {
+        logoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Replace initials div with img
+                    if (logoPreview.tagName === 'DIV') {
+                        const img = document.createElement('img');
+                        img.id = 'logoPreview';
+                        img.className = 'rounded-circle shadow-sm';
+                        img.style.cssText = 'width:64px; height:64px; object-fit:cover; border:2px solid #e5e7eb;';
+                        img.src = e.target.result;
+                        logoPreview.parentNode.replaceChild(img, logoPreview);
+                    } else {
+                        logoPreview.src = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Live warna tema preview
+    const warnaInput = document.getElementById('warnaTemaInput');
+    const warnaPreview = document.getElementById('warnaTemaPreview');
+    if (warnaInput && warnaPreview) {
+        warnaInput.addEventListener('input', function() {
+            warnaPreview.style.backgroundColor = this.value;
+            warnaPreview.textContent = this.value;
+        });
+    }
+});
+</script>
+@endpush
+

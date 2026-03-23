@@ -24,6 +24,8 @@ class Umkm extends Model
         'recording_method',
         'inventory_method',
         'status',
+        'logo_path',
+        'warna_tema',
     ];
 
     protected $attributes = [

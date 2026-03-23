@@ -31,16 +31,16 @@ public function create()
     $umkm = auth()->user()->umkm;
     $kode = Produk::generateKode();
 
-    // === overhead per unit dari anggaran bulan ini ===
-    $periode = now()->format('Y-m');
-    $anggaran = AnggaranBulanan::where('umkm_id', $umkm->id)
-        ->where('periode', $periode)
-        ->first();
-
-    $overheadPerUnit = 0;
-    if ($anggaran && (float)$anggaran->target_unit > 0) {
-        $overheadPerUnit = (float)$anggaran->total / (float)$anggaran->target_unit;
-    }
+    // [NONAKTIF SEMENTARA] Overhead dari AnggaranBulanan dinonaktifkan
+    // $periode = now()->format('Y-m');
+    // $anggaran = AnggaranBulanan::where('umkm_id', $umkm->id)
+    //     ->where('periode', $periode)
+    //     ->first();
+    // $overheadPerUnit = 0;
+    // if ($anggaran && (float)$anggaran->target_unit > 0) {
+    //     $overheadPerUnit = (float)$anggaran->total / (float)$anggaran->target_unit;
+    // }
+    $overheadPerUnit = 0; // sementara 0 selama fitur Anggaran dinonaktifkan
 
     // === bahan baku + harga beli terakhir (dari pembelian_detail) ===
     $bahanBaku = BahanBaku::query()
@@ -305,20 +305,19 @@ public function hitungHpp(Produk $produk, Request $request)
         ];
     }
 
-    // === 2. Overhead per unit dari anggaran bulan ini ===
-    $periode = now()->format('Y-m');
-    $anggaran = AnggaranBulanan::where('umkm_id', $umkm->id)
-        ->where('periode', $periode)
-        ->first();
+    // === 2. [NONAKTIF SEMENTARA] Overhead dari AnggaranBulanan dinonaktifkan ===
+    // $periode = now()->format('Y-m');
+    // $anggaran = AnggaranBulanan::where('umkm_id', $umkm->id)
+    //     ->where('periode', $periode)->first();
+    // $overheadPerUnit = 0.0;
+    // if ($anggaran) {
+    //     $target = (float) ($anggaran->target_unit ?? 0);
+    //     $total  = (float) ($anggaran->total ?? 0);
+    //     $overheadPerUnit = $target > 0 ? ($total / $target) : 0.0;
+    // }
+    $overheadPerUnit = 0.0; // sementara 0 selama fitur Anggaran dinonaktifkan
 
-    $overheadPerUnit = 0.0;
-    if ($anggaran) {
-        $target = (float) ($anggaran->target_unit ?? 0);
-        $total  = (float) ($anggaran->total ?? 0);
-        $overheadPerUnit = $target > 0 ? ($total / $target) : 0.0;
-    }
-
-    // === 3. HPP Estimasi total ===
+    // === 3. Estimasi HPP total (berdasarkan histori biaya bahan, tanpa overhead sementara) ===
     $hpp = round($biayaBahan + $overheadPerUnit, 2);
 
     // === 4. Margin & Saran Harga Jual ===
@@ -344,7 +343,8 @@ public function hitungHpp(Produk $produk, Request $request)
             'saran_harga'     => $saranHarga,
             'margin_aktual'   => $marginAktual,
             'harga_jual_now'  => $hargaJualNow,
-            'periode_overhead'=> $periode,
+            'periode_overhead'=> 'n/a (anggaran nonaktif)',
+
         ]);
     }
 

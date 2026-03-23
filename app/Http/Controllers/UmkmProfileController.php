@@ -6,6 +6,7 @@ use App\Models\Umkm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UmkmProfileController extends Controller
 {
@@ -44,6 +45,8 @@ class UmkmProfileController extends Controller
             'no_whatsapp'       => 'nullable|string|max:20',
             'recording_method'  => 'nullable|in:periodik,perpetual',
             'inventory_method'  => 'nullable|in:FIFO,LIFO,Average',
+            'logo'              => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
+            'warna_tema'        => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
         ]);
 
         // Update akun user
@@ -54,9 +57,24 @@ class UmkmProfileController extends Controller
         }
         $user->save();
 
-        // Update data UMKM (termasuk konfigurasi inventori)
+        // Update data UMKM
         $umkm = Umkm::firstOrCreate(['user_id' => $user->id]);
-        $umkm->update([
+
+        // Handle logo upload
+        $logoData = [];
+        if ($request->hasFile('logo')) {
+            // Hapus logo lama jika ada
+            if ($umkm->logo_path && Storage::disk('public')->exists($umkm->logo_path)) {
+                Storage::disk('public')->delete($umkm->logo_path);
+            }
+
+            $file = $request->file('logo');
+            $filename = 'umkm_' . $umkm->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('logo', $filename, 'public');
+            $logoData['logo_path'] = $path;
+        }
+
+        $umkm->update(array_merge([
             'nama_usaha'       => $request->nama_usaha,
             'nib'              => $request->nib,
             'alamat'           => $request->alamat,
@@ -65,7 +83,8 @@ class UmkmProfileController extends Controller
             'no_whatsapp'      => $request->no_whatsapp,
             'recording_method' => $request->recording_method ?? $umkm->recording_method,
             'inventory_method' => $request->inventory_method ?? $umkm->inventory_method,
-        ]);
+            'warna_tema'       => $request->warna_tema ?? $umkm->warna_tema,
+        ], $logoData));
 
         return redirect()
             ->route('umkm.profile')

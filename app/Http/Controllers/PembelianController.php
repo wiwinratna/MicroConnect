@@ -14,6 +14,7 @@ class PembelianController extends Controller
         $umkm = auth()->user()->umkm;
 
         $data = Pembelian::where('umkm_id', $umkm->id)
+                          ->with('details.bahan')
                           ->orderByDesc('tanggal')
                           ->get();
 

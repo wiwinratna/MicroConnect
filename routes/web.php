@@ -103,9 +103,11 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
     Route::get('/pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create');
     Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
 
-    // Anggaran
-    Route::get('/anggaran', [UmkmAnggaranController::class, 'index'])->name('anggaran.index');
-    Route::post('/anggaran', [UmkmAnggaranController::class, 'store'])->name('anggaran.store');
+
+    // [NONAKTIF SEMENTARA] Anggaran Estimasi - dinonaktifkan per permintaan revisi
+    // Route::get('/anggaran', [UmkmAnggaranController::class, 'index'])->name('anggaran.index');
+    // Route::post('/anggaran', [UmkmAnggaranController::class, 'store'])->name('anggaran.store');
+
 
     // Produksi
     Route::get('/produksi', [ProduksiController::class, 'index'])->name('produksi.index');
@@ -116,6 +118,26 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/penjualan/create', [PenjualanController::class, 'create'])->name('penjualan.create');
     Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store');
+
+    // Mode Etalase
+    Route::prefix('etalase')->name('etalase.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Umkm\EtalaseController::class, 'index'])->name('index');
+        Route::post('/checkout', [\App\Http\Controllers\Umkm\EtalaseController::class, 'checkout'])->name('checkout');
+        Route::get('/nota/{id}', [\App\Http\Controllers\Umkm\EtalaseController::class, 'nota'])->name('nota');
+    });
+    // Ekspor (PDF/Excel)
+    Route::prefix('export')->name('export.')->group(function () {
+        Route::get('/jurnal-umum', [\App\Http\Controllers\Umkm\ExportController::class, 'jurnalUmum'])->name('jurnal_umum');
+        Route::get('/buku-besar', [\App\Http\Controllers\Umkm\ExportController::class, 'bukuBesar'])->name('buku_besar');
+        Route::get('/laba-rugi', [\App\Http\Controllers\Umkm\ExportController::class, 'labaRugi'])->name('laba_rugi');
+        Route::get('/perubahan-modal', [\App\Http\Controllers\Umkm\ExportController::class, 'perubahanModal'])->name('perubahan_modal');
+        Route::get('/arus-kas', [\App\Http\Controllers\Umkm\ExportController::class, 'arusKas'])->name('arus_kas');
+        Route::get('/rekap-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'rekapStok'])->name('rekap_stok');
+        Route::get('/kartu-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'kartuStokDetail'])->name('kartu_stok');
+        Route::get('/laporan-pembelian', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPembelian'])->name('laporan_pembelian');
+        Route::get('/laporan-penjualan', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPenjualan'])->name('laporan_penjualan');
+        Route::get('/laporan-piutang', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPiutang'])->name('laporan_piutang');
+    });
 
     // Laporan
     Route::get('/laporan', [LaporanKeuanganController::class, 'index'])->name('laporan.index');
@@ -145,14 +167,19 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
     // ==================== IURAN BULANAN ====================
     Route::get('/iuran', [IuranController::class, 'index'])->name('iuran.index');
 
-    // ==================== PIUTANG & PELANGGAN ====================
-    Route::prefix('piutang')->name('piutang.')->group(function () {
+    // ==================== MODE ETALASE / KASIR ====================
+    Route::prefix('kasir')->name('etalase.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Umkm\EtalaseController::class, 'index'])->name('index');
+        Route::post('/checkout', [\App\Http\Controllers\Umkm\EtalaseController::class, 'checkout'])->name('checkout');
+        Route::get('/nota/{id}', [\App\Http\Controllers\Umkm\EtalaseController::class, 'nota'])->name('nota');
         // Pelanggan
         Route::get('/pelanggan', [PiutangController::class, 'indexPelanggan'])->name('pelanggan.index');
         Route::post('/pelanggan', [PiutangController::class, 'storePelanggan'])->name('pelanggan.store');
         Route::delete('/pelanggan/{pelanggan}', [PiutangController::class, 'destroyPelanggan'])->name('pelanggan.destroy');
+    });
 
-        // Piutang
+    // ==================== PIUTANG ====================
+    Route::prefix('piutang')->name('piutang.')->group(function () {
         Route::get('/', [PiutangController::class, 'index'])->name('index');
         Route::get('/create', [PiutangController::class, 'create'])->name('create');
         Route::post('/', [PiutangController::class, 'store'])->name('store');

@@ -172,4 +172,46 @@ class AccountingService
             'keterangan'=> $keterangan
         ]));
     }
+
+    /**
+     * Penjurnalan saldo awal bahan baku.
+     *
+     * Dr. Persediaan Bahan (114)
+     * Cr. Modal Awal (300)
+     *
+     * @param Umkm $umkm
+     * @param int $bahanId  ID bahan baku (dipakai sebagai ref_id)
+     * @param string $tanggal  Tanggal pencatatan
+     * @param float $nilaiTotal  stok_awal × harga_unit_awal
+     */
+    public function jurnalSaldoAwal(Umkm $umkm, int $bahanId, string $tanggal, float $nilaiTotal)
+    {
+        // Hapus jurnal saldo_awal_bahan lama untuk bahan ini (idempoten)
+        JurnalUmum::where('umkm_id', $umkm->id)
+            ->where('ref_tipe', 'saldo_awal_bahan')
+            ->where('ref_id', $bahanId)
+            ->delete();
+
+        if ($nilaiTotal <= 0) {
+            return; // Tidak perlu jurnal jika nilai = 0
+        }
+
+        $akunPersediaan = $this->getAkun($umkm->id, '114', 'Persediaan Bahan');
+        $akunModalAwal  = $this->getAkun($umkm->id, '300', 'Modal Awal');
+
+        $bahan = \App\Models\BahanBaku::find($bahanId);
+        $ket = 'Saldo Awal Bahan: ' . ($bahan ? $bahan->nama_bahan : "ID#{$bahanId}");
+
+        $base = [
+            'umkm_id'  => $umkm->id,
+            'tanggal'  => $tanggal,
+            'ref_tipe' => 'saldo_awal_bahan',
+            'ref_id'   => $bahanId,
+        ];
+
+        // Dr. Persediaan Bahan
+        $this->catat($base, $akunPersediaan, $nilaiTotal, 0, $ket);
+        // Cr. Modal Awal
+        $this->catat($base, $akunModalAwal, 0, $nilaiTotal, $ket);
+    }
 }

@@ -51,6 +51,13 @@
 
             {{-- 1. JURNAL UMUM --}}
             <div class="tab-pane fade show active" id="tab-jurnal">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Rincian Jurnal Umum</h5>
+                    <div class="gap-2 d-flex">
+                        <a href="{{ route('umkm.export.jurnal_umum', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle me-1"></i> Excel</a>
+                        <a href="{{ route('umkm.export.jurnal_umum', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> PDF</a>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -83,6 +90,10 @@
 
             {{-- 2. BUKU BESAR --}}
             <div class="tab-pane fade" id="tab-bukubesar">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Rincian Buku Besar</h5>
+                    <a href="{{ route('umkm.export.buku_besar', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                </div>
                 <div class="row">
                     @forelse($bukuBesar as $kode => $data)
                     <div class="col-md-6 mb-4">
@@ -130,6 +141,9 @@
 
             {{-- 3. LABA RUGI --}}
             <div class="tab-pane fade" id="tab-labarugi">
+                <div class="text-end mb-2">
+                    <a href="{{ route('umkm.export.laba_rugi', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                </div>
                 <div class="row justify-content-center"><div class="col-md-8">
                     <h5 class="text-center fw-bold mb-4">Laporan Laba Rugi<br><small class="text-muted fw-normal">Periode: {{ $namaBulan }}</small></h5>
                     <table class="table table-borderless table-sm">
@@ -178,6 +192,9 @@
 
             {{-- 4. PERUBAHAN MODAL --}}
             <div class="tab-pane fade" id="tab-modal">
+                <div class="text-end mb-2">
+                    <a href="{{ route('umkm.export.perubahan_modal', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                </div>
                 <div class="row justify-content-center"><div class="col-md-8">
                     <h5 class="text-center fw-bold mb-4">Laporan Perubahan Modal<br><small class="text-muted fw-normal">Periode: {{ $namaBulan }}</small></h5>
                     <table class="table table-borderless table-sm">
@@ -199,6 +216,9 @@
 
             {{-- 5. ARUS KAS --}}
             <div class="tab-pane fade" id="tab-kas">
+                <div class="text-end mb-2">
+                    <a href="{{ route('umkm.export.arus_kas', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                </div>
                 <div class="row justify-content-center"><div class="col-md-8">
                     <h5 class="text-center fw-bold mb-4">Arus Kas Sederhana<br><small class="text-muted fw-normal">Akun Kas (111) | Periode: {{ $namaBulan }}</small></h5>
                     <table class="table table-borderless table-sm">
@@ -220,9 +240,13 @@
             <div class="tab-pane fade" id="tab-stok">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Mutasi Stok Bahan Baku</h5>
-                    <a href="{{ route('umkm.laporan.kartu_stok', ['bulan' => $bulan]) }}" class="btn btn-sm btn-outline-primary">
-                        <i class="align-middle" data-feather="list"></i> Lihat Detail Kartu Stok
-                    </a>
+                    <div class="gap-2 d-flex">
+                        <a href="{{ route('umkm.export.rekap_stok', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle me-1"></i> Excel</a>
+                        <a href="{{ route('umkm.export.rekap_stok', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> PDF</a>
+                        <a href="{{ route('umkm.laporan.kartu_stok', ['bulan' => $bulan]) }}" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="align-middle" data-feather="list"></i> Lihat Detail Kartu Stok
+                        </a>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-middle">
@@ -256,7 +280,13 @@
             <div class="tab-pane fade" id="tab-beli">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Riwayat Pembelian Bahan Baku</h5>
-                    <h5 class="mb-0 fw-bold text-danger">Total: Rp {{ number_format($totalPembelian, 0, ',', '.') }}</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <h5 class="mb-0 fw-bold text-danger">Total: Rp {{ number_format($totalPembelian, 0, ',', '.') }}</h5>
+                        <div class="border-start ps-3 gap-2 d-flex">
+                            <a href="{{ route('umkm.export.laporan_pembelian', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle"></i> Excel</a>
+                            <a href="{{ route('umkm.export.laporan_pembelian', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle"></i> PDF</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm align-middle">
@@ -287,7 +317,13 @@
             <div class="tab-pane fade" id="tab-jual">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Riwayat Penjualan Produk</h5>
-                    <h5 class="mb-0 fw-bold text-success">Total: Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <h5 class="mb-0 fw-bold text-success">Total: Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</h5>
+                        <div class="border-start ps-3 gap-2 d-flex">
+                            <a href="{{ route('umkm.export.laporan_penjualan', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle"></i> Excel</a>
+                            <a href="{{ route('umkm.export.laporan_penjualan', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle"></i> PDF</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm align-middle">
@@ -331,7 +367,10 @@
                     </div></div></div>
                 </div>
                 
-                <h6 class="fw-bold">Piutang Pelanggan</h6>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Piutang Pelanggan</h6>
+                    <a href="{{ route('umkm.export.laporan_piutang', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-sm">
                         <thead class="table-light">

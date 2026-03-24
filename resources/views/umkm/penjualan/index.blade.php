@@ -30,7 +30,7 @@
             <p class="text-muted text-center mb-0">Belum ada data penjualan.</p>
         @else
             <div class="table-responsive">
-                <table class="table align-middle mb-0">
+                <table class="table align-middle mb-0 table-hover table-borderless">
                     <thead class="table-light">
                         <tr>
                             <th>Kode</th>
@@ -62,7 +62,7 @@
                                                 <li class="py-1 border-bottom border-light-subtle d-flex justify-content-between gap-3">
                                                     <span>
                                                         <strong>{{ $det->produk->nama_produk ?? '?' }}</strong>
-                                                        &times; {{ number_format($det->qty, 2, ',', '.') }}
+                                                        &times; {{ format_angka($det->qty) }}
                                                     </span>
                                                     <span class="text-end text-muted text-nowrap">
                                                         {{ rupiah($det->harga) }} / unit<br>

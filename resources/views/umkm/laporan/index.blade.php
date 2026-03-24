@@ -54,12 +54,12 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Rincian Jurnal Umum</h5>
                     <div class="gap-2 d-flex">
-                        <a href="{{ route('umkm.export.jurnal_umum', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle me-1"></i> Excel</a>
-                        <a href="{{ route('umkm.export.jurnal_umum', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> PDF</a>
+                        <a href="{{ route('umkm.export.jurnal_umum', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-action btn-action-excel" title="Unduh Excel"><i data-feather="file-text"></i> Excel</a>
+                        <a href="{{ route('umkm.export.jurnal_umum', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle table-borderless">
                         <thead class="table-light">
                             <tr>
                                 <th>Tanggal</th>
@@ -77,8 +77,8 @@
                                 <td><span class="badge bg-secondary">{{ $j->kode_akun }}</span></td>
                                 <td>{{ $j->nama_akun }}</td>
                                 <td class="small text-muted">{{ $j->keterangan }}</td>
-                                <td class="text-end text-success">{{ $j->debit > 0 ? number_format($j->debit, 0, ',', '.') : '-' }}</td>
-                                <td class="text-end text-danger">{{ $j->kredit > 0 ? number_format($j->kredit, 0, ',', '.') : '-' }}</td>
+                                <td class="text-end text-success">{{ $j->debit > 0 ? format_angka($j->debit) : '-' }}</td>
+                                <td class="text-end text-danger">{{ $j->kredit > 0 ? format_angka($j->kredit) : '-' }}</td>
                             </tr>
                             @empty
                             <tr><td colspan="6" class="text-center text-muted py-4">Belum ada jurnal bulan ini.</td></tr>
@@ -92,7 +92,7 @@
             <div class="tab-pane fade" id="tab-bukubesar">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Rincian Buku Besar</h5>
-                    <a href="{{ route('umkm.export.buku_besar', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                    <a href="{{ route('umkm.export.buku_besar', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                 </div>
                 <div class="row">
                     @forelse($bukuBesar as $kode => $data)
@@ -100,10 +100,10 @@
                         <div class="card bg-light border-0 h-100">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0 fw-bold">{{ $kode }} - {{ $data['nama_akun'] }}</h6>
-                                <span class="badge bg-primary">Saldo ({{ $data['posisi'] }}): Rp {{ number_format($data['saldo_akhir'], 0, ',', '.') }}</span>
+                                <span class="badge bg-primary">Saldo ({{ $data['posisi'] }}): {{ rupiah($data['saldo_akhir']) }}</span>
                             </div>
                             <div class="card-body p-0" style="max-height:300px; overflow-y:auto;">
-                                <table class="table table-sm table-bordered mb-0 bg-white" style="font-size:0.85rem">
+                                <table class="table table-sm mb-0 bg-white table-hover table-borderless align-middle" style="font-size:0.85rem">
                                     <thead class="table-light position-sticky top-0">
                                         <tr>
                                             <th>Tgl</th>
@@ -117,16 +117,16 @@
                                         <tr>
                                             <td>{{ Carbon::parse($item->tanggal)->format('d/m') }}</td>
                                             <td class="text-truncate" style="max-width:150px;" title="{{ $item->keterangan }}">{{ $item->keterangan }}</td>
-                                            <td class="text-end">{{ $item->debit > 0 ? number_format($item->debit, 0, ',', '.') : '-' }}</td>
-                                            <td class="text-end">{{ $item->kredit > 0 ? number_format($item->kredit, 0, ',', '.') : '-' }}</td>
+                                            <td class="text-end">{{ $item->debit > 0 ? format_angka($item->debit) : '-' }}</td>
+                                            <td class="text-end">{{ $item->kredit > 0 ? format_angka($item->kredit) : '-' }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot class="table-light fw-bold position-sticky bottom-0">
                                         <tr>
                                             <td colspan="2" class="text-end">Total Mutasi:</td>
-                                            <td class="text-end">{{ number_format($data['total_debit'], 0, ',', '.') }}</td>
-                                            <td class="text-end">{{ number_format($data['total_kredit'], 0, ',', '.') }}</td>
+                                            <td  class="text-end fw-medium">{{ format_angka($data['total_debit']) }}</td>
+                                            <td  class="text-end fw-medium">{{ format_angka($data['total_kredit']) }}</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -142,48 +142,48 @@
             {{-- 3. LABA RUGI --}}
             <div class="tab-pane fade" id="tab-labarugi">
                 <div class="text-end mb-2">
-                    <a href="{{ route('umkm.export.laba_rugi', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                    <a href="{{ route('umkm.export.laba_rugi', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                 </div>
                 <div class="row justify-content-center"><div class="col-md-8">
                     <h5 class="text-center fw-bold mb-4">Laporan Laba Rugi<br><small class="text-muted fw-normal">Periode: {{ $namaBulan }}</small></h5>
-                    <table class="table table-borderless table-sm">
+                    <table class="table table-borderless table-sm table-hover align-middle">
                         <tbody>
                             {{-- Pendapatan --}}
                             <tr><td colspan="2" class="fw-bold text-primary">PENDAPATAN USAHA</td></tr>
                             @foreach($pendapatan->groupBy('nama_akun') as $nama => $items)
-                                <tr><td class="ps-4">{{ $nama }}</td><td class="text-end">Rp {{ number_format($items->sum('kredit') - $items->sum('debit'), 0, ',', '.') }}</td></tr>
+                                <tr><td class="ps-4">{{ $nama }}</td><td  class="text-end fw-medium">{{ rupiah($items->sum('kredit') - $items->sum('debit')) }}</td></tr>
                             @endforeach
-                            <tr class="fw-bold"><td class="text-end">Total Pendapatan:</td><td class="text-end border-top">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</td></tr>
+                            <tr class="fw-bold"><td class="text-end">Total Pendapatan:</td><td  class="text-end border-top fw-medium">{{ rupiah($totalPendapatan) }}</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
 
                             {{-- HPP --}}
                             <tr><td colspan="2" class="fw-bold text-primary">HARGA POKOK PENJUALAN (HPP) / BIAYA PRODUK</td></tr>
                             @if($isPeriodik)
-                                <tr><td class="ps-4">Persediaan Awal Bahan Baku</td><td class="text-end">Rp {{ number_format($persediaanAwal, 0, ',', '.') }}</td></tr>
-                                <tr><td class="ps-4">Pembelian Bahan</td><td class="text-end">Rp {{ number_format($totalPembelianBulanIni, 0, ',', '.') }}</td></tr>
-                                <tr><td class="ps-4">Persediaan Akhir Bahan Baku</td><td class="text-end text-danger">(Rp {{ number_format($persediaanAkhir, 0, ',', '.') }})</td></tr>
+                                <tr><td class="ps-4">Persediaan Awal Bahan Baku</td><td  class="text-end fw-medium">{{ rupiah($persediaanAwal) }}</td></tr>
+                                <tr><td class="ps-4">Pembelian Bahan</td><td  class="text-end fw-medium">{{ rupiah($totalPembelianBulanIni) }}</td></tr>
+                                <tr><td class="ps-4">Persediaan Akhir Bahan Baku</td><td class="text-end text-danger">({{ rupiah($persediaanAkhir) }})</td></tr>
                             @else
                                 @foreach($hpp->groupBy('nama_akun') as $nama => $items)
-                                    <tr><td class="ps-4">{{ $nama }}</td><td class="text-end">Rp {{ number_format($items->sum('debit') - $items->sum('kredit'), 0, ',', '.') }}</td></tr>
+                                    <tr><td class="ps-4">{{ $nama }}</td><td  class="text-end fw-medium">{{ rupiah($items->sum('debit') - $items->sum('kredit')) }}</td></tr>
                                 @endforeach
                             @endif
-                            <tr class="fw-bold"><td class="text-end">Total HPP:</td><td class="text-end border-top">Rp {{ number_format($totalHpp, 0, ',', '.') }}</td></tr>
+                            <tr class="fw-bold"><td class="text-end">Total HPP:</td><td  class="text-end border-top fw-medium">{{ rupiah($totalHpp) }}</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr class="fw-bold {{ $labaKotor >= 0 ? 'text-success' : 'text-danger' }}">
-                                <td>LABA KOTOR:</td><td class="text-end border-top border-bottom">Rp {{ number_format($labaKotor, 0, ',', '.') }}</td>
+                                <td>LABA KOTOR:</td><td  class="text-end border-top border-bottom fw-medium">{{ rupiah($labaKotor) }}</td>
                             </tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
 
                             {{-- Beban Operasional --}}
                             <tr><td colspan="2" class="fw-bold text-primary">BEBAN OPERASIONAL</td></tr>
                             @foreach($bebanDetail as $b)
-                                <tr><td class="ps-4">{{ $b['nama'] }}</td><td class="text-end">Rp {{ number_format($b['total'], 0, ',', '.') }}</td></tr>
+                                <tr><td class="ps-4">{{ $b['nama'] }}</td><td  class="text-end fw-medium">{{ rupiah($b['total']) }}</td></tr>
                             @endforeach
-                            <tr class="fw-bold"><td class="text-end">Total Beban Operasional:</td><td class="text-end border-top">Rp {{ number_format($totalBeban, 0, ',', '.') }}</td></tr>
+                            <tr class="fw-bold"><td class="text-end">Total Beban Operasional:</td><td  class="text-end border-top fw-medium">{{ rupiah($totalBeban) }}</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
 
                             <tr class="fw-bold fs-5 {{ $labaBersih >= 0 ? 'text-success' : 'text-danger' }}">
-                                <td>LABA BERSIH:</td><td class="text-end border-top border-bottom">Rp {{ number_format($labaBersih, 0, ',', '.') }}</td>
+                                <td>LABA BERSIH:</td><td  class="text-end border-top border-bottom fw-medium">{{ rupiah($labaBersih) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -193,21 +193,21 @@
             {{-- 4. PERUBAHAN MODAL --}}
             <div class="tab-pane fade" id="tab-modal">
                 <div class="text-end mb-2">
-                    <a href="{{ route('umkm.export.perubahan_modal', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                    <a href="{{ route('umkm.export.perubahan_modal', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                 </div>
                 <div class="row justify-content-center"><div class="col-md-8">
                     <h5 class="text-center fw-bold mb-4">Laporan Perubahan Modal<br><small class="text-muted fw-normal">Periode: {{ $namaBulan }}</small></h5>
-                    <table class="table table-borderless table-sm">
+                    <table class="table table-borderless table-sm table-hover align-middle">
                         <tbody>
-                            <tr><td>Modal Awal Periode</td><td class="text-end fw-bold">Rp {{ number_format($modalAwal, 0, ',', '.') }}</td></tr>
+                            <tr><td>Modal Awal Periode</td><td  class="text-end fw-bold fw-medium">{{ rupiah($modalAwal) }}</td></tr>
                             <tr>
                                 <td>{{ $labaBersih >= 0 ? 'Laba Bersih' : 'Rugi Bersih' }}</td>
-                                <td class="text-end {{ $labaBersih >= 0 ? 'text-success' : 'text-danger' }}">{{ $labaBersih >= 0 ? '+ ' : '- ' }} Rp {{ number_format(abs($labaBersih), 0, ',', '.') }}</td>
+                                <td class="text-end {{ $labaBersih>= 0 ? 'text-success' : 'text-danger' }}">{{ $labaBersih >= 0 ? '+ ' : '- ' }} {{ rupiah(abs($labaBersih)) }}</td>
                             </tr>
-                            <tr><td>Prive (Pengambilan)</td><td class="text-end text-danger">- Rp {{ number_format($prive, 0, ',', '.') }}</td></tr>
+                            <tr><td>Prive (Pengambilan)</td><td class="text-end text-danger">- {{ rupiah($prive) }}</td></tr>
                             <tr class="border-top border-2">
                                 <td class="fw-bold fs-5 text-primary">Modal Akhir Periode</td>
-                                <td class="text-end fw-bold fs-5 text-primary">Rp {{ number_format($modalAkhir, 0, ',', '.') }}</td>
+                                <td  class="text-end fw-bold fs-5 text-primary fw-medium">{{ rupiah($modalAkhir) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -217,19 +217,19 @@
             {{-- 5. ARUS KAS --}}
             <div class="tab-pane fade" id="tab-kas">
                 <div class="text-end mb-2">
-                    <a href="{{ route('umkm.export.arus_kas', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                    <a href="{{ route('umkm.export.arus_kas', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                 </div>
                 <div class="row justify-content-center"><div class="col-md-8">
                     <h5 class="text-center fw-bold mb-4">Arus Kas Sederhana<br><small class="text-muted fw-normal">Akun Kas (111) | Periode: {{ $namaBulan }}</small></h5>
-                    <table class="table table-borderless table-sm">
+                    <table class="table table-borderless table-sm table-hover align-middle">
                         <tbody>
-                            <tr><td>Saldo Kas Awal Periode</td><td class="text-end fw-bold">Rp {{ number_format($kasAwalPeriode, 0, ',', '.') }}</td></tr>
-                            <tr><td>Total Uang Masuk (Debit)</td><td class="text-end text-success">+ Rp {{ number_format($kasIn, 0, ',', '.') }}</td></tr>
-                            <tr><td>Total Uang Keluar (Kredit)</td><td class="text-end text-danger">- Rp {{ number_format($kasOut, 0, ',', '.') }}</td></tr>
-                            <tr class="fw-bold"><td class="text-end border-top">Mutasi Kas Bersih:</td><td class="text-end border-top {{ $netKas >= 0 ? 'text-success' : 'text-danger' }}">Rp {{ number_format($netKas, 0, ',', '.') }}</td></tr>
+                            <tr><td>Saldo Kas Awal Periode</td><td  class="text-end fw-bold fw-medium">{{ rupiah($kasAwalPeriode) }}</td></tr>
+                            <tr><td>Total Uang Masuk (Debit)</td><td class="text-end text-success">+ {{ rupiah($kasIn) }}</td></tr>
+                            <tr><td>Total Uang Keluar (Kredit)</td><td class="text-end text-danger">- {{ rupiah($kasOut) }}</td></tr>
+                            <tr class="fw-bold"><td class="text-end border-top">Mutasi Kas Bersih:</td><td class="text-end border-top {{ $netKas>= 0 ? 'text-success' : 'text-danger' }}">{{ rupiah($netKas) }}</td></tr>
                             <tr class="border-top border-2">
                                 <td class="fw-bold fs-5 text-primary">Saldo Kas Akhir Periode</td>
-                                <td class="text-end fw-bold fs-5 text-primary">Rp {{ number_format($kasAkhirPeriode, 0, ',', '.') }}</td>
+                                <td  class="text-end fw-bold fs-5 text-primary fw-medium">{{ rupiah($kasAkhirPeriode) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -241,15 +241,15 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Mutasi Stok Bahan Baku</h5>
                     <div class="gap-2 d-flex">
-                        <a href="{{ route('umkm.export.rekap_stok', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle me-1"></i> Excel</a>
-                        <a href="{{ route('umkm.export.rekap_stok', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> PDF</a>
+                        <a href="{{ route('umkm.export.rekap_stok', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-action btn-action-excel" title="Unduh Excel"><i data-feather="file-text"></i> Excel</a>
+                        <a href="{{ route('umkm.export.rekap_stok', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                         <a href="{{ route('umkm.laporan.kartu_stok', ['bulan' => $bulan]) }}" class="btn btn-sm btn-outline-primary ms-2">
                             <i class="align-middle" data-feather="list"></i> Lihat Detail Kartu Stok
                         </a>
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table align-middle table-hover table-borderless">
                         <thead class="table-light">
                             <tr>
                                 <th>Nama Bahan Baku</th>
@@ -264,9 +264,9 @@
                             <tr>
                                 <td class="fw-semibold">{{ $stok['nama_bahan'] }}</td>
                                 <td class="text-end text-success">+ {{ $stok['masuk'] }} {{ $stok['satuan'] }}</td>
-                                <td class="text-end">Rp {{ number_format($stok['nilai_masuk'], 0, ',', '.') }}</td>
+                                <td  class="text-end fw-medium">{{ rupiah($stok['nilai_masuk']) }}</td>
                                 <td class="text-end text-danger">- {{ $stok['keluar'] }} {{ $stok['satuan'] }}</td>
-                                <td class="text-end fw-bold {{ $stok['saldo'] >= 0 ? 'text-success' : 'text-warning' }}">{{ $stok['saldo'] }} {{ $stok['satuan'] }}</td>
+                                <td class="text-end fw-bold {{ $stok['saldo']>= 0 ? 'text-success' : 'text-warning' }}">{{ $stok['saldo'] }} {{ $stok['satuan'] }}</td>
                             </tr>
                             @empty
                             <tr><td colspan="5" class="text-center text-muted py-4">Tidak ada pergerakan stok bahan baku bulan ini.</td></tr>
@@ -281,15 +281,15 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Riwayat Pembelian Bahan Baku</h5>
                     <div class="d-flex align-items-center gap-3">
-                        <h5 class="mb-0 fw-bold text-danger">Total: Rp {{ number_format($totalPembelian, 0, ',', '.') }}</h5>
+                        <h5 class="mb-0 fw-bold text-danger">Total: {{ rupiah($totalPembelian) }}</h5>
                         <div class="border-start ps-3 gap-2 d-flex">
-                            <a href="{{ route('umkm.export.laporan_pembelian', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle"></i> Excel</a>
-                            <a href="{{ route('umkm.export.laporan_pembelian', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle"></i> PDF</a>
+                            <a href="{{ route('umkm.export.laporan_pembelian', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-action btn-action-excel" title="Unduh Excel"><i data-feather="file-text"></i> Excel</a>
+                            <a href="{{ route('umkm.export.laporan_pembelian', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                         </div>
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle">
+                    <table class="table table-sm align-middle table-hover table-borderless">
                         <thead class="table-light">
                             <tr>
                                 <th>Tanggal</th><th>Bahan Dibeli</th><th>Supplier/Ket</th><th class="text-end">Total</th>
@@ -303,7 +303,7 @@
                                     @foreach($p->details as $d) {{ $d->bahan->nama_bahan ?? '?' }} ({{ $d->qty }}), @endforeach
                                 </td>
                                 <td>{{ $p->supplier ?? '-' }} <br><small class="text-muted">{{ $p->keterangan }}</small></td>
-                                <td class="text-end fw-semibold">Rp {{ number_format($p->total, 0, ',', '.') }}</td>
+                                <td  class="text-end fw-semibold fw-medium">{{ rupiah($p->total) }}</td>
                             </tr>
                             @empty
                             <tr><td colspan="4" class="text-center text-muted">Tidak ada pembelian.</td></tr>
@@ -318,15 +318,15 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Riwayat Penjualan Produk</h5>
                     <div class="d-flex align-items-center gap-3">
-                        <h5 class="mb-0 fw-bold text-success">Total: Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</h5>
+                        <h5 class="mb-0 fw-bold text-success">Total: {{ rupiah($totalPenjualan) }}</h5>
                         <div class="border-start ps-3 gap-2 d-flex">
-                            <a href="{{ route('umkm.export.laporan_penjualan', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-success"><i data-feather="file-text" class="align-middle"></i> Excel</a>
-                            <a href="{{ route('umkm.export.laporan_penjualan', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle"></i> PDF</a>
+                            <a href="{{ route('umkm.export.laporan_penjualan', ['bulan' => $bulan, 'format' => 'excel']) }}" class="btn btn-sm btn-action btn-action-excel" title="Unduh Excel"><i data-feather="file-text"></i> Excel</a>
+                            <a href="{{ route('umkm.export.laporan_penjualan', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                         </div>
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle">
+                    <table class="table table-sm align-middle table-hover table-borderless">
                         <thead class="table-light">
                             <tr>
                                 <th>Tanggal</th><th>Pembeli/Ket</th><th>Item Terjual</th><th class="text-end">Total</th>
@@ -340,7 +340,7 @@
                                 <td class="small text-muted">
                                     @foreach($p->details as $d) {{ $d->produk->nama_produk ?? '?' }} ({{ $d->qty }}), @endforeach
                                 </td>
-                                <td class="text-end fw-semibold">Rp {{ number_format($p->total, 0, ',', '.') }}</td>
+                                <td  class="text-end fw-semibold fw-medium">{{ rupiah($p->total) }}</td>
                             </tr>
                             @empty
                             <tr><td colspan="4" class="text-center text-muted">Tidak ada penjualan.</td></tr>
@@ -355,24 +355,24 @@
                 <div class="row mb-4">
                     <div class="col-md-4"><div class="card bg-light border-0"><div class="card-body">
                         <div class="small text-muted">Total Pembayaran Piutang (Bln Ini)</div>
-                        <div class="h4 mb-0 fw-bold text-success">Rp {{ number_format($totalPembayaranBulanIni, 0, ',', '.') }}</div>
+                        <div class="h4 mb-0 fw-bold text-success">{{ rupiah($totalPembayaranBulanIni) }}</div>
                     </div></div></div>
                     <div class="col-md-4"><div class="card bg-light border-0"><div class="card-body">
                         <div class="small text-muted">Total Seluruh Piutang Beredar</div>
-                        <div class="h4 mb-0 fw-bold">Rp {{ number_format($totalPiutang, 0, ',', '.') }}</div>
+                        <div class="h4 mb-0 fw-bold">{{ rupiah($totalPiutang) }}</div>
                     </div></div></div>
                     <div class="col-md-4"><div class="card bg-light border-0"><div class="card-body">
                         <div class="small text-muted">Sisa Piutang Belum Dibayar</div>
-                        <div class="h4 mb-0 fw-bold text-danger">Rp {{ number_format($totalSisaPiutang, 0, ',', '.') }}</div>
+                        <div class="h4 mb-0 fw-bold text-danger">{{ rupiah($totalSisaPiutang) }}</div>
                     </div></div></div>
                 </div>
                 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="fw-bold mb-0">Piutang Pelanggan</h6>
-                    <a href="{{ route('umkm.export.laporan_piutang', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-danger"><i data-feather="file" class="align-middle me-1"></i> Export PDF</a>
+                    <a href="{{ route('umkm.export.laporan_piutang', ['bulan' => $bulan, 'format' => 'pdf']) }}" class="btn btn-sm btn-action btn-action-pdf" title="Unduh PDF"><i data-feather="file"></i> PDF</a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-sm">
+                    <table class="table table-sm table-hover table-borderless align-middle">
                         <thead class="table-light">
                             <tr><th>Tanggal Catat</th><th>Pelanggan</th><th class="text-end">Nominal Awal</th><th class="text-end">Telah Dibayar</th><th class="text-end">Sisa</th><th>Status</th></tr>
                         </thead>
@@ -381,9 +381,9 @@
                             <tr>
                                 <td>{{ Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
                                 <td>{{ $p->pelanggan->nama_pelanggan ?? '-' }}</td>
-                                <td class="text-end">Rp {{ number_format($p->nominal_awal, 0, ',', '.') }}</td>
-                                <td class="text-end text-success">Rp {{ number_format($p->sudah_dibayar, 0, ',', '.') }}</td>
-                                <td class="text-end text-danger fw-semibold">Rp {{ number_format($p->sisa, 0, ',', '.') }}</td>
+                                <td  class="text-end fw-medium">{{ rupiah($p->nominal_awal) }}</td>
+                                <td  class="text-end text-success fw-medium">{{ rupiah($p->sudah_dibayar) }}</td>
+                                <td  class="text-end text-danger fw-semibold fw-medium">{{ rupiah($p->sisa) }}</td>
                                 <td>
                                     @if($p->status === 'lunas')<span class="badge bg-success">Lunas</span>
                                     @else<span class="badge bg-warning text-dark">Belum Lunas</span>@endif

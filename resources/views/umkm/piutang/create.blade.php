@@ -20,7 +20,7 @@
 
 @if($pelanggan->isEmpty())
   <div class="alert alert-warning">
-    Belum ada data pelanggan. <a href="{{ route('umkm.piutang.pelanggan.index') }}">Tambah pelanggan dulu</a> sebelum mencatat piutang.
+    Belum ada data pelanggan. <a href="{{ route('umkm.etalase.pelanggan.index') }}">Tambah pelanggan dulu</a> sebelum mencatat piutang.
   </div>
 @endif
 
@@ -42,7 +42,7 @@
           @endforeach
         </select>
         <div class="form-text">
-          Pelanggan belum ada? <a href="{{ route('umkm.piutang.pelanggan.index') }}" target="_blank">Tambah di sini</a>
+          Pelanggan belum ada? <a href="{{ route('umkm.etalase.pelanggan.index') }}" target="_blank">Tambah di sini</a>
         </div>
       </div>
 
@@ -67,10 +67,36 @@
       </div>
 
       {{-- Catatan --}}
-      <div class="col-md-8">
+      <div class="col-md-12">
         <label class="form-label">Catatan (opsional)</label>
         <input type="text" name="catatan" class="form-control" value="{{ old('catatan') }}"
                placeholder="Misal: hutang makanan tgl 10 Maret...">
+      </div>
+      
+      {{-- Pengaturan Email Reminder --}}
+      <div class="col-12 mt-4">
+        <div class="card bg-light border-0">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+              <i data-feather="mail" style="width:18px;"></i> Pengaturan Pengingat Email
+            </h6>
+            
+            <div class="row g-3">
+              <div class="col-md-6 d-flex align-items-center">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="emailReminder" name="email_reminder_enabled" value="1" {{ old('email_reminder_enabled') ? 'checked' : '' }}>
+                  <label class="form-check-label fw-semibold" for="emailReminder">Aktifkan Pengingat Otomatis via Email</label>
+                  <div class="form-text small mt-0">Pastikan pelanggan memiliki email yang terdaftar.</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small mb-1">Jam Pengiriman (WIB)</label>
+                <input type="time" name="reminder_send_time" class="form-control form-control-sm w-auto" value="{{ old('reminder_send_time', '09:00') }}">
+                <div class="form-text small">Email H-3, H-0, dan Telat akan dikirim pada jam ini.</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

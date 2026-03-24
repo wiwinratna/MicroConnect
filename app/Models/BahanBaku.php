@@ -17,7 +17,16 @@ class BahanBaku extends Model
         'nama_bahan',
         'satuan',
         'stok_awal',
-        'keterangan',   // ⬅️ BIAR KETERANGAN KE-SAVE
+        'keterangan',
+        'is_archived',
+    ];
+
+    protected $casts = [
+        'is_archived' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'is_archived' => false,
     ];
 
     public static function getKodeBahan()

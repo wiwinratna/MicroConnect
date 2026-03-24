@@ -1,0 +1,281 @@
+/* =========================================
+   CUSTOM UI POLISH (Modern, Clean, Soft)
+   ========================================= */
+
+/* Typography & Base */
+body {
+    color: #334155; /* Slate 700 - Softer than pure black */
+    background-color: #f8fafc; /* Slate 50 - Very soft gray background */
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    color: #1e293b; /* Slate 800 - Good contrast for headings */
+    font-weight: 600;
+}
+
+/* Cards */
+.card {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 1.25rem 1.5rem !important;
+}
+
+.card-body {
+    padding: 1.5rem !important;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border-radius: 8px !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.6rem 1rem !important;
+    color: #334155 !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #94a3b8 !important;
+    box-shadow: 0 0 0 0.25rem rgba(148, 163, 184, 0.15) !important;
+}
+
+label {
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 1.2rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-primary {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.3) !important;
+}
+.btn-primary:hover {
+    background-color: #2563eb !important;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 1px 2px rgba(16, 185, 129, 0.3) !important;
+}
+.btn-success:hover {
+    background-color: #059669 !important;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+/* Tables */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 1rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-top: none !important;
+}
+
+.table td {
+    padding: 1rem !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #f8fafc !important;
+}
+
+/* Modern Action Buttons inside Tables */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid transparent !important;
+    background-color: transparent !important;
+}
+
+.btn-action svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.2px;
+}
+
+.btn-action-edit {
+    color: #3b82f6 !important;
+    background-color: rgba(59, 130, 246, 0.05) !important;
+}
+.btn-action-edit:hover {
+    background-color: #3b82f6 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
+}
+
+.btn-action-delete {
+    color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.05) !important;
+}
+.btn-action-delete:hover {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-action-view {
+    color: #6366f1 !important;
+    background-color: rgba(99, 102, 241, 0.05) !important;
+}
+.btn-action-view:hover {
+    background-color: #6366f1 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3) !important;
+}
+
+.btn-action-excel {
+    color: #10b981 !important;
+    background-color: rgba(16, 185, 129, 0.05) !important;
+}
+.btn-action-excel:hover {
+    background-color: #10b981 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3) !important;
+}
+
+.btn-action-pdf {
+    color: #ef4444 !important;
+    background-color: rgba(239, 68, 68, 0.05) !important;
+}
+.btn-action-pdf:hover {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-action-whatsapp {
+    color: #22c55e !important;
+    background-color: rgba(34, 197, 94, 0.05) !important;
+}
+.btn-action-whatsapp:hover {
+    background-color: #22c55e !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Empty State Table */
+.table-empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #94a3b8;
+}
+.table-empty-state i, .table-empty-state svg {
+    color: #cbd5e1;
+    margin-bottom: 0.5rem;
+    width: 32px;
+    height: 32px;
+}
+
+
+/* Badges */
+.badge {
+    padding: 0.35em 0.8em !important;
+    font-weight: 500 !important;
+    border-radius: 20px !important; /* soft pill shape */
+    letter-spacing: 0.02em;
+}
+
+.bg-success { background-color: #10b981 !important; }
+.bg-danger { background-color: #ef4444 !important; }
+.bg-warning { background-color: #f59e0b !important; color: #fff !important; }
+.bg-info { background-color: #0ea5e9 !important; }
+.bg-primary { background-color: #3b82f6 !important; }
+
+.bg-success-subtle { background-color: #d1fae5 !important; color: #065f46 !important; }
+.bg-danger-subtle { background-color: #fee2e2 !important; color: #991b1b !important; }
+.bg-warning-subtle { background-color: #fef3c7 !important; color: #92400e !important; }
+.bg-info-subtle { background-color: #e0f2fe !important; color: #075985 !important; }
+.bg-primary-subtle { background-color: #dbeafe !important; color: #1e40af !important; }
+
+/* Sidebar Polish (Assuming AdminKit/similar structure) */
+.sidebar, .sidebar-content {
+    background-color: #1e293b !important; /* Dark slate */
+}
+.sidebar-link, .sidebar-item.active .sidebar-link {
+    border-radius: 8px;
+    margin: 4px 12px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.sidebar-link:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+.sidebar-item.active .sidebar-link {
+    background-color: #3b82f6 !important; /* Primary color for active state */
+    color: #ffffff !important;
+    font-weight: 500;
+}
+.sidebar-link i, .sidebar-link svg {
+    color: inherit !important;
+    opacity: 0.8;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    background-color: #ffffff !important;
+    padding: 0.75rem 1.5rem !important;
+}
+
+/* Utilities */
+.text-muted {
+    color: #64748b !important;
+}
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.rounded-3 {
+    border-radius: 12px !important;
+}
+.rounded-2 {
+    border-radius: 8px !important;
+}
+
+/* Dashboard Summary Number typography */
+.stat-value {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.025em;
+}

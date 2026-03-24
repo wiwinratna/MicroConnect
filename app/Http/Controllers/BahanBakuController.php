@@ -8,7 +8,43 @@ use Illuminate\Http\Request;
 
 class BahanBakuController extends Controller
 {
-    public function index()
+    /**
+     * API Autocomplete: GET /bahan-baku/search?q=tepung
+     * Returns JSON [{id, kode_bahan, nama_bahan, satuan, harga}...]
+     */
+    public function search(Request $request)
+    {
+        $umkm = auth()->user()->umkm;
+        if (!$umkm) return response()->json([]);
+
+        $q = trim($request->get('q', ''));
+        $query = BahanBaku::where('umkm_id', $umkm->id)
+                          ->where('is_archived', false);
+
+        if ($q) {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('nama_bahan', 'like', "%{$q}%")
+                    ->orWhere('kode_bahan', 'like', "%{$q}%");
+            });
+        }
+
+        $results = $query->orderBy('nama_bahan')->limit(15)->get(['id','kode_bahan','nama_bahan','satuan']);
+
+        // Enrich with latest price from stok mutasi saldo awal
+        return response()->json($results->map(function ($b) {
+            $mutasi = StokMutasi::where('bahan_id', $b->id)
+                                ->where('ref_tipe', 'saldo_awal')
+                                ->first();
+            return [
+                'id'         => $b->id,
+                'kode'       => $b->kode_bahan,
+                'nama'       => $b->nama_bahan,
+                'satuan'     => $b->satuan,
+                'harga'      => $mutasi ? (float)$mutasi->harga_unit : 0,
+            ];
+        }));
+    }
+    public function index(Request $request)
     {
         $umkm = auth()->user()->umkm;
 
@@ -17,11 +53,19 @@ class BahanBakuController extends Controller
                 ->with('error', 'Lengkapi profil UMKM dulu sebelum mengakses bahan baku.');
         }
 
-        $bahan = BahanBaku::where('umkm_id', $umkm->id)
-            ->orderBy('nama_bahan')
-            ->get();
+        $q = trim($request->get('q', ''));
+        $query = BahanBaku::where('umkm_id', $umkm->id);
 
-        return view('umkm.bahan.index', compact('bahan'));
+        if ($q) {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('nama_bahan', 'like', "%{$q}%")
+                    ->orWhere('kode_bahan', 'like', "%{$q}%");
+            });
+        }
+
+        $bahan = $query->orderBy('nama_bahan')->get();
+
+        return view('umkm.bahan.index', compact('bahan', 'q'));
     }
 
     public function create()
@@ -201,9 +245,21 @@ class BahanBakuController extends Controller
             abort(403);
         }
 
+        // Cek apakah bahan sudah pernah dipakai di transaksi apa pun
+        $hasTransaksi = StokMutasi::where('bahan_id', $bahan->id)
+            ->where('ref_tipe', '!=', 'saldo_awal')
+            ->exists();
+
+        if ($hasTransaksi) {
+            // Arsipkan saja — jangan hapus permanen agar histori laporan tetap valid
+            $bahan->update(['is_archived' => true]);
+            return redirect()->route('umkm.bahan.index')
+                ->with('warning', "Bahan baku '{$bahan->nama_bahan}' sudah pernah digunakan dalam transaksi. Status diubah menjadi \"Tidak Aktif\" agar histori laporan tetap aman.");
+        }
+
         $bahan->delete();
 
         return redirect()->route('umkm.bahan.index')
-            ->with('success', 'Bahan baku berhasil dihapus.');
+            ->with('success', "Bahan baku '{$bahan->nama_bahan}' berhasil dihapus.");
     }
 }

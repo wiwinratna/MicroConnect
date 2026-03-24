@@ -47,7 +47,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0">
+                    <table class="table table-hover mb-0 table-borderless align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>No. Tiket</th>

@@ -33,7 +33,7 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-header fw-semibold">🏪 Informasi Usaha</div>
         <div class="card-body">
-          <table class="table table-sm table-borderless mb-0">
+          <table class="table table-sm table-borderless mb-0 table-hover align-middle">
             <tr><td class="text-muted">Nama Usaha</td><td>{{ $umkm->nama_usaha ?? '—' }}</td></tr>
             <tr><td class="text-muted">Jenis Usaha</td><td>{{ $umkm->jenis_usaha ?? '—' }}</td></tr>
             <tr><td class="text-muted">NIB</td><td>{{ $umkm->nib ?? '—' }}</td></tr>
@@ -66,7 +66,7 @@
           <div class="card border-0 shadow-sm text-center">
             <div class="card-body py-3">
               <p class="text-muted small mb-1">Penjualan Bulan Ini</p>
-              <h5 class="fw-bold text-success">Rp {{ number_format($penjualanBulanIni, 0, ',', '.') }}</h5>
+              <h5 class="fw-bold text-success">{{ rupiah($penjualanBulanIni) }}</h5>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
             <div class="card-body py-3">
               <p class="text-muted small mb-1">Total Piutang Aktif</p>
               <h5 class="fw-bold {{ $totalPiutangAktif > 0 ? 'text-danger' : 'text-muted' }}">
-                Rp {{ number_format($totalPiutangAktif, 0, ',', '.') }}
+                {{ rupiah($totalPiutangAktif) }}
               </h5>
             </div>
           </div>
@@ -108,7 +108,7 @@
       <div class="card border-0 shadow-sm">
         <div class="card-header fw-semibold">💳 Iuran Bulanan (6 Bulan Terakhir)</div>
         <div class="card-body p-0">
-          <table class="table table-sm mb-0">
+          <table class="table table-sm mb-0 table-hover table-borderless align-middle">
             <thead class="table-light">
               <tr>
                 <th>Periode</th>
@@ -121,7 +121,7 @@
               @forelse($iuranList as $iuran)
                 <tr>
                   <td>{{ \Carbon\Carbon::createFromFormat('Y-m', $iuran->periode)->isoFormat('MMM Y') }}</td>
-                  <td>Rp {{ number_format($iuran->nominal, 0, ',', '.') }}</td>
+                  <td class="text-end fw-medium">{{ rupiah($iuran->nominal) }}</td>
                   <td>
                     @if($iuran->status === 'lunas')
                       <span class="badge bg-success">Lunas</span>

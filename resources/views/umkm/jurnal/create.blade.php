@@ -52,11 +52,13 @@
         </div>
         <div class="col-md-3">
           <label class="form-label small mb-1">Debit (Rp)</label>
-          <input type="number" name="debit[]" class="form-control input-dr" placeholder="0" min="0" oninput="calcTotal()" required>
+          <input type="text" class="form-control input-dr-display" placeholder="0" oninput="handleCurrencyInput(this)" required inputmode="numeric">
+          <input type="hidden" name="debit[]" class="input-dr" value="0">
         </div>
         <div class="col-md-3">
           <label class="form-label small mb-1">Kredit (Rp)</label>
-          <input type="number" name="kredit[]" class="form-control input-cr" placeholder="0" min="0" oninput="calcTotal()" value="0" required>
+          <input type="text" class="form-control input-cr-display" placeholder="0" oninput="handleCurrencyInput(this)" required inputmode="numeric">
+          <input type="hidden" name="kredit[]" class="input-cr" value="0">
         </div>
         <div class="col-md-1 d-flex align-items-end">
           <button type="button" class="btn btn-danger w-100" onclick="removeRow(this)">×</button>
@@ -74,10 +76,12 @@
           </select>
         </div>
         <div class="col-md-3">
-          <input type="number" name="debit[]" class="form-control input-dr" placeholder="0" min="0" oninput="calcTotal()" value="0" required>
+          <input type="text" class="form-control input-dr-display" placeholder="0" oninput="handleCurrencyInput(this)" required inputmode="numeric">
+          <input type="hidden" name="debit[]" class="input-dr" value="0">
         </div>
         <div class="col-md-3">
-          <input type="number" name="kredit[]" class="form-control input-cr" placeholder="0" min="0" oninput="calcTotal()" required>
+          <input type="text" class="form-control input-cr-display" placeholder="0" oninput="handleCurrencyInput(this)" required inputmode="numeric">
+          <input type="hidden" name="kredit[]" class="input-cr" value="0">
         </div>
         <div class="col-md-1 d-flex">
           <button type="button" class="btn btn-danger w-100" onclick="removeRow(this)">×</button>
@@ -119,10 +123,12 @@ function addRow() {
         </select>
     </div>
     <div class="col-md-3">
-        <input type="number" name="debit[]" class="form-control input-dr" placeholder="0" min="0" value="0" oninput="calcTotal()" required>
+        <input type="text" class="form-control input-dr-display" placeholder="0" oninput="handleCurrencyInput(this)" required inputmode="numeric">
+        <input type="hidden" name="debit[]" class="input-dr" value="0">
     </div>
     <div class="col-md-3">
-        <input type="number" name="kredit[]" class="form-control input-cr" placeholder="0" min="0" value="0" oninput="calcTotal()" required>
+        <input type="text" class="form-control input-cr-display" placeholder="0" oninput="handleCurrencyInput(this)" required inputmode="numeric">
+        <input type="hidden" name="kredit[]" class="input-cr" value="0">
     </div>
     <div class="col-md-1 d-flex">
         <button type="button" class="btn btn-danger w-100" onclick="removeRow(this)">×</button>
@@ -142,12 +148,27 @@ function removeRow(btn){
   calcTotal();
 }
 
+function handleCurrencyInput(el) {
+    const raw = el.value.replace(/\D/g, '');
+    const num = parseInt(raw) || 0;
+    
+    // Update hidden input format value
+    const hidden = el.parentElement.querySelector('input[type="hidden"]');
+    if (hidden) hidden.value = num;
+
+    // Display formatted
+    el.value = num > 0 ? num.toLocaleString('id-ID') : '';
+    
+    // Check totals
+    calcTotal();
+}
+
 function calcTotal() {
     let totDr = 0;
     let totCr = 0;
 
-    document.querySelectorAll('.input-dr').forEach(el => totDr += Number(el.value));
-    document.querySelectorAll('.input-cr').forEach(el => totCr += Number(el.value));
+    document.querySelectorAll('.input-dr').forEach(el => totDr += Number(el.value || 0));
+    document.querySelectorAll('.input-cr').forEach(el => totCr += Number(el.value || 0));
 
     document.getElementById('tot-dr').innerText = new Intl.NumberFormat('id-ID').format(totDr);
     document.getElementById('tot-cr').innerText = new Intl.NumberFormat('id-ID').format(totCr);

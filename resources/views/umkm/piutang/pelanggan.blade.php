@@ -19,12 +19,13 @@
 
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">
-    <table class="table table-hover mb-0">
+    <table class="table table-hover mb-0 table-borderless align-middle">
       <thead class="table-light">
         <tr>
           <th>#</th>
           <th>Nama Pelanggan</th>
           <th>No. WhatsApp</th>
+          <th>Email</th>
           <th>Alamat</th>
           <th>Total Piutang</th>
           <th></th>
@@ -36,19 +37,20 @@
             <td class="text-muted small">{{ $loop->iteration }}</td>
             <td><strong>{{ $p->nama_pelanggan }}</strong></td>
             <td>{{ $p->no_whatsapp ?? '<span class="text-muted">-</span>' }}</td>
+            <td>{{ $p->email ?? '<span class="text-muted">-</span>' }}</td>
             <td>{{ $p->alamat ?? '-' }}</td>
             <td>
               @php $total = $p->totalPiutangAktif(); @endphp
               @if($total > 0)
-                <span class="badge bg-danger-subtle text-danger">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                <span class="badge bg-danger-subtle text-danger">{{ rupiah($total) }}</span>
               @else
                 <span class="badge bg-success-subtle text-success">Lunas</span>
               @endif
             </td>
             <td class="text-end">
-              <form method="POST" action="{{ route('umkm.piutang.pelanggan.destroy', $p->id) }}" onsubmit="return confirm('Hapus pelanggan ini?')">
+              <form method="POST" action="{{ route('umkm.etalase.pelanggan.destroy', $p->id) }}" onsubmit="return confirm('Hapus pelanggan ini?')">
                 @csrf @method('DELETE')
-                <button class="btn btn-sm btn-outline-danger">Hapus</button>
+                <button class="btn btn-sm btn-action btn-action-delete" title="Hapus"><i data-feather="trash-2"></i> Hapus</button>
               </form>
             </td>
           </tr>
@@ -68,7 +70,7 @@
 <div class="modal fade" id="modalTambahPelanggan" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST" action="{{ route('umkm.piutang.pelanggan.store') }}">
+      <form method="POST" action="{{ route('umkm.etalase.pelanggan.store') }}">
         @csrf
         <div class="modal-header">
           <h5 class="modal-title">Tambah Pelanggan</h5>
@@ -82,7 +84,11 @@
           <div class="mb-3">
             <label class="form-label">No. WhatsApp</label>
             <input type="text" name="no_whatsapp" class="form-control" placeholder="08xxxxxxxxxx">
-            <div class="form-text">Digunakan untuk mengirim reminder pembayaran otomatis.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="contoh@email.com">
+            <div class="form-text">Digunakan untuk mengirim pengingat pembayaran otomatis via Email.</div>
           </div>
           <div class="mb-3">
             <label class="form-label">Alamat</label>

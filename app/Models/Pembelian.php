@@ -19,6 +19,7 @@ class Pembelian extends Model
         'supplier',
         'catatan',
         'total',
+        'bukti_pembelian',
     ];
 
     public function details()

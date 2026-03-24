@@ -52,7 +52,7 @@
                         <div class="card-body p-3 d-flex flex-column flex-grow-1">
                             <h6 class="product-title mb-2 fw-bold text-dark fs-5">{{ $p->nama_produk }}</h6>
                             <div class="mt-auto">
-                                <div class="product-price text-theme fw-bolder mb-3 fs-5">Rp {{ number_format($p->harga_jual, 0, ',', '.') }}</div>
+                                <div class="product-price text-theme fw-bolder mb-3 fs-5">{{ rupiah($p->harga_jual) }}</div>
                                 <button type="button" class="btn btn-theme w-100 fw-bold d-flex justify-content-center align-items-center gap-2 py-2 fs-6">
                                     <i data-feather="shopping-cart" style="width: 18px; height: 18px;"></i> Tambah
                                 </button>
@@ -124,9 +124,10 @@
                         <label class="form-label text-muted" style="font-size:0.7rem; font-weight:700; margin-bottom:4px;">TUNAI / UANG DIBAYAR</label>
                         <div class="input-group shadow-sm rounded-3">
                             <span class="input-group-text bg-white fw-bold text-muted border-end-0 py-1">Rp</span>
-                            <input type="number" name="uang_dibayar" id="uangDibayar" 
+                            <input type="text" id="uangDibayarDisplay" 
                                    class="form-control border-start-0 fw-bolder text-end fs-5 py-1" 
-                                   min="0" placeholder="0" style="color: var(--kasir-primary);" required>
+                                   placeholder="0" style="color: var(--kasir-primary);" required inputmode="numeric">
+                            <input type="hidden" name="uang_dibayar" id="uangDibayar">
                         </div>
                         <div class="mt-1 text-danger fw-semibold d-none" style="font-size:0.75rem;" id="uangError"><i data-feather="alert-circle" style="width:12px; margin-top:-2px;"></i> Uang kurang!</div>
                         <div class="mt-2 py-1 px-2 bg-success bg-opacity-10 text-success fw-bold rounded-3 d-none d-flex justify-content-between" style="font-size:0.85rem;" id="kembaliText">
@@ -390,7 +391,8 @@
     });
 
     // Validasi Uang Dibayar > Total
-    const inputUang = document.getElementById('uangDibayar');
+    const inputUangDisplay = document.getElementById('uangDibayarDisplay');
+    const inputUangHidden = document.getElementById('uangDibayar');
     const errUang = document.getElementById('uangError');
     const txtKembaliContainer = document.getElementById('kembaliText');
     const txtKembaliVal = document.getElementById('kembaliVal');
@@ -404,7 +406,7 @@
             return;
         }
         
-        const bayar = parseFloat(inputUang.value) || 0;
+        const bayar = parseFloat(inputUangHidden.value) || 0;
         if (bayar >= total) {
             errUang.classList.add('d-none');
             txtKembaliContainer.classList.remove('d-none');
@@ -413,20 +415,26 @@
         } else {
             txtKembaliContainer.classList.add('d-none');
             txtKembaliContainer.classList.remove('d-flex');
-            if (inputUang.value !== '') {
+            if (inputUangHidden.value !== '') {
                 errUang.classList.remove('d-none');
             }
         }
     }
 
-    inputUang.addEventListener('input', recalcKembalian);
+    inputUangDisplay.addEventListener('input', function() {
+        const raw = this.value.replace(/\D/g, '');
+        inputUangHidden.value = raw;
+        const num = parseInt(raw) || 0;
+        this.value = num > 0 ? num.toLocaleString('id-ID') : '';
+        recalcKembalian();
+    });
 
     formCheck.addEventListener('submit', function(e) {
-        const bayar = parseFloat(inputUang.value) || 0;
+        const bayar = parseFloat(inputUangHidden.value) || 0;
         if (bayar < total) {
             e.preventDefault();
             alert('Uang dibayar (Rp ' + bayar + ') tidak mencukupi total belanja (Rp ' + total + ')!');
-            inputUang.focus();
+            inputUangDisplay.focus();
         }
     });
 

@@ -11,35 +11,102 @@
 </div>
 
 @if(session('success'))
-  <div class="alert alert-success">{{ session('success') }}</div>
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;">
+      <div class="toast align-items-center text-bg-success border-0 show" role="alert">
+          <div class="d-flex">
+              <div class="toast-body fw-medium">{{ session('success') }}</div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+          </div>
+      </div>
+  </div>
 @endif
 
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">
     <div class="table-responsive">
-      <table class="table table-hover mb-0">
-        <thead class="table-light">
+      <table class="table table-hover mb-0 align-middle" style="font-size: 0.88rem;">
+        <thead class="table-light text-uppercase text-secondary" style="letter-spacing:0.4px;">
           <tr>
-            <th>Tanggal</th>
-            <th>No. Ref / Keterangan</th>
-            <th>Kode Akun</th>
+            <th class="ps-3" style="width:110px;">Tanggal</th>
+            <th style="min-width:200px;">Keterangan / Referensi</th>
+            <th style="min-width:120px;">Kode Akun</th>
             <th>Nama Akun</th>
-            <th class="text-end">Debit (Rp)</th>
-            <th class="text-end">Kredit (Rp)</th>
+            <th class="text-end" style="width:150px;">Debit (Rp)</th>
+            <th class="text-end" style="width:150px;">Kredit (Rp)</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($jurnal as $j)
-            <tr>
-              <td>{{ $j->tanggal }}</td>
-              <td>{{ $j->keterangan }} <br> <small class="text-muted">Ref: {{ $j->ref_tipe ?: '-' }}</small></td>
-              <td>{{ $j->kode_akun }}</td>
-              <td>{{ $j->nama_akun }}</td>
-              <td class="text-end">{{ number_format($j->debit,0,',','.') }}</td>
-              <td class="text-end">{{ number_format($j->kredit,0,',','.') }}</td>
+          @php
+            // Group jurnal by tanggal+keterangan+ref_tipe for visual grouping
+            $grouped = $jurnal->groupBy(function ($j) {
+                return $j->tanggal . '|' . $j->keterangan . '|' . $j->ref_id;
+            });
+            $rowNum = 0;
+          @endphp
+          @forelse($grouped as $key => $items)
+            @php
+                $totalDebit  = $items->sum('debit');
+                $totalKredit = $items->sum('kredit');
+                $isBalanced  = abs($totalDebit - $totalKredit) < 0.01;
+                $groupRows   = $items->count();
+                $firstItem   = $items->first();
+
+                // Sort: debit entries first (non-zero debit), then kredit entries
+                $sorted = $items->sortByDesc(fn($j) => $j->debit > 0 ? 1 : 0)->values();
+            @endphp
+            @foreach($sorted as $idx => $j)
+            <tr class="{{ $idx > 0 ? 'bg-light bg-opacity-50' : 'border-top border-2' }}"
+                style="{{ $idx === 0 ? 'border-top-color: #dee2e6 !important;' : '' }}">
+                @if($idx === 0)
+                <td class="ps-3 text-muted fw-medium" rowspan="{{ $groupRows }}" style="vertical-align: top; padding-top: 12px;">
+                    {{ \Carbon\Carbon::parse($j->tanggal)->isoFormat('D MMM YY') }}
+                </td>
+                <td rowspan="{{ $groupRows }}" style="vertical-align: top; padding-top: 12px;">
+                    <div class="fw-semibold text-dark" style="line-height: 1.3;">
+                        {{ $j->keterangan }}
+                    </div>
+                    <div class="mt-1">
+                        <span class="badge bg-light text-secondary border border-secondary border-opacity-25 fw-normal" style="font-size: 0.72rem;">
+                            {{ $j->ref_tipe ?: 'manual' }}
+                            @if($j->ref_id) #{{ $j->ref_id }} @endif
+                        </span>
+                        @if(!$isBalanced)
+                            <span class="badge bg-warning text-dark ms-1" title="Debit ≠ Kredit - cek data ini">⚠ Tidak Balance</span>
+                        @endif
+                    </div>
+                </td>
+                @endif
+                <td class="font-monospace text-secondary small">{{ $j->kode_akun }}</td>
+                <td>
+                    {{ $j->nama_akun }}
+                    @if($j->debit > 0)
+                        <span class="ms-1 text-success opacity-75" style="font-size: 0.7rem;">D</span>
+                    @elseif($j->kredit > 0)
+                        <span class="ms-1 text-danger opacity-75" style="font-size: 0.7rem; margin-left: 1.5rem !important;">K</span>
+                    @endif
+                </td>
+                <td class="text-end fw-medium {{ $j->debit > 0 ? 'text-success' : 'text-muted' }}">
+                    {{ $j->debit > 0 ? format_angka($j->debit) : '—' }}
+                </td>
+                <td class="text-end fw-medium {{ $j->kredit > 0 ? 'text-danger' : 'text-muted' }}">
+                    {{ $j->kredit > 0 ? format_angka($j->kredit) : '—' }}
+                </td>
+            </tr>
+            @endforeach
+            {{-- Subtotal per transaksi --}}
+            <tr class="border-bottom" style="border-bottom-color: #dee2e6 !important;">
+                <td colspan="4" class="text-end text-muted small pe-2">
+                    <em>Subtotal</em>
+                </td>
+                <td class="text-end fw-bold text-success border-top border-light-subtle">
+                    {{ format_angka($totalDebit) }}
+                </td>
+                <td class="text-end fw-bold text-danger border-top border-light-subtle">
+                    {{ format_angka($totalKredit) }}
+                </td>
             </tr>
           @empty
-            <tr><td colspan="6" class="text-center text-muted">Belum ada catatan jurnal.</td></tr>
+            <tr><td colspan="6" class="text-center text-muted py-5">Belum ada catatan jurnal.</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -52,3 +119,11 @@
   @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toast').forEach(el => setTimeout(() => el.classList.remove('show'), 4000));
+});
+</script>
+@endpush

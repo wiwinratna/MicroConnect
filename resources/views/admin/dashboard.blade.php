@@ -21,7 +21,7 @@
         <div class="card border-0 shadow-sm text-center">
             <div class="card-body py-4">
                 <p class="text-muted small mb-1">Total Omzet (Bulan Ini)</p>
-                <h3 class="fw-bold text-success mb-0">Rp {{ number_format($totalOmzet, 0, ',', '.') }}</h3>
+                <h3 class="fw-bold text-success mb-0">{{ rupiah($totalOmzet) }}</h3>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
                 </small>
               </div>
               <div class="text-end">
-                <div class="fw-semibold">Rp {{ number_format($u->omzet,0,',','.') }}</div>
+                <div class="fw-semibold">{{ rupiah($u->omzet) }}</div>
                 <span class="badge bg-{{ $u->badge_color }}">{{ $u->status_kesehatan }}</span>
               </div>
             </div>
@@ -90,13 +90,13 @@
               <div>
                 <div class="fw-semibold">#{{ $i+1 }} {{ $u->nama_usaha }} <span class="badge bg-secondary ms-1">{{ $u->kode_level }}</span></div>
                 <small class="text-muted">
-                  {{ $u->trx }} trx &bull; Laba: Rp {{ number_format($u->laba_bersih, 0, ',', '.') }} 
+                  {{ $u->trx }} trx &bull; Laba: {{ rupiah($u->laba_bersih) }} 
                   <span class="text-success fw-bold">({{ is_null($u->margin) ? '-' : $u->margin.'%' }})</span>
                 </small>
               </div>
               <div class="text-end">
                 <div class="text-muted small">Omzet</div>
-                <div class="fw-bold text-dark">Rp {{ number_format($u->omzet,0,',','.') }}</div>
+                <div class="fw-bold text-dark">{{ rupiah($u->omzet) }}</div>
               </div>
             </div>
           @empty
@@ -114,8 +114,8 @@
     </div>
 
     <div class="table-responsive">
-      <table class="table table-hover my-0 align-middle">
-        <thead class="bg-light">
+      <table class="table table-hover my-0 align-middle table-borderless">
+        <thead class="table-light">
           <tr>
             <th>Identitas UMKM</th>
             <th>Level</th>
@@ -135,18 +135,18 @@
               </td>
               <td><span class="badge bg-secondary">{{ $u->kode_level }}</span></td>
               <td>{{ $u->trx }}</td>
-              <td>Rp {{ number_format($u->omzet, 0, ',', '.') }}</td>
+              <td class="text-end fw-medium">{{ rupiah($u->omzet) }}</td>
               <td>
                  <span class="{{ $u->laba_bersih < 0 ? 'text-danger' : 'text-success' }}">
-                    Rp {{ number_format($u->laba_bersih, 0, ',', '.') }}
+                    {{ rupiah($u->laba_bersih) }}
                  </span>
               </td>
-              <td class="fw-semibold {{ $u->margin !== null && $u->margin < 10 ? 'text-warning' : ($u->margin !== null && $u->margin >= 10 ? 'text-success' : '') }}">
+              <td class="fw-semibold {{ $u->margin !== null && < 10 ? 'text-warning' : ($u->margin >= 'text-success' '') }}">
                   {{ is_null($u->margin) ? '-' : $u->margin.'%' }}
               </td>
               <td><span class="badge bg-{{ $u->badge_color }}">{{ $u->status_kesehatan }}</span></td>
               <td class="text-end">
-                <a href="{{ route('admin.umkm.show', $u->id) }}" class="btn btn-sm btn-outline-primary">Detail</a>
+                <a href="{{ route('admin.umkm.show', $u->id) }}" class="btn btn-sm btn-action btn-action-view" title="Detail"><i data-feather="eye"></i> Detail</a>
               </td>
             </tr>
           @empty

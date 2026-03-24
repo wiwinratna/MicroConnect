@@ -12,6 +12,7 @@ class Pelanggan extends Model
         'umkm_id',
         'nama_pelanggan',
         'no_whatsapp',
+        'email',
         'alamat',
         'catatan',
     ];

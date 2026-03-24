@@ -149,20 +149,40 @@ class AccountingService
 
         JurnalUmum::where('umkm_id', $umkm->id)->where('ref_tipe', 'pembayaran_piutang')->where('ref_id', $pembayaran->id)->delete();
 
-        $piutang = $pembayaran->piutang;
-        $ket = 'Terima Piutang ' . ($piutang ? $piutang->kode_piutang : '') . ' - ' . $pembayaran->keterangan;
+        // Ambil nominal yang benar-benar dibayar (field = jumlah_bayar)
+        $nominal = (float) ($pembayaran->jumlah_bayar ?? 0);
 
-        // Dr. Kas
-        $this->catat($base, $akunKas, $pembayaran->nominal_dibayar, 0, $ket);
+        // Guard: jangan buat jurnal jika nominal 0
+        if ($nominal <= 0) {
+            return;
+        }
+
+        // Buat keterangan yang informatif
+        $piutang = $pembayaran->piutang;
+        $namaPelanggan = $piutang && $piutang->pelanggan ? $piutang->pelanggan->nama_pelanggan : '';
+        $kodePiutang = $piutang ? $piutang->kode_piutang : '';
         
-        // Cr. Piutang Usaha
-        $this->catat($base, $akunPiutang, 0, $pembayaran->nominal_dibayar, $ket);
+        // Cek apakah ini pelunasan atau parsial
+        $sisaSetelahBayar = $piutang ? (float) $piutang->sisa : 0;
+        $isPelunasan = $sisaSetelahBayar <= 0;
+
+        if ($isPelunasan) {
+            $ket = "Pelunasan piutang pelanggan {$namaPelanggan} - Invoice {$kodePiutang}";
+        } else {
+            $ket = "Pembayaran parsial piutang pelanggan {$namaPelanggan} - Invoice {$kodePiutang}";
+        }
+
+        // Dr. Kas (uang masuk)
+        $this->catat($base, $akunKas, $nominal, 0, $ket);
+        
+        // Cr. Piutang Usaha (piutang berkurang)
+        $this->catat($base, $akunPiutang, 0, $nominal, $ket);
     }
 
     /**
      * Helper untuk insert ke tabel Jurnal Umum
      */
-    private function catat(array $base, $akun, float $debit, float $kredit, string $keterangan)
+    private function catat(array $base, $akun, float $debit = 0, float $kredit = 0, string $keterangan = '')
     {
         JurnalUmum::create(array_merge($base, [
             'kode_akun' => $akun->kode_akun,

@@ -2,7 +2,7 @@
 
 @section('content')
 <table>
-    <thead>
+    <thead class="table-light">
         <tr>
             <th>Tanggal</th>
             <th>No. Referensi</th>
@@ -28,8 +28,8 @@
                 <td>{{ $j->kode_akun }}</td>
                 <td>{{ $j->nama_akun }}</td>
                 <td>{{ $j->keterangan }}</td>
-                <td class="text-right">{{ number_format($j->debit, 0, ',', '.') }}</td>
-                <td class="text-right">{{ number_format($j->kredit, 0, ',', '.') }}</td>
+                <td  class="text-right text-end fw-medium">{{ format_angka($j->debit) }}</td>
+                <td  class="text-right text-end fw-medium">{{ format_angka($j->kredit) }}</td>
             </tr>
         @empty
             <tr><td colspan="7" class="text-center">Tidak ada data transaksi.</td></tr>
@@ -38,8 +38,8 @@
     <tfoot>
         <tr>
             <th colspan="5" class="text-right">Total</th>
-            <th class="text-right">{{ number_format($tDebit, 0, ',', '.') }}</th>
-            <th class="text-right">{{ number_format($tKredit, 0, ',', '.') }}</th>
+            <th class="text-right">{{ format_angka($tDebit) }}</th>
+            <th class="text-right">{{ format_angka($tKredit) }}</th>
         </tr>
     </tfoot>
 </table>

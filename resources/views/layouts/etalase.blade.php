@@ -8,6 +8,7 @@
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('css/custom-polish.css') }}" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
 
     <style>

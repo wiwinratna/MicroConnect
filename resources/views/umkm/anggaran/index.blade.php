@@ -104,7 +104,7 @@
 
             <div class="mt-3 d-flex justify-content-between align-items-center">
                 <div class="fw-semibold">
-                    Total Estimasi: <span id="totalText">Rp {{ number_format($anggaran->total ?? 0, 0, ',', '.') }}</span>
+                    Total Estimasi: <span id="totalText">{{ rupiah($anggaran->total ?? 0) }}</span>
                 </div>
                 <button class="btn btn-primary btn-lg">Simpan Anggaran</button>
             </div>

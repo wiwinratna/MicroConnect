@@ -16,3 +16,6 @@ Schedule::command('iuran:generate')->monthlyOn(1, '08:00');
 // Kirim reminder WA piutang: jalan tiap hari jam 09:00
 Schedule::command('piutang:reminder')->dailyAt('09:00');
 
+// Kirim reminder Email piutang: jalan tiap menit karena ngecek jam kirim spesifik
+Schedule::command('piutang:email-reminder')->everyMinute();
+

@@ -184,8 +184,8 @@
                 <div style="margin-bottom: 0.75rem;">
                     <div class="item-name">{{ $d->produk->nama_produk ?? 'Item Dihapus' }}</div>
                     <div class="item-row">
-                        <div>{{ $d->qty }} x {{ number_format($d->harga, 0, ',', '.') }}</div>
-                        <div style="font-weight: 700;">{{ number_format($d->subtotal, 0, ',', '.') }}</div>
+                        <div>{{ $d->qty }} x {{ format_angka($d->harga) }}</div>
+                        <div style="font-weight: 700;">{{ format_angka($d->subtotal) }}</div>
                     </div>
                 </div>
                 @endforeach
@@ -196,19 +196,19 @@
             <div class="struk-totals">
                 <div class="totals-row">
                     <span>Subtotal</span>
-                    <span>{{ number_format($penjualan->total, 0, ',', '.') }}</span>
+                    <span>{{ format_angka($penjualan->total) }}</span>
                 </div>
                 <div class="totals-row grand-total">
                     <span>TOTAL</span>
-                    <span>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</span>
+                    <span>{{ rupiah($penjualan->total) }}</span>
                 </div>
                 <div class="totals-row mt-2" style="margin-top: 0.5rem;">
                     <span>Tunai</span>
-                    <span>Rp {{ number_format($uangDibayar, 0, ',', '.') }}</span>
+                    <span>{{ rupiah($uangDibayar) }}</span>
                 </div>
                 <div class="totals-row">
                     <span>Kembali</span>
-                    <span>Rp {{ number_format($kembalian, 0, ',', '.') }}</span>
+                    <span>{{ rupiah($kembalian) }}</span>
                 </div>
             </div>
 

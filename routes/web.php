@@ -87,6 +87,7 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
     Route::put('/profile', [UmkmProfileController::class, 'update'])->name('profile.update');
 
     // Bahan Baku
+    Route::get('/bahan-baku/search', [BahanBakuController::class, 'search'])->name('bahan.search');
     Route::get('/bahan-baku', [BahanBakuController::class, 'index'])->name('bahan.index');
     Route::get('/bahan-baku/create', [BahanBakuController::class, 'create'])->name('bahan.create');
     Route::post('/bahan-baku', [BahanBakuController::class, 'store'])->name('bahan.store');
@@ -102,6 +103,8 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
     Route::get('/pembelian', [PembelianController::class, 'index'])->name('pembelian.index');
     Route::get('/pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create');
     Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
+    Route::get('/pembelian/{id}/edit', [PembelianController::class, 'edit'])->name('pembelian.edit');
+    Route::put('/pembelian/{id}', [PembelianController::class, 'update'])->name('pembelian.update');
 
 
     // [NONAKTIF SEMENTARA] Anggaran Estimasi - dinonaktifkan per permintaan revisi
@@ -185,5 +188,9 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
         Route::post('/', [PiutangController::class, 'store'])->name('store');
         Route::get('/{piutang}', [PiutangController::class, 'show'])->name('show');
         Route::post('/{piutang}/bayar', [PiutangController::class, 'bayar'])->name('bayar');
+        
+        // Email Reminders
+        Route::get('/{piutang}/email/preview', [\App\Http\Controllers\Umkm\PiutangEmailController::class, 'preview'])->name('email.preview');
+        Route::post('/{piutang}/email/send', [\App\Http\Controllers\Umkm\PiutangEmailController::class, 'sendManual'])->name('email.send');
     });
 });

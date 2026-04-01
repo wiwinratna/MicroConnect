@@ -7,26 +7,25 @@
 
   {{-- 1. SUMMARY CARDS --}}
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card border-0 shadow-sm text-center">
             <div class="card-body py-4">
                 <p class="text-muted small mb-1">Total UMKM Aktif</p>
                 <h3 class="fw-bold text-primary mb-0">{{ $totalUmkmAktif }}</h3>
-                <small class="text-muted">Level 1: {{ $levelCounts['LVL1'] ?? 0 }} | Level 2: {{ $levelCounts['LVL2'] ?? 0 }} | Level 3: {{ $levelCounts['LVL3'] ?? 0 }}</small>
+                <small class="text-muted">
+                  @forelse($levelCounts as $kode => $total)
+                      @if($kode)
+                          {{ $kode }}: {{ $total }} @if(!$loop->last && $kode) | @endif
+                      @endif
+                  @empty
+                      Belum ada data Level
+                  @endforelse
+                </small>
             </div>
         </div>
     </div>
     
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center">
-            <div class="card-body py-4">
-                <p class="text-muted small mb-1">Total Omzet (Bulan Ini)</p>
-                <h3 class="fw-bold text-success mb-0">{{ rupiah($totalOmzet) }}</h3>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card border-0 shadow-sm text-center">
             <div class="card-body py-4">
                 <p class="text-muted small mb-1">UMKM Pasif</p>
@@ -36,7 +35,7 @@
         </div>
     </div>
     
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card border-0 shadow-sm text-center">
             <div class="card-body py-4">
                 <p class="text-muted small mb-1">Tiket Terbuka</p>
@@ -141,7 +140,7 @@
                     {{ rupiah($u->laba_bersih) }}
                  </span>
               </td>
-              <td class="fw-semibold {{ $u->margin !== null && < 10 ? 'text-warning' : ($u->margin >= 'text-success' '') }}">
+              <td class="fw-semibold {{ $u->margin !== null ? ($u->margin < 10 ? 'text-warning' : 'text-success') : '' }}">
                   {{ is_null($u->margin) ? '-' : $u->margin.'%' }}
               </td>
               <td><span class="badge bg-{{ $u->badge_color }}">{{ $u->status_kesehatan }}</span></td>

@@ -178,4 +178,20 @@ class UmkmController extends Controller
 
         return back()->with('success', 'Status UMKM diperbarui menjadi ' . $umkm->fresh()->status . '.');
     }
+
+    // ===================== DAFTAR IURAN =====================
+    public function iuranIndex(Request $request)
+    {
+        $query = IuranBulanan::with('umkm')
+            ->orderByDesc('periode')
+            ->orderByDesc('created_at');
+            
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $iuranList = $query->paginate(20)->withQueryString();
+
+        return view('admin.iuran.index', compact('iuranList'));
+    }
 }

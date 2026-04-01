@@ -20,12 +20,8 @@ use App\Http\Controllers\Admin\UmkmController;
 
 // ================== ROOT ==================
 Route::get('/', function () {
-    if (!auth()->check()) return redirect()->route('umkm.login');
-
-    return auth()->user()->user_group === 'admin'
-        ? redirect()->route('admin.dashboard')
-        : redirect()->route('umkm.dashboard');
-});
+    return view('landing');
+})->name('landing');
 
 // ================== GUEST ==================
 Route::middleware('guest')->group(function () {
@@ -62,7 +58,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
         Route::patch('/{id}/toggle-status', [UmkmController::class, 'toggleStatus'])->name('toggleStatus');
     });
 
-    Route::get('/iuran', fn () => view('admin.iuran.index'))->name('iuran.index');
+    Route::get('/iuran', [UmkmController::class, 'iuranIndex'])->name('iuran.index');
 
     // Ticketing / Pengaduan UMKM
     Route::get('/tickets', [\App\Http\Controllers\Admin\TicketController::class, 'index'])->name('tickets.index');

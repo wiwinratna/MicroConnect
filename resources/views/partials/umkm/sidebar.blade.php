@@ -2,8 +2,8 @@
 <nav id="sidebar" class="sidebar js-sidebar">
 	<div class="sidebar-content js-simplebar">
 
-		<a class="sidebar-brand" href="{{ route('umkm.dashboard') }}">
-			<span class="align-middle">Sistem UMKM</span>
+		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('umkm.dashboard') }}">
+			<img src="{{ asset('assets/img/logo-white.png') }}" alt="Sistem UMKM Logo" style="height: 50px; width: auto; object-fit: contain;">
 		</a>
 
 		<ul class="sidebar-nav">

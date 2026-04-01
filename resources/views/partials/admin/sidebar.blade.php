@@ -1,8 +1,8 @@
 <nav id="sidebar" class="sidebar js-sidebar">
     <div class="sidebar-content js-simplebar">
 
-        <a class="sidebar-brand" href="{{ route('admin.dashboard') }}">
-            <span class="align-middle">Admin KADIN</span>
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+            <img src="{{ asset('assets/img/logo-white.png') }}" alt="KADIN Panel Logo" style="height: 50px; width: auto; object-fit: contain;">
         </a>
 
         <ul class="sidebar-nav">

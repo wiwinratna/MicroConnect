@@ -72,7 +72,7 @@
   {{-- Tabel --}}
   <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
-      <table class="table table-hover mb-0">
+      <table class="table table-hover mb-0 table-borderless align-middle">
         <thead class="table-light">
           <tr>
             <th>Kode</th>
@@ -111,7 +111,7 @@
                 @endif
               </td>
               <td class="text-end">
-                <a href="{{ route('admin.umkm.show', $u->id) }}" class="btn btn-sm btn-outline-primary">Detail</a>
+                <a href="{{ route('admin.umkm.show', $u->id) }}" class="btn btn-sm btn-action btn-action-view" title="Detail"><i data-feather="eye"></i> Detail</a>
               </td>
             </tr>
           @empty

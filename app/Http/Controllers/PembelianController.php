@@ -35,17 +35,23 @@ class PembelianController extends Controller
     {
         $umkm = auth()->user()->umkm;
 
-        // VALIDAasi
+        // VALiDASI
         $request->validate([
             'tanggal'   => 'required|date',
             'nomor_nota'=> 'nullable|string|max:100',
             'supplier'  => 'nullable|string|max:100',
             'catatan'   => 'nullable|string',
+            'bukti_pembelian' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
             'bahan_id.*'    => 'nullable|exists:bahan_baku,id',
             'qty.*'         => 'nullable|numeric|min:0.001',
             'harga_beli.*'  => 'nullable|numeric|min:0',
         ]);
+
+        $buktiPath = null;
+        if ($request->hasFile('bukti_pembelian')) {
+            $buktiPath = $request->file('bukti_pembelian')->store('bukti_pembelian', 'public');
+        }
 
         // SIMPAN HEADER
         $pembelian = Pembelian::create([
@@ -55,6 +61,7 @@ class PembelianController extends Controller
             'tanggal'        => $request->tanggal,
             'supplier'       => $request->supplier,
             'catatan'        => $request->catatan,
+            'bukti_pembelian'=> $buktiPath,
             'total'          => 0,
         ]);
 
@@ -115,5 +122,40 @@ class PembelianController extends Controller
         return redirect()
             ->route('umkm.pembelian.index')
             ->with('success', 'Pembelian berhasil disimpan, mutasi stok tercatat, dan jurnal otomatis terbentuk.');
+    }
+
+    public function edit($id)
+    {
+        $umkm = auth()->user()->umkm;
+        $pembelian = Pembelian::where('umkm_id', $umkm->id)->findOrFail($id);
+
+        return view('umkm.pembelian.edit', compact('pembelian'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $umkm = auth()->user()->umkm;
+        $pembelian = Pembelian::where('umkm_id', $umkm->id)->findOrFail($id);
+
+        $request->validate([
+            'nomor_nota'=> 'nullable|string|max:100',
+            'supplier'  => 'nullable|string|max:100',
+            'catatan'   => 'nullable|string',
+            'bukti_pembelian' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
+
+        if ($request->hasFile('bukti_pembelian')) {
+            $buktiPath = $request->file('bukti_pembelian')->store('bukti_pembelian', 'public');
+            $pembelian->bukti_pembelian = $buktiPath;
+        }
+
+        $pembelian->nomor_nota = $request->nomor_nota;
+        $pembelian->supplier = $request->supplier;
+        $pembelian->catatan = $request->catatan;
+        $pembelian->save();
+
+        return redirect()
+            ->route('umkm.pembelian.index')
+            ->with('success', 'Informasi Pembelian dan Bukti berhasil diperbarui (Isi barang tidak diubah demi menjaga integritas Kartu Stok).');
     }
 }

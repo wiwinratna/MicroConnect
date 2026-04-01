@@ -16,7 +16,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="text-muted small">Penjualan Hari Ini</div>
-                <div class="h4 mb-0">Rp {{ number_format($penjualanHariIni, 0, ',', '.') }}</div>
+                <div class="h4 mb-0">{{ rupiah($penjualanHariIni) }}</div>
                 <div class="text-muted small mt-1">{{ $trxHariIni }} transaksi</div>
             </div>
         </div>
@@ -25,7 +25,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="text-muted small">Penjualan Bulan Ini</div>
-                <div class="h4 mb-0">Rp {{ number_format($penjualanBulanIni, 0, ',', '.') }}</div>
+                <div class="h4 mb-0">{{ rupiah($penjualanBulanIni) }}</div>
                 <div class="text-muted small mt-1">{{ now()->format('F Y') }}</div>
             </div>
         </div>
@@ -43,7 +43,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="text-muted small">Total Stok Produk</div>
-                <div class="h4 mb-0">{{ number_format($totalStokProduk, 2, ',', '.') }}</div>
+                <div class="h4 mb-0">{{ format_angka($totalStokProduk) }}</div>
                 <div class="text-muted small mt-1">akumulasi stok</div>
             </div>
         </div>
@@ -100,7 +100,7 @@
                     @if($bahanMenipis->count())
                         <ul class="mb-0">
                             @foreach($bahanMenipis as $b)
-                                <li>{{ $b->nama_bahan }} — <b>{{ number_format($b->stok_awal, 2, ',', '.') }}</b> {{ $b->satuan }}</li>
+                                <li>{{ $b->nama_bahan }} — <b>{{ format_angka($b->stok_awal) }}</b> {{ $b->satuan }}</li>
                             @endforeach
                         </ul>
                     @else
@@ -113,7 +113,7 @@
                     @if($produkMenipis->count())
                         <ul class="mb-0">
                             @foreach($produkMenipis as $p)
-                                <li>{{ $p->nama_produk }} — <b>{{ number_format($p->stok, 2, ',', '.') }}</b></li>
+                                <li>{{ $p->nama_produk }} — <b>{{ format_angka($p->stok) }}</b></li>
                             @endforeach
                         </ul>
                     @else
@@ -131,8 +131,8 @@
                 <div class="fw-semibold mb-2">Penjualan Terakhir</div>
 
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0">
-                        <thead>
+                    <table class="table table-sm align-middle mb-0 table-hover table-borderless">
+                        <thead class="table-light">
                             <tr>
                                 <th>Tanggal</th>
                                 <th>Kode</th>
@@ -146,7 +146,7 @@
                                     <td>{{ \Carbon\Carbon::parse($pj->tanggal)->format('d/m/Y') }}</td>
                                     <td>{{ $pj->kode_penjualan }}</td>
                                     <td>{{ $pj->pembeli ?? '-' }}</td>
-                                    <td class="text-end">Rp {{ number_format($pj->total, 0, ',', '.') }}</td>
+                                    <td  class="text-end fw-medium">{{ rupiah($pj->total) }}</td>
                                 </tr>
                             @empty
                                 <tr>

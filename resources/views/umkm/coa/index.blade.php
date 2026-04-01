@@ -13,8 +13,8 @@
 
 <div class="card">
   <div class="card-body">
-    <table class="table table-bordered align-middle">
-      <thead>
+    <table class="table align-middle table-hover table-borderless">
+      <thead class="table-light">
         <tr>
           <th>Header</th>
           <th>Kode</th>
@@ -32,9 +32,17 @@
             <td>{{ $r->posisi_dr_cr }}</td>
             <td class="d-flex gap-1">
               <a class="btn btn-sm btn-outline-primary" href="{{ route('umkm.coa.edit',$r->id) }}">Edit</a>
-              <form action="{{ route('umkm.coa.destroy',$r->id) }}" method="POST" onsubmit="return confirm('Hapus akun ini?')">
+              <button type="button" 
+                      class="btn btn-sm btn-action btn-action-delete" 
+                      title="Hapus" 
+                      onclick="confirmDeleteCoa('{{ $r->id }}', '{{ addslashes($r->nama_akun) }}')">
+                  <i data-feather="trash-2"></i> Hapus
+              </button>
+              <form id="form-delete-{{ $r->id }}" 
+                    action="{{ route('umkm.coa.destroy', $r->id) }}" 
+                    method="POST" 
+                    class="d-none">
                 @csrf @method('DELETE')
-                <button class="btn btn-sm btn-outline-danger">Hapus</button>
               </form>
             </td>
           </tr>
@@ -46,3 +54,28 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDeleteCoa(id, nama) {
+    Swal.fire({
+        title: 'Konfirmasi Hapus',
+        html: `Apakah Anda yakin ingin menghapus Chart of Account (COA): <strong>${nama}</strong>?<br><br>
+               <span style="font-size:0.85rem; color:#dc3545;">
+               Peringatan: Jika akun ini sudah digunakan di jurnal manapun, sistem bisa menyebabkan laporan tidak balance.
+               </span>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-delete-' + id).submit();
+        }
+    });
+}
+</script>
+@endpush

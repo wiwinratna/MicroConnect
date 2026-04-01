@@ -30,7 +30,7 @@
                 </p>
             @else
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0">
+                    <table class="table align-middle mb-0 table-hover table-borderless">
                         <thead class="table-light">
                         <tr>
                             <th>Produk</th>
@@ -64,28 +64,28 @@
                                     </div>
                                 </td>
                                 <td>{{ $p->satuan }}</td>
-                                <td class="text-end">{{ number_format($p->stok, 2, ',', '.') }}</td>
-                                <td class="text-end">
-                                    Rp {{ number_format($p->harga_pokok, 0, ',', '.') }}
+                                <td  class="text-end fw-medium">{{ format_angka($p->stok) }}</td>
+                                <td  class="text-end fw-medium">{{ rupiah($p->harga_pokok) }}
                                 </td>
-                                <td class="text-end">
-                                    Rp {{ number_format($p->harga_jual, 0, ',', '.') }}
+                                <td  class="text-end fw-medium">{{ rupiah($p->harga_jual) }}
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('umkm.produk.edit', $p->id) }}"
-                                       class="btn btn-sm btn-outline-primary">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('umkm.produk.destroy', $p->id) }}"
+                                  <div class="d-flex justify-content-center gap-2 flex-nowrap">
+                                    <a href="{{ route('umkm.produk.edit', $p->id) }}" class="btn btn-sm btn-action btn-action-edit" title="Edit"><i data-feather="edit-2"></i> Edit</a>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-action btn-action-delete" 
+                                            title="Hapus"
+                                            onclick="confirmDeleteProduk('{{ $p->id }}', '{{ addslashes($p->nama_produk) }}')">
+                                        <i data-feather="trash-2"></i> Hapus
+                                    </button>
+                                    <form id="form-delete-{{ $p->id }}" 
+                                          action="{{ route('umkm.produk.destroy', $p->id) }}"
                                           method="POST"
-                                          class="d-inline"
-                                          onsubmit="return confirm('Hapus produk ini?')">
+                                          class="d-none">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            Hapus
-                                        </button>
                                     </form>
+                                  </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -96,3 +96,28 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDeleteProduk(id, nama) {
+    Swal.fire({
+        title: 'Konfirmasi Hapus',
+        html: `Apakah Anda yakin ingin menghapus produk <strong>${nama}</strong>?<br><br>
+               <span style="font-size:0.85rem; color:#6c757d;">
+               Menghapus produk juga akan menghapus data resep (komposisi bahan) yang terkait.
+               </span>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-delete-' + id).submit();
+        }
+    });
+}
+</script>
+@endpush

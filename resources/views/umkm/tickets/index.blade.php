@@ -27,7 +27,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0">
+                    <table class="table table-hover mb-0 table-borderless align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>No. Tiket</th>
@@ -55,9 +55,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('umkm.tickets.show', $t->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="align-middle" data-feather="eye"></i> Detail
-                                    </a>
+                                    <a href="{{ route('umkm.tickets.show', $t->id) }}" class="btn btn-sm btn-action btn-action-view" title="Detail"><i data-feather="eye"></i> Detail</a>
                                 </td>
                             </tr>
                             @empty

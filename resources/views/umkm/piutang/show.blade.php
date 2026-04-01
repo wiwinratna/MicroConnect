@@ -21,7 +21,7 @@
     <div class="card border-0 shadow-sm h-100">
       <div class="card-header bg-transparent fw-semibold">Informasi Tagihan</div>
       <div class="card-body">
-        <table class="table table-sm table-borderless mb-0">
+        <table class="table table-sm table-borderless mb-0 table-hover align-middle">
           <tr><td class="text-muted">Pelanggan</td><td><strong>{{ $piutang->pelanggan->nama_pelanggan }}</strong></td></tr>
           <tr><td class="text-muted">No WA</td><td>{{ $piutang->pelanggan->no_whatsapp ?? '-' }}</td></tr>
           <tr><td class="text-muted">Tanggal</td><td>{{ $piutang->tanggal->isoFormat('D MMMM Y') }}</td></tr>
@@ -33,12 +33,12 @@
               @endif
             </td>
           </tr>
-          <tr><td class="text-muted">Nominal Awal</td><td>Rp {{ number_format($piutang->nominal_awal, 0, ',', '.') }}</td></tr>
-          <tr><td class="text-muted">Sudah Dibayar</td><td class="text-success">Rp {{ number_format($piutang->sudah_dibayar, 0, ',', '.') }}</td></tr>
+          <tr><td class="text-muted">Nominal Awal</td><td class="text-end fw-medium">{{ rupiah($piutang->nominal_awal) }}</td></tr>
+          <tr><td class="text-muted">Sudah Dibayar</td><td  class="text-success text-end fw-medium">{{ rupiah($piutang->sudah_dibayar) }}</td></tr>
           <tr><td class="text-muted">Sisa</td>
             <td>
               @if($piutang->sisa > 0)
-                <strong class="text-danger">Rp {{ number_format($piutang->sisa, 0, ',', '.') }}</strong>
+                <strong class="text-danger">{{ rupiah($piutang->sisa) }}</strong>
               @else
                 <strong class="text-success">Lunas</strong>
               @endif
@@ -59,6 +59,92 @@
             <tr><td class="text-muted">Catatan</td><td>{{ $piutang->catatan }}</td></tr>
           @endif
         </table>
+
+        @php
+          $phone = $piutang->pelanggan->no_whatsapp ?? '';
+          $phoneClean = preg_replace('/\D/', '', $phone);
+          if (str_starts_with($phoneClean, '0')) {
+              $phoneClean = '62' . substr($phoneClean, 1);
+          } elseif (str_starts_with($phoneClean, '8')) {
+              $phoneClean = '62' . $phoneClean;
+          }
+
+          $nominal = format_angka($piutang->sisa);
+          $tgl = $piutang->jatuh_tempo->isoFormat('D MMMM Y');
+          $usaha = $piutang->umkm->nama_usaha ?? 'Kami';
+          $pelanggan = $piutang->pelanggan->nama_pelanggan ?? 'Bapak/Ibu';
+          
+          $pesan = "Halo {$pelanggan}, kami dari *{$usaha}* ingin mengingatkan bahwa masih ada tagihan sebesar *Rp {$nominal}* dengan jatuh tempo pada *{$tgl}*.\n\nMohon konfirmasi setelah pembayaran dilakukan. Terima kasih 🙏";
+          
+          $waLink = $phoneClean ? "https://wa.me/{$phoneClean}?text=" . rawurlencode($pesan) : '';
+        @endphp
+
+        <div class="mt-4 pt-3 border-top">
+          @if($phoneClean)
+            <div class="d-flex gap-2">
+              <a href="{{ $waLink }}" target="_blank" class="btn btn-success fw-bold d-flex align-items-center justify-content-center flex-grow-1 gap-2">
+                <i data-feather="message-circle" style="width: 18px;"></i> Hubungi WhatsApp
+              </a>
+              <button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-center px-3" 
+                      onclick="navigator.clipboard.writeText(`{{ $pesan }}`); alert('Pesan berhasil disalin!');" title="Salin Pesan">
+                <i data-feather="copy" style="width: 18px;"></i>
+              </button>
+            </div>
+            <div class="text-muted small mt-2 text-center" style="font-size: 0.75rem;">
+              Pesan WA otomatis akan terbuka dengan format pengingat tagihan.
+            </div>
+          @else
+            <div class="alert alert-warning py-2 px-3 small mb-0 d-flex align-items-center gap-2">
+              <i data-feather="alert-triangle" style="width: 16px;"></i> Nomor WhatsApp pelanggan tidak tersedia atau tidak valid.
+            </div>
+          @endif
+        </div>
+
+        {{-- Email Reminder Box --}}
+        <div class="mt-3 pt-3 border-top">
+          <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+            <i data-feather="mail" style="width: 18px;"></i> Email Pengingat
+          </h6>
+          
+          @if($piutang->pelanggan->email)
+            <div class="mb-2 small">
+              <span class="text-muted">Otomasi (H-3, H-0, Telat):</span> 
+              @if($piutang->email_reminder_enabled)
+                <span class="badge bg-success-subtle text-success">Aktif @ {{ \Carbon\Carbon::parse($piutang->reminder_send_time)->format('H:i') }} WIB</span>
+              @else
+                <span class="badge bg-secondary-subtle text-secondary">Nonaktif</span>
+              @endif
+            </div>
+
+            <div class="mb-3 small">
+              <span class="text-muted">Riwayat Pengiriman:</span> 
+              @if($piutang->last_email_reminder_sent_at)
+                <strong>{{ $piutang->last_email_reminder_sent_at->isoFormat('D MMM Y, HH:mm') }}</strong>
+                <span class="text-muted">({{ $piutang->email_reminder_count }}x terkirim)</span>
+              @else
+                Belum pernah dikirim
+              @endif
+            </div>
+
+            <div class="d-flex gap-2">
+              <form method="POST" action="{{ route('umkm.piutang.email.send', $piutang->id) }}" onsubmit="return confirm('Kirim email pengingat manual sekarang?')" class="flex-grow-1">
+                @csrf
+                <button type="submit" class="btn btn-primary fw-bold w-100 d-flex align-items-center justify-content-center gap-2">
+                  <i data-feather="send" style="width: 18px;"></i> Kirim Email
+                </button>
+              </form>
+              <a href="{{ route('umkm.piutang.email.preview', $piutang->id) }}" target="_blank" class="btn btn-outline-secondary d-flex align-items-center justify-content-center px-3" title="Preview Email">
+                <i data-feather="eye" style="width: 18px;"></i>
+              </a>
+            </div>
+            
+          @else
+            <div class="alert alert-warning py-2 px-3 small mb-0 d-flex align-items-center gap-2">
+              <i data-feather="alert-triangle" style="width: 16px;"></i> Pelanggan belum memiliki alamat Email, cek <a href="{{ route('umkm.etalase.pelanggan.index') }}" class="alert-link">Data Pelanggan</a>.
+            </div>
+          @endif
+        </div>
+
       </div>
     </div>
   </div>
@@ -87,7 +173,7 @@
               <label class="form-label small">Jumlah (Rp)</label>
               <input type="number" name="jumlah_bayar" class="form-control form-control-sm" required
                      min="1" max="{{ $piutang->sisa }}" step="1000"
-                     placeholder="Maks: {{ number_format($piutang->sisa, 0, ',', '.') }}">
+                     placeholder="Maks: {{ format_angka($piutang->sisa) }}">
             </div>
             <div class="col-md-4">
               <label class="form-label small">Metode</label>
@@ -117,7 +203,7 @@
         @if($piutang->pembayaran->isEmpty())
           <p class="text-muted text-center py-3 mb-0">Belum ada pembayaran yang dicatat.</p>
         @else
-          <table class="table table-sm mb-0">
+          <table class="table table-sm mb-0 table-hover table-borderless align-middle">
             <thead class="table-light">
               <tr>
                 <th>Tanggal</th>
@@ -130,7 +216,7 @@
               @foreach($piutang->pembayaran->sortByDesc('tanggal_bayar') as $bayar)
                 <tr>
                   <td>{{ \Carbon\Carbon::parse($bayar->tanggal_bayar)->isoFormat('D MMM Y') }}</td>
-                  <td class="text-success fw-semibold">Rp {{ number_format($bayar->jumlah_bayar, 0, ',', '.') }}</td>
+                  <td  class="text-success fw-semibold text-end fw-medium">{{ rupiah($bayar->jumlah_bayar) }}</td>
                   <td>{{ $bayar->metode_bayar ?? '-' }}</td>
                   <td class="text-muted small">{{ $bayar->catatan ?? '-' }}</td>
                 </tr>

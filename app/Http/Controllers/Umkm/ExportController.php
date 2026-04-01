@@ -335,17 +335,32 @@ class ExportController extends Controller
             $headers = ['Tanggal', 'Transaksi', 'Msk Qty', 'Msk Harga', 'Msk Total', 'Klr Qty', 'Klr Harga', 'Klr Total', 'Sld Qty', 'Sld Total'];
             $data = [];
             foreach ($filteredLedger as $row) {
+                $isMasuk = $row['jenis'] === 'MASUK';
+                $masukNilai = $isMasuk ? ($row['masuk_qty'] * $row['masuk_harga']) : 0;
+                
+                $keluarQtyTotal = $isMasuk ? 0 : $row['keluar_qty'];
+                $keluarDetails = $row['keluar_detail'] ?? [];
+                
+                $keluarHargaAvg = 0;
+                $keluarNilaiTotal = 0;
+                if (!$isMasuk && count($keluarDetails) > 0) {
+                    foreach($keluarDetails as $det) {
+                        $keluarNilaiTotal += ($det['qty'] * $det['harga']);
+                    }
+                    $keluarHargaAvg = $keluarQtyTotal > 0 ? ($keluarNilaiTotal / $keluarQtyTotal) : 0;
+                }
+
                 $data[] = [
                     $row['tanggal'] ? Carbon::parse($row['tanggal'])->format('d/m/Y') : '-',
                     $row['jenis'] . ($row['ref_tipe'] ? ' - ' . $row['ref_tipe'] : ''),
-                    $row['qty_masuk'] ?: '',
-                    $row['harga_masuk'] ?: '',
-                    $row['total_masuk'] ?: '',
-                    $row['qty_keluar'] ?: '',
-                    $row['harga_keluar'] ?: '',
-                    $row['total_keluar'] ?: '',
-                    $row['qty_saldo'],
-                    $row['total_saldo']
+                    $isMasuk ? $row['masuk_qty'] : '',
+                    $isMasuk ? $row['masuk_harga'] : '',
+                    $isMasuk ? $masukNilai : '',
+                    !$isMasuk ? $keluarQtyTotal : '',
+                    !$isMasuk ? $keluarHargaAvg : '',
+                    !$isMasuk ? $keluarNilaiTotal : '',
+                    $row['saldo_qty'],
+                    $row['saldo_nilai']
                 ];
             }
             return $this->exportService->toExcel($title, $headers, $data, $filename);

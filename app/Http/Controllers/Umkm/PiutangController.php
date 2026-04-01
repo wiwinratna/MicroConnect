@@ -34,6 +34,7 @@ class PiutangController extends Controller
         $request->validate([
             'nama_pelanggan' => 'required|string|max:100',
             'no_whatsapp'    => 'nullable|string|max:20',
+            'email'          => 'nullable|email|max:150',
             'alamat'         => 'nullable|string|max:255',
             'catatan'        => 'nullable|string',
         ]);
@@ -42,6 +43,7 @@ class PiutangController extends Controller
             'umkm_id'        => $this->getUmkm()->id,
             'nama_pelanggan' => $request->nama_pelanggan,
             'no_whatsapp'    => $request->no_whatsapp,
+            'email'          => $request->email,
             'alamat'         => $request->alamat,
             'catatan'        => $request->catatan,
         ]);
@@ -102,6 +104,8 @@ class PiutangController extends Controller
             'jatuh_tempo'  => 'required|date|after_or_equal:tanggal',
             'nominal_awal' => 'required|numeric|min:1',
             'catatan'      => 'nullable|string',
+            'email_reminder_enabled' => 'nullable|boolean',
+            'reminder_send_time'     => 'nullable|date_format:H:i',
         ]);
 
         $umkm = $this->getUmkm();
@@ -125,6 +129,8 @@ class PiutangController extends Controller
             'sisa'          => $request->nominal_awal,
             'status'        => 'belum_lunas',
             'catatan'       => $request->catatan,
+            'email_reminder_enabled' => $request->boolean('email_reminder_enabled'),
+            'reminder_send_time'     => $request->reminder_send_time ?? '09:00:00',
         ]);
 
         return redirect()->route('umkm.piutang.index')
@@ -145,26 +151,50 @@ class PiutangController extends Controller
     {
         abort_if($piutang->umkm_id !== $this->getUmkm()->id, 403);
 
-        $request->validate([
+        $sisa = (float) $piutang->sisa;
+
+        // Validasi dasar
+        $rules = [
             'tanggal_bayar' => 'required|date',
-            'jumlah_bayar'  => 'required|numeric|min:1|max:' . $piutang->sisa,
+            'jumlah_bayar'  => 'required|numeric|min:1|max:' . $sisa,
             'metode_bayar'  => 'nullable|string|max:50',
             'catatan'       => 'nullable|string',
+        ];
+
+        // Jika pembayaran parsial (< sisa), jatuh tempo baru WAJIB diisi
+        $jumlahBayar = (float) $request->jumlah_bayar;
+        if ($jumlahBayar > 0 && $jumlahBayar < $sisa) {
+            $rules['jatuh_tempo_baru'] = 'required|date|after:today';
+        }
+
+        $request->validate($rules, [
+            'jatuh_tempo_baru.required' => 'Jatuh tempo baru wajib diisi karena pembayaran belum lunas.',
+            'jatuh_tempo_baru.after'    => 'Jatuh tempo baru harus setelah hari ini.',
+            'jumlah_bayar.max'          => 'Jumlah bayar tidak boleh melebihi sisa piutang (Rp ' . number_format($sisa, 0, ',', '.') . ').',
+            'jumlah_bayar.min'          => 'Jumlah bayar harus lebih dari 0.',
         ]);
 
-        $pembayaran = $piutang->catatPembayaran(
-            (float) $request->jumlah_bayar,
-            $request->tanggal_bayar,
-            $request->metode_bayar,
-            $request->catatan
-        );
+        $pembayaran = DB::transaction(function () use ($request, $piutang, $jumlahBayar) {
+            $pembayaran = $piutang->catatPembayaran(
+                $jumlahBayar,
+                $request->tanggal_bayar,
+                $request->metode_bayar,
+                $request->catatan,
+                $request->jatuh_tempo_baru  // null jika lunas penuh
+            );
 
-        // ======================
-        // (E) DELEGATE POSTING JURNAL KE ACCOUNTING SERVICE
-        // ======================
-        $accService = new \App\Services\AccountingService();
-        $accService->jurnalPembayaranPiutang($this->getUmkm(), $pembayaran);
+            // Delegate posting jurnal ke AccountingService
+            $accService = new \App\Services\AccountingService();
+            $accService->jurnalPembayaranPiutang($this->getUmkm(), $pembayaran);
 
-        return back()->with('success', 'Pembayaran berhasil dicatat dan jurnal penerimaan kas terbentuk.');
+            return $pembayaran;
+        });
+
+        $isPelunasan = $pembayaran->is_pelunasan;
+        $msg = $isPelunasan
+            ? 'Pelunasan piutang berhasil dicatat. Jurnal penerimaan kas terbentuk.'
+            : 'Pembayaran parsial berhasil dicatat. Sisa piutang: Rp ' . number_format($piutang->fresh()->sisa, 0, ',', '.') . '. Jatuh tempo diperbarui.';
+
+        return back()->with('success', $msg);
     }
 }

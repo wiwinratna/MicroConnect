@@ -36,7 +36,7 @@ class ExportService
         $row = 3;
         $col = 1;
         foreach ($headers as $header) {
-            $sheet->setCellValueByColumnAndRow($col, $row, $header);
+            $sheet->setCellValue([$col, $row], $header);
             $col++;
         }
 
@@ -62,7 +62,7 @@ class ExportService
         foreach ($data as $rowData) {
             $col = 1;
             foreach ($rowData as $cellData) {
-                $sheet->setCellValueByColumnAndRow($col, $row, $cellData);
+                $sheet->setCellValue([$col, $row], $cellData);
                 $col++;
             }
             $row++;

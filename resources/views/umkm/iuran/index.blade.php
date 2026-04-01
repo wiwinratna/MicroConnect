@@ -25,7 +25,7 @@
       @else
         <strong>⚠️ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} belum dibayar.</strong>
         <br>
-        <small>Nominal: <strong>Rp {{ number_format($bulanIni->nominal, 0, ',', '.') }}</strong>
+        <small>Nominal: <strong>{{ rupiah($bulanIni->nominal) }}</strong>
         &bull; Jatuh tempo: <strong>{{ $bulanIni->jatuh_tempo?->isoFormat('D MMMM Y') ?? '-' }}</strong></small>
         <br>
         {{-- Tombol bayar — placeholder (Midtrans diintegrasikan di pengembangan lanjutan) --}}
@@ -39,7 +39,7 @@
 <div class="card border-0 shadow-sm">
   <div class="card-header bg-transparent fw-semibold">Riwayat Iuran</div>
   <div class="card-body p-0">
-    <table class="table table-hover mb-0">
+    <table class="table table-hover mb-0 table-borderless align-middle">
       <thead class="table-light">
         <tr>
           <th>Periode</th>
@@ -58,7 +58,7 @@
                 <span class="badge bg-primary ms-1">Bulan Ini</span>
               @endif
             </td>
-            <td>Rp {{ number_format($iuran->nominal, 0, ',', '.') }}</td>
+            <td class="text-end fw-medium">{{ rupiah($iuran->nominal) }}</td>
             <td>{{ $iuran->jatuh_tempo?->isoFormat('D MMM Y') ?? '-' }}</td>
             <td>
               @if($iuran->status === 'lunas')
@@ -81,7 +81,7 @@
 
 <div class="mt-3">
   <small class="text-muted">
-    💡 Iuran dikenakan sebesar <strong>Rp {{ number_format(env('IURAN_DEFAULT', 50000), 0, ',', '.') }}</strong>/bulan untuk semua level UMKM.
+    💡 Iuran dikenakan sebesar <strong>{{ rupiah(env('IURAN_DEFAULT', 50000)) }}</strong>/bulan untuk semua level UMKM.
     Integrasi pembayaran digital (Midtrans) tersedia di pengembangan lanjutan.
   </small>
 </div>

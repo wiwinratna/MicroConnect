@@ -25,7 +25,7 @@
 <div class="card border-0 shadow-sm mb-4" style="border-radius:12px; background:linear-gradient(135deg,#ff6b6b,#ee5a24);">
     <div class="card-body text-white py-3">
         <div class="small opacity-75">Total Beban Operasional Bulan Ini</div>
-        <div class="h3 mb-0 fw-bold">Rp {{ number_format($totalBeban, 0, ',', '.') }}</div>
+        <div class="h3 mb-0 fw-bold">{{ rupiah($totalBeban) }}</div>
     </div>
 </div>
 
@@ -38,7 +38,7 @@
                 <a href="{{ route('umkm.beban.create') }}" class="btn btn-primary">Catat Beban Pertama</a>
             </div>
         @else
-        <table class="table table-hover mb-0">
+        <table class="table table-hover mb-0 table-borderless align-middle">
             <thead class="table-light">
                 <tr>
                     <th>Tanggal</th>
@@ -56,14 +56,14 @@
                         {{ $b->nama_akun }}
                     </td>
                     <td class="small text-muted">{{ $b->keterangan }}</td>
-                    <td class="text-end fw-semibold">Rp {{ number_format($b->debit, 0, ',', '.') }}</td>
+                    <td  class="text-end fw-semibold fw-medium">{{ rupiah($b->debit) }}</td>
                 </tr>
                 @endforeach
             </tbody>
             <tfoot class="table-light">
                 <tr>
                     <td colspan="3" class="fw-bold">Total</td>
-                    <td class="text-end fw-bold text-danger">Rp {{ number_format($totalBeban, 0, ',', '.') }}</td>
+                    <td  class="text-end fw-bold text-danger fw-medium">{{ rupiah($totalBeban) }}</td>
                 </tr>
             </tfoot>
         </table>

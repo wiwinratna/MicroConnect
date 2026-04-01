@@ -19,8 +19,8 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <table class="table mb-0">
-            <thead>
+        <table class="table mb-0 table-hover table-borderless align-middle">
+            <thead class="table-light">
             <tr>
                 <th>Kode</th>
                 <th>Tanggal</th>
@@ -37,7 +37,7 @@
                             {{ $p->details->count() }} item produksi
                             <div class="small">
                                 @foreach($p->details as $d)
-                                    • {{ $d->produk->nama_produk ?? '-' }} ({{ number_format($d->qty_hasil, 3, ',', '.') }})
+                                    • {{ $d->produk->nama_produk ?? '-' }} ({{ format_angka($d->qty_hasil) }})
                                     <br>
                                 @endforeach
                             </div>

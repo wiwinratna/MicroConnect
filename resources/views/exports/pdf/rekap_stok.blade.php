@@ -2,7 +2,7 @@
 
 @section('content')
 <table>
-    <thead>
+    <thead class="table-light">
         <tr>
             <th>No</th>
             <th>Nama Bahan Baku</th>
@@ -24,7 +24,7 @@
                 <td class="text-right text-bold" style="color:#2e7d32;">{{ $s->masuk }}</td>
                 <td class="text-right text-bold" style="color:#d32f2f;">{{ $s->keluar }}</td>
                 <td class="text-right text-bold">{{ $s->saldo }}</td>
-                <td class="text-right">{{ number_format($s->nilai_masuk, 0, ',', '.') }}</td>
+                <td  class="text-right text-end fw-medium">{{ format_angka($s->nilai_masuk) }}</td>
             </tr>
         @empty
             <tr><td colspan="7" class="text-center">Tidak ada mutasi stok di periode ini.</td></tr>
@@ -33,7 +33,7 @@
     <tfoot>
         <tr>
             <th colspan="6" class="text-right">Total Nilai Bahan Baku Masuk</th>
-            <th class="text-right">{{ number_format($totalNilaiMasuk, 0, ',', '.') }}</th>
+            <th class="text-right">{{ format_angka($totalNilaiMasuk) }}</th>
         </tr>
     </tfoot>
 </table>

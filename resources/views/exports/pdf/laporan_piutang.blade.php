@@ -2,7 +2,7 @@
 
 @section('content')
 <table>
-    <thead>
+    <thead class="table-light">
         <tr>
             <th width="5%">No</th>
             <th width="15%">Kode Piutang</th>
@@ -32,9 +32,9 @@
                     <b>{{ $p->pelanggan->nama_pelanggan ?? 'Dihapus' }}</b>
                     <br><small>{{ $p->status === 'lunas' ? '(Lunas)' : '(Belum Lunas)' }}</small>
                 </td>
-                <td class="text-right">{{ number_format($p->nominal_awal, 0, ',', '.') }}</td>
-                <td class="text-right" style="color:#2e7d32;">{{ number_format($p->sudah_dibayar, 0, ',', '.') }}</td>
-                <td class="text-right text-bold" style="color:#d32f2f;">{{ number_format($p->sisa, 0, ',', '.') }}</td>
+                <td  class="text-right text-end fw-medium">{{ format_angka($p->nominal_awal) }}</td>
+                <td style="color:#2e7d32;"  class="text-right text-end fw-medium">{{ format_angka($p->sudah_dibayar) }}</td>
+                <td style="color:#d32f2f;"  class="text-right text-bold text-end fw-medium">{{ format_angka($p->sisa) }}</td>
             </tr>
         @empty
             <tr><td colspan="7" class="text-center">Tidak ada catatan piutang.</td></tr>
@@ -43,9 +43,9 @@
     <tfoot>
         <tr>
             <th colspan="4" class="text-right">Total Akumulasi</th>
-            <th class="text-right">{{ number_format($tAwal, 0, ',', '.') }}</th>
-            <th class="text-right text-bold" style="color:#2e7d32;">{{ number_format($tDibayar, 0, ',', '.') }}</th>
-            <th class="text-right text-bold" style="color:#d32f2f; font-size:12px;">{{ number_format($tSisa, 0, ',', '.') }}</th>
+            <th class="text-right">{{ format_angka($tAwal) }}</th>
+            <th class="text-right text-bold" style="color:#2e7d32;">{{ format_angka($tDibayar) }}</th>
+            <th class="text-right text-bold" style="color:#d32f2f; font-size:12px;">{{ format_angka($tSisa) }}</th>
         </tr>
     </tfoot>
 </table>

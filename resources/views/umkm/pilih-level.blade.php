@@ -49,7 +49,7 @@
                             <div class="price-box mb-3">
                                 @if($level->iuran_bulanan > 0)
                                     <span class="price">
-                                        Rp {{ number_format($level->iuran_bulanan, 0, ',', '.') }}
+                                        {{ rupiah($level->iuran_bulanan) }}
                                     </span>
                                     <span class="price-sub text-muted">/bulan</span>
                                 @else

@@ -2,7 +2,7 @@
 
 @section('content')
 <table>
-    <thead>
+    <thead class="table-light">
         <tr>
             <th width="5%">No</th>
             <th width="12%">Tanggal</th>
@@ -26,7 +26,7 @@
                         <div>- {{ $d->bahan->nama_bahan ?? 'Bahan Dihapus' }} ({{ $d->qty }})</div>
                     @endforeach
                 </td>
-                <td class="text-right">{{ number_format($p->total, 0, ',', '.') }}</td>
+                <td  class="text-right text-end fw-medium">{{ format_angka($p->total) }}</td>
             </tr>
         @empty
             <tr><td colspan="6" class="text-center">Tidak ada transaksi pembelian.</td></tr>
@@ -35,7 +35,7 @@
     <tfoot>
         <tr>
             <th colspan="5" class="text-right">Total Pembelian</th>
-            <th class="text-right text-bold" style="font-size:12px;">{{ number_format($grandTotal, 0, ',', '.') }}</th>
+            <th class="text-right text-bold" style="font-size:12px;">{{ format_angka($grandTotal) }}</th>
         </tr>
     </tfoot>
 </table>

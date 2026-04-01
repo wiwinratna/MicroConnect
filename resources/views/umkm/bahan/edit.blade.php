@@ -35,7 +35,7 @@
                     <div class="d-flex gap-3 flex-wrap">
                         <div>
                             <small class="text-muted d-block">Qty Awal</small>
-                            <strong>{{ number_format($bahan->stok_awal, 3, ',', '.') }} {{ $bahan->satuan }}</strong>
+                            <strong>{{ format_angka($bahan->stok_awal) }} {{ $bahan->satuan }}</strong>
                         </div>
                         <div>
                             <small class="text-muted d-block">Harga / Unit</small>

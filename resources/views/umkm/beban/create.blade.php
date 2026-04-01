@@ -32,9 +32,10 @@
                 {{-- Nominal --}}
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Nominal (Rp) <span class="text-danger">*</span></label>
-                    <input type="number" name="nominal" class="form-control"
-                           min="1" step="1" placeholder="150000"
-                           value="{{ old('nominal') }}" required>
+                    <input type="text" id="nominal_display" class="form-control"
+                           placeholder="150.000"
+                           value="{{ old('nominal') }}" required inputmode="numeric">
+                    <input type="hidden" name="nominal" id="nominal_hidden" value="{{ old('nominal') }}">
                 </div>
 
                 {{-- Keterangan --}}
@@ -118,6 +119,23 @@ document.addEventListener('DOMContentLoaded', function () {
         if (r.checked) update(r);
         r.addEventListener('change', () => update(r));
     });
+
+    const nominalDisplay = document.getElementById('nominal_display');
+    const nominalHidden = document.getElementById('nominal_hidden');
+
+    if (nominalDisplay) {
+        nominalDisplay.addEventListener('input', function() {
+            const raw = this.value.replace(/\D/g, '');
+            nominalHidden.value = raw;
+            const num = parseInt(raw) || 0;
+            this.value = num > 0 ? num.toLocaleString('id-ID') : '';
+        });
+        
+        // Trigger formatting pada nilai old(nominal) kalau ada
+        if (nominalDisplay.value) {
+            nominalDisplay.dispatchEvent(new Event('input'));
+        }
+    }
 });
 </script>
 @endpush

@@ -289,7 +289,7 @@
                     @if($umkm->level)
                         <span class="badge level-fee-badge">
                             @if($umkm->level->iuran_bulanan > 0)
-                                Rp {{ number_format($umkm->level->iuran_bulanan, 0, ',', '.') }}/bulan
+                                {{ rupiah($umkm->level->iuran_bulanan) }}/bulan
                             @else
                                 Gratis
                             @endif

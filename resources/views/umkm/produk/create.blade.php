@@ -88,7 +88,7 @@
                         <input type="text"
                                id="harga_pokok_display"
                                class="form-control bg-light"
-                               value="{{ old('harga_pokok') ? number_format(old('harga_pokok'), 0, ',', '.') : '' }}"
+                               value="{{ old('harga_pokok') ? format_angka(old('harga_pokok')) : '' }}"
                                readonly
                                placeholder="Klik tombol Simulasi dulu">
                         <input type="hidden" name="harga_pokok" id="harga_pokok" value="{{ old('harga_pokok') }}">
@@ -98,17 +98,15 @@
                         </small>
                     </div>
 
-                    {{-- HARGA JUAL --}}
                     <div class="col-md-4">
                         <label class="form-label">Harga Jual (Rp)</label>
-                        <input type="number"
-                               name="harga_jual"
-                               id="harga_jual"
+                        <input type="text"
+                               id="harga_jual_display"
                                class="form-control"
-                               min="0"
-                               step="1"
-                               value="{{ old('harga_jual') }}"
-                               placeholder="Contoh: 15000">
+                               value="{{ old('harga_jual') ? number_format(old('harga_jual'), 0, ',', '.') : '' }}"
+                               placeholder="Contoh: 15.000"
+                               inputmode="numeric">
+                        <input type="hidden" name="harga_jual" id="harga_jual" value="{{ old('harga_jual') }}">
                         <small class="text-muted">
                             Setelah HPP ada, sistem akan hitung markup otomatis.
                         </small>
@@ -189,17 +187,14 @@
                 <div class="mt-3" id="komposisi-wrapper">
                     {{-- baris komposisi awal --}}
                     <div class="row g-2 komposisi-row mb-2">
-
                         <div class="col-md-4 position-relative">
                             <input type="hidden" name="bahan_id[]">
-
                             <label class="form-label small mb-1">Bahan Baku</label>
                             <input type="text"
                                    name="bahan_nama[]"
                                    class="form-control bahan-input"
                                    placeholder="Ketik nama bahan..."
                                    autocomplete="off">
-
                             <div class="autocomplete-panel list-group shadow-sm bahan-panel"
                                  style="position:absolute; z-index:30; top:100%; left:0; right:0;
                                         max-height:220px; overflow:auto; display:none;">
@@ -226,350 +221,197 @@
                             <small class="text-muted">Satuan pemakaian resep ini</small>
                         </div>
 
-                        {{-- NEW: harga per unit --}}
                         <div class="col-md-2">
                             <label class="form-label small mb-1">Harga / unit</label>
                             <input type="text" class="form-control harga-display" readonly placeholder="Rp 0">
                             <small class="text-muted small harga-satuan-note"></small>
                         </div>
 
-                        {{-- NEW: biaya baris --}}
                         <div class="col-md-1">
                             <label class="form-label small mb-1">Biaya</label>
                             <input type="text" class="form-control biaya-display" readonly placeholder="Rp 0">
                         </div>
 
                         <div class="col-md-1 d-flex align-items-end">
-                            <button type="button"
-                                    class="btn btn-danger w-100 remove-row"
-                                    title="Hapus baris">
-                                ×
+                            <button type="button" class="btn btn-sm btn-action btn-action-delete remove-row" title="Hapus">
+                                <i data-feather="trash-2"></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-outline-primary mt-2" id="add-row">
-                    + Tambah Baris Bahan
-                </button>
-                <small class="text-muted d-block mt-1">
-                    Baris kosong (tanpa bahan atau qty) akan diabaikan saat simpan.
-                </small>
-
-                {{-- ===================== SUBMIT ===================== --}}
-                <div class="mt-4 d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        Simpan Produk
+                <div class="mt-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-add-row">
+                        + Tambah Bahan
                     </button>
                 </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Simpan Produk
+                    </button>
+                    <a href="{{ route('umkm.produk.index') }}" class="btn btn-outline-secondary">Batal</a>
+                </div>
+
             </form>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    @php
-    $bahanMaster = isset($bahanBaku)
-    ? $bahanBaku->map(fn($b) => [
-        'id'     => $b->id,
-        'nama'   => $b->nama_bahan,
-        'satuan' => $b->satuan,
-        'harga'  => (float) ($b->harga_last ?? 0), // <-- ini kuncinya!
-    ])
-    : collect();
-    @endphp
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const wrapper   = document.getElementById('komposisi-wrapper');
-    const addRowBtn = document.getElementById('add-row');
+    const bahanMaster    = @json($bahanMaster ?? []);
+    const overheadPerUnit = {{ $overheadPerUnit ?? 0 }};
 
-    const btnHitung = document.getElementById('btn-hitung-hpp');
-    const hargaPokokHidden  = document.getElementById('harga_pokok');
-    const hargaPokokDisplay = document.getElementById('harga_pokok_display');
-    const hargaJualInput    = document.getElementById('harga_jual');
+    const wrapper          = document.getElementById('komposisi-wrapper');
+    const addRowBtn        = document.getElementById('btn-add-row');
+    const hargaPokokHidden = document.getElementById('harga_pokok');
+    const hargaPokokDisplay= document.getElementById('harga_pokok_display');
+    const hargaJualInput   = document.getElementById('harga_jual');
+    const btnHitung        = document.getElementById('btn-hitung-hpp');
+    const breakdownBox     = document.getElementById('hpp-breakdown');
+    const biayaBahanDisplay= document.getElementById('biaya_bahan_display');
+    const overheadDisplay  = document.getElementById('overhead_display');
+    const hppDisplay       = document.getElementById('hpp_display');
+    const hppNote          = document.getElementById('hpp_note');
+    const markupBox        = document.getElementById('markup-box');
+    const markupText       = document.getElementById('markup_text');
+    const markupSub        = document.getElementById('markup_subtext');
 
-    const breakdownBox = document.getElementById('hpp-breakdown');
-    const biayaBahanDisplay = document.getElementById('biaya_bahan_display');
-    const overheadDisplay   = document.getElementById('overhead_display');
-    const hppDisplay        = document.getElementById('hpp_display');
-    const hppNote           = document.getElementById('hpp_note');
-
-    const markupBox = document.getElementById('markup-box');
-    const markupText = document.getElementById('markup_text');
-    const markupSub  = document.getElementById('markup_subtext');
-
-    const bahanMaster = @json($bahanMaster);
-    const overheadPerUnit = Number(@json($overheadPerUnit));
-
-    const unitMaster = [
-        'ml', 'milliliter',
-        'liter', 'l',
-        'gram', 'g',
-        'kg', 'kilogram',
-        'pcs', 'buah', 'lembar',
-        'lusin', 'rim'
-    ];
-
-    function rupiah(n) {
-        n = Number(n || 0);
-        return 'Rp ' + n.toLocaleString('id-ID', { maximumFractionDigits: 0 });
+    function rupiah(num) {
+        return 'Rp ' + Math.round(num).toLocaleString('id-ID');
     }
 
-    // ====== KONVERSI (kg<->g, l<->ml) ======
-    function convertUnit(qty, from, to) {
-        from = (from || '').toLowerCase().trim();
-        to   = (to || '').toLowerCase().trim();
-        if (!from || !to || from === to) return qty;
+    // ==== AUTOCOMPLETE ====
+    function setupAutocomplete(row) {
+        const input  = row.querySelector('.bahan-input');
+        const hidden = row.querySelector('input[name="bahan_id[]"]');
+        const panel  = row.querySelector('.bahan-panel');
 
-        const mass = { g:1, gram:1, kg:1000, kilogram:1000 };
-        if (mass[from] && mass[to]) return qty * (mass[from] / mass[to]);
+        if (!input || !panel) return;
 
-        const vol = { ml:1, milliliter:1, l:1000, liter:1000 };
-        if (vol[from] && vol[to]) return qty * (vol[from] / vol[to]);
+        input.addEventListener('input', function () {
+            const q = this.value.toLowerCase().trim();
+            panel.innerHTML = '';
+            hidden.value = '';
 
-        // pcs <-> gram tidak bisa otomatis tanpa rule (berat per pcs)
+            if (!q) { panel.style.display = 'none'; return; }
+
+            const matches = bahanMaster.filter(b =>
+                b.nama.toLowerCase().includes(q)
+            ).slice(0, 8);
+
+            if (!matches.length) { panel.style.display = 'none'; return; }
+
+            matches.forEach(b => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'list-group-item list-group-item-action border-0 py-2 px-3';
+                item.innerHTML = `<strong>${b.nama}</strong> <small class="text-muted">${b.satuan}</small>`;
+                item.addEventListener('click', function () {
+                    input.value  = b.nama;
+                    hidden.value = b.id;
+                    panel.style.display = 'none';
+                    updateRowCost(row);
+                });
+                panel.appendChild(item);
+            });
+            panel.style.display = 'block';
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!row.contains(e.target)) panel.style.display = 'none';
+        });
+    }
+
+    function syncBahanIdByName(row) {
+        const input  = row.querySelector('.bahan-input');
+        const hidden = row.querySelector('input[name="bahan_id[]"]');
+        if (!input || !hidden || hidden.value) return;
+        const found = bahanMaster.find(b => b.nama.toLowerCase() === input.value.toLowerCase().trim());
+        if (found) hidden.value = found.id;
+    }
+
+    // ==== KONVERSI SATUAN ====
+    const unitRatios = {
+        'kg': { 'g': 0.001, 'kg': 1, 'gr': 0.001, 'gram': 0.001 },
+        'liter': { 'ml': 0.001, 'liter': 1, 'cc': 0.001 },
+        'pcs': { 'pcs': 1 }, 'buah': { 'buah': 1 },
+    };
+
+    function convertUnit(qty, fromUnit, toUnit) {
+        if (!fromUnit || !toUnit || fromUnit === toUnit) return qty;
+        const base = toUnit.toLowerCase();
+        const from = fromUnit.toLowerCase();
+        const groupKeys = Object.keys(unitRatios);
+        for (const key of groupKeys) {
+            const group = unitRatios[key];
+            if (base in group && from in group) {
+                return qty * (group[from] / group[base]);
+            }
+        }
         return qty;
     }
 
-    // ====== REALTIME: update harga/unit & biaya per baris ======
+    // ==== UPDATE ROW COST ====
     function updateRowCost(row) {
-        const bahanId = row.querySelector('input[name="bahan_id[]"]')?.value;
-        const qtyVal  = row.querySelector('input[name="qty[]"]')?.value;
-        const unitInp = row.querySelector('input[name="satuan[]"]')?.value;
-
+        const hidden  = row.querySelector('input[name="bahan_id[]"]');
+        const qtyEl   = row.querySelector('.qty-input');
+        const satuanEl= row.querySelector('.satuan-input');
         const hargaEl = row.querySelector('.harga-display');
         const biayaEl = row.querySelector('.biaya-display');
         const noteEl  = row.querySelector('.harga-satuan-note');
 
-        if (hargaEl) hargaEl.value = 'Rp 0';
-        if (biayaEl) biayaEl.value = 'Rp 0';
-        if (noteEl)  noteEl.textContent = '';
+        if (!hidden || !qtyEl || !hargaEl || !biayaEl) return;
 
-        if (!bahanId) return;
+        const bahanId = hidden.value;
+        const bahan   = bahanMaster.find(b => String(b.id) === String(bahanId));
 
-        const bahan = bahanMaster.find(b => String(b.id) === String(bahanId));
-        if (!bahan) return;
-
-        const hargaPerBase = Number(bahan.harga || 0);
-        if (hargaEl) hargaEl.value = rupiah(hargaPerBase);
-        if (noteEl) noteEl.textContent = `per ${bahan.satuan || ''}`;
-
-        const qty = Number(qtyVal || 0);
-        if (!qty) return;
-
-        const qtyBase = convertUnit(qty, unitInp, bahan.satuan);
-        if (biayaEl) biayaEl.value = rupiah(qtyBase * hargaPerBase);
-    }
-
-    // ====== FIX: kalau user cuma ngetik nama tanpa klik dropdown ======
-    function syncBahanIdByName(row) {
-        const inputNama = row.querySelector('.bahan-input');
-        const inputId   = row.querySelector('input[name="bahan_id[]"]');
-        const inputSat  = row.querySelector('input[name="satuan[]"]');
-
-        const name = (inputNama?.value || '').trim().toLowerCase();
-        if (!name) return;
-
-        const bahan = bahanMaster.find(b => (b.nama || '').trim().toLowerCase() === name);
-        if (bahan) {
-            inputId.value = bahan.id;
-            if (inputSat && !inputSat.value && bahan.satuan) {
-                inputSat.value = bahan.satuan;
-            }
-            updateRowCost(row);
+        if (!bahan) {
+            hargaEl.value = '';
+            biayaEl.value = '';
+            if (noteEl) noteEl.textContent = '';
+            return;
         }
+
+        const harga   = Number(bahan.harga || 0);
+        const qty     = parseFloat(qtyEl.value) || 0;
+        const satuan  = satuanEl ? satuanEl.value : bahan.satuan;
+        const qtyBase = convertUnit(qty, satuan, bahan.satuan);
+        const biaya   = qtyBase * harga;
+
+        hargaEl.value = rupiah(harga);
+        biayaEl.value = rupiah(biaya);
+        if (noteEl) noteEl.textContent = `per ${bahan.satuan}`;
     }
 
-    // ==== AUTOCOMPLETE BAHAN ====
-    function setupBahanAutocomplete(row) {
-        const inputNama = row.querySelector('.bahan-input');
-        const panel     = row.querySelector('.bahan-panel');
-        const inputId   = row.querySelector('input[name="bahan_id[]"]');
-        const inputSat  = row.querySelector('input[name="satuan[]"]');
-
-        if (!inputNama || !panel) return;
-
-        inputNama.addEventListener('input', function () {
-            const q = this.value.toLowerCase().trim();
-            panel.innerHTML = '';
-            inputId.value = '';
-
-            // reset realtime display
-            updateRowCost(row);
-
-            if (!q) {
-                panel.style.display = 'none';
-                return;
-            }
-
-            const filtered = bahanMaster.filter(b => (b.nama || '').toLowerCase().includes(q));
-            if (!filtered.length) {
-                panel.style.display = 'none';
-                return;
-            }
-
-            filtered.slice(0, 10).forEach(b => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'list-group-item list-group-item-action';
-                btn.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>${b.nama}</span>
-                        <span class="text-muted small">${b.satuan ?? ''}</span>
-                    </div>
-                `;
-                btn.addEventListener('click', () => {
-                    inputNama.value = b.nama;
-                    inputId.value   = b.id;
-
-                    if (inputSat && !inputSat.value && b.satuan) {
-                        inputSat.value = b.satuan;
-                    }
-                    panel.style.display = 'none';
-
-                    // NEW: update biaya per baris
-                    updateRowCost(row);
-                });
-                panel.appendChild(btn);
-            });
-
-            panel.style.display = 'block';
-        });
-
-        inputNama.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                syncBahanIdByName(row);
-                panel.style.display = 'none';
-            }
-        });
-
-        inputNama.addEventListener('blur', function () {
-            setTimeout(() => {
-                panel.style.display = 'none';
-                syncBahanIdByName(row);
-            }, 200);
-        });
-    }
-
-    // ==== AUTOCOMPLETE SATUAN ====
-    function setupUnitAutocomplete(row) {
-        const inputUnit = row.querySelector('.satuan-input');
-        const panel     = row.querySelector('.unit-panel');
-
-        if (!inputUnit || !panel) return;
-
-        inputUnit.addEventListener('input', function () {
-            const q = this.value.toLowerCase().trim();
-            panel.innerHTML = '';
-
-            // NEW: update biaya per baris saat unit berubah
-            updateRowCost(row);
-
-            if (!q) {
-                panel.style.display = 'none';
-                return;
-            }
-
-            const filtered = unitMaster.filter(u => u.toLowerCase().includes(q));
-            if (!filtered.length) {
-                panel.style.display = 'none';
-                return;
-            }
-
-            filtered.slice(0, 10).forEach(u => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'list-group-item list-group-item-action';
-                btn.textContent = u;
-                btn.addEventListener('click', () => {
-                    inputUnit.value = u;
-                    panel.style.display = 'none';
-
-                    // NEW: update biaya per baris
-                    updateRowCost(row);
-                });
-                panel.appendChild(btn);
-            });
-
-            panel.style.display = 'block';
-        });
-
-        inputUnit.addEventListener('blur', function () {
-            setTimeout(() => {
-                const val = (inputUnit.value || '').toLowerCase().trim();
-                if (!val) {
-                    panel.style.display = 'none';
-                    updateRowCost(row);
-                    return;
-                }
-                const valid = unitMaster.some(u => u.toLowerCase() === val);
-                if (!valid) inputUnit.value = '';
-                panel.style.display = 'none';
-
-                updateRowCost(row);
-            }, 200);
-        });
-    }
-
+    // ==== SETUP ROW ====
     function setupRow(row) {
-        setupBahanAutocomplete(row);
-        setupUnitAutocomplete(row);
-
-        // NEW: realtime saat qty/satuan berubah
+        setupAutocomplete(row);
         row.querySelector('.qty-input')?.addEventListener('input', () => updateRowCost(row));
-        row.querySelector('.satuan-input')?.addEventListener('input', () => updateRowCost(row));
+        row.querySelector('.satuan-input')?.addEventListener('change', () => updateRowCost(row));
     }
 
+    // ==== CREATE NEW ROW ====
     function createKomposisiRow() {
-        const row = document.createElement('div');
-        row.classList.add('row', 'g-2', 'komposisi-row', 'mb-2');
+        const firstRow = wrapper.querySelector('.komposisi-row');
+        const newRow   = firstRow.cloneNode(true);
 
-        row.innerHTML = `
-            <div class="col-md-4 position-relative">
-                <input type="hidden" name="bahan_id[]">
-                <label class="form-label small mb-1">Bahan Baku</label>
-                <input type="text" name="bahan_nama[]" class="form-control bahan-input"
-                       placeholder="Ketik nama bahan..." autocomplete="off">
-                <div class="autocomplete-panel list-group shadow-sm bahan-panel"
-                     style="position:absolute; z-index:30; top:100%; left:0; right:0;
-                            max-height:220px; overflow:auto; display:none;"></div>
-            </div>
+        newRow.querySelectorAll('input').forEach(i => {
+            i.value = '';
+            if (i.readOnly && i.type !== 'hidden') { i.placeholder = i.placeholder || 'Rp 0'; }
+        });
+        newRow.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+        const oldPanel = newRow.querySelector('.bahan-panel');
+        if (oldPanel) { oldPanel.innerHTML = ''; oldPanel.style.display = 'none'; }
+        const note = newRow.querySelector('.harga-satuan-note');
+        if (note) note.textContent = '';
 
-            <div class="col-md-2">
-                <label class="form-label small mb-1">Qty per 1 unit</label>
-                <input type="number" step="0.001" name="qty[]" class="form-control qty-input" placeholder="Qty">
-            </div>
-
-            <div class="col-md-2 position-relative">
-                <label class="form-label small mb-1">Satuan</label>
-                <input type="text" name="satuan[]" class="form-control satuan-input"
-                       placeholder="ml/gram/pcs" autocomplete="off">
-                <div class="autocomplete-panel list-group shadow-sm unit-panel"
-                     style="position:absolute; z-index:30; top:100%; left:0; right:0;
-                            max-height:200px; overflow:auto; display:none;"></div>
-            </div>
-
-            <div class="col-md-2">
-                <label class="form-label small mb-1">Harga / unit</label>
-                <input type="text" class="form-control harga-display" readonly placeholder="Rp 0">
-                <small class="text-muted small harga-satuan-note"></small>
-            </div>
-
-            <div class="col-md-1">
-                <label class="form-label small mb-1">Biaya</label>
-                <input type="text" class="form-control biaya-display" readonly placeholder="Rp 0">
-            </div>
-
-            <div class="col-md-1 d-flex align-items-end">
-                <button type="button" class="btn btn-danger w-100 remove-row" title="Hapus baris">×</button>
-            </div>
-        `;
-
-        setupRow(row);
-        return row;
+        setupRow(newRow);
+        return newRow;
     }
 
     // setup row pertama
@@ -580,58 +422,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // hapus row
     wrapper.addEventListener('click', function (e) {
-        if (!e.target.classList.contains('remove-row')) return;
+        const removeBtn = e.target.closest('.remove-row');
+        if (!removeBtn) return;
         const rows = wrapper.querySelectorAll('.komposisi-row');
         if (rows.length === 1) {
-            rows[0].querySelectorAll('input').forEach(i => i.value = '');
-            // reset display
+            rows[0].querySelectorAll('input:not([type=hidden])').forEach(i => i.value = '');
+            rows[0].querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+            rows[0].querySelector('input[name="bahan_id[]"]').value = '';
             updateRowCost(rows[0]);
             return;
         }
-        e.target.closest('.komposisi-row').remove();
+        removeBtn.closest('.komposisi-row').remove();
     });
 
     // ==== HITUNG HPP ====
     function computeBiayaBahan() {
         let total = 0;
-
         wrapper.querySelectorAll('.komposisi-row').forEach(row => {
-            // pastikan id kebaca walau user hanya mengetik
             syncBahanIdByName(row);
-
-            const bahanId = row.querySelector('input[name="bahan_id[]"]')?.value;
-            const qtyVal  = row.querySelector('input[name="qty[]"]')?.value;
-            const unitInp = row.querySelector('input[name="satuan[]"]')?.value;
-
-            const bahan = bahanMaster.find(b => String(b.id) === String(bahanId));
+            const hidden  = row.querySelector('input[name="bahan_id[]"]');
+            const qtyEl   = row.querySelector('.qty-input');
+            const satuanEl= row.querySelector('.satuan-input');
+            const bahanId = hidden?.value;
+            const bahan   = bahanMaster.find(b => String(b.id) === String(bahanId));
             if (!bahanId || !bahan) return;
-
-            const harga = Number(bahan.harga || 0);
-            const qty = Number(qtyVal || 0);
+            const harga   = Number(bahan.harga || 0);
+            const qty     = parseFloat(qtyEl?.value) || 0;
+            const satuan  = satuanEl?.value;
             if (!qty) return;
-
-            const qtyBase = convertUnit(qty, unitInp, bahan.satuan);
+            const qtyBase = convertUnit(qty, satuan, bahan.satuan);
             total += (qtyBase * harga);
-
-            // update tampilan row juga
             updateRowCost(row);
         });
-
         return total;
     }
 
     function updateMarkupInfo() {
-        const hpp = Number(hargaPokokHidden.value || 0);
-        const jual = Number(hargaJualInput.value || 0);
-
-        if (!hpp || hpp <= 0 || !jual) {
-            markupBox.style.display = 'none';
-            return;
-        }
-
+        const hpp  = Number(hargaPokokHidden?.value || 0);
+        const jual = Number(hargaJualInput?.value || 0);
+        if (!hpp || hpp <= 0 || !jual) { markupBox.style.display = 'none'; return; }
         const markup = ((jual - hpp) / hpp) * 100;
         markupBox.style.display = 'block';
-
         markupText.textContent = `Markup kamu: ${markup.toFixed(1)}%`;
         if (markup >= 0) {
             markupSub.textContent = `Harga jual lebih tinggi dari HPP sebesar ${rupiah(jual - hpp)} per unit.`;
@@ -644,13 +475,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const biayaBahan = computeBiayaBahan();
         const hpp = biayaBahan + overheadPerUnit;
 
-        hargaPokokHidden.value = Math.round(hpp);
+        hargaPokokHidden.value  = Math.round(hpp);
         hargaPokokDisplay.value = (hpp > 0) ? Math.round(hpp).toLocaleString('id-ID') : '';
 
         breakdownBox.style.display = 'block';
         biayaBahanDisplay.textContent = rupiah(biayaBahan);
-        overheadDisplay.textContent = rupiah(overheadPerUnit);
-        hppDisplay.textContent = rupiah(hpp);
+        overheadDisplay.textContent   = rupiah(overheadPerUnit);
+        hppDisplay.textContent        = rupiah(hpp);
 
         const period = new Date().toISOString().slice(0,7);
         hppNote.textContent = overheadPerUnit > 0
@@ -660,7 +491,17 @@ document.addEventListener('DOMContentLoaded', function () {
         updateMarkupInfo();
     });
 
-    hargaJualInput?.addEventListener('input', updateMarkupInfo);
+    const hargaJualDisplay = document.getElementById('harga_jual_display');
+    if (hargaJualDisplay) {
+        hargaJualDisplay.addEventListener('input', function() {
+            const raw = this.value.replace(/\D/g, '');
+            hargaJualInput.value = raw;
+            const num = parseInt(raw) || 0;
+            this.value = num > 0 ? num.toLocaleString('id-ID') : '';
+            updateMarkupInfo();
+        });
+    }
+
 });
 </script>
 @endpush

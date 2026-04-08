@@ -10,16 +10,7 @@
   <a href="{{ route('umkm.jurnal.create') }}" class="btn btn-primary">+ Jurnal Manual</a>
 </div>
 
-@if(session('success'))
-  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;">
-      <div class="toast align-items-center text-bg-success border-0 show" role="alert">
-          <div class="d-flex">
-              <div class="toast-body fw-medium">{{ session('success') }}</div>
-              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-          </div>
-      </div>
-  </div>
-@endif
+
 
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">

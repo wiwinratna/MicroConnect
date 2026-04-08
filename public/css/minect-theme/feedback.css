@@ -1,0 +1,99 @@
+/* SOFT BADGES & CHIPS (Custom Class MINECT) */
+.badge {
+  font-weight: 500 !important;
+  padding: 0.4em 0.8em !important;
+  border-radius: var(--mn-radius-sm) !important;
+}
+
+/* Reusable Soft Badges */
+.badge-soft-success {
+  background-color: var(--mn-success-bg) !important;
+  color: var(--mn-success-text) !important;
+  border-radius: var(--mn-radius-pill) !important;
+  border: 1px solid var(--mn-success-border) !important;
+}
+
+.badge-soft-warning {
+  background-color: var(--mn-warning-bg) !important;
+  color: var(--mn-warning-text) !important;
+  border-radius: var(--mn-radius-pill) !important;
+  border: 1px solid var(--mn-warning-border) !important;
+}
+
+.badge-soft-danger {
+  background-color: var(--mn-danger-bg) !important;
+  color: var(--mn-danger-text) !important;
+  border-radius: var(--mn-radius-pill) !important;
+  border: 1px solid var(--mn-danger-border) !important;
+}
+
+.badge-soft-info, .badge-soft-primary {
+  background-color: var(--mn-primary-soft) !important;
+  color: var(--mn-primary) !important;
+  border-radius: var(--mn-radius-pill) !important;
+  border: 1px solid var(--mn-info-border) !important;
+}
+
+/* ALERTS SYSTEM */
+.alert {
+  border-radius: var(--mn-radius-md) !important;
+  border: 1px solid transparent !important;
+  padding: 1rem 1.25rem !important;
+  box-shadow: none !important;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.alert-soft-warning {
+  background-color: var(--mn-warning-bg) !important;
+  color: var(--mn-warning-text) !important;
+  border-color: var(--mn-warning-border) !important;
+}
+
+.alert-soft-success {
+  background-color: var(--mn-success-bg) !important;
+  color: var(--mn-success-text) !important;
+  border-color: var(--mn-success-border) !important;
+}
+
+.alert-soft-info {
+  background-color: var(--mn-info-bg) !important;
+  color: var(--mn-info-text) !important;
+  border-color: var(--mn-info-border) !important;
+}
+
+.alert-soft-danger {
+  background-color: var(--mn-danger-bg) !important;
+  color: var(--mn-danger-text) !important;
+  border-color: var(--mn-danger-border) !important;
+}
+
+/* MODAL SYSTEM (Bentuk lebih rounded) */
+.modal-content {
+  border-radius: var(--mn-radius-lg) !important;
+  border: none !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--mn-border-color) !important;
+  padding: 1.5rem 1.5rem 1rem !important;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: var(--mn-text-main);
+}
+
+.modal-body {
+  padding: 1.5rem !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--mn-border-color) !important;
+  padding: 1rem 1.5rem !important;
+  background-color: var(--mn-bg-body) !important;
+  border-bottom-left-radius: var(--mn-radius-lg) !important;
+  border-bottom-right-radius: var(--mn-radius-lg) !important;
+}

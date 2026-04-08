@@ -18,14 +18,14 @@ class BebanController extends Controller
     public static function kategoriBeban(): array
     {
         return [
-            ['kode' => '610', 'nama' => 'Beban Listrik',       'icon' => '⚡'],
-            ['kode' => '611', 'nama' => 'Beban Air',           'icon' => '💧'],
-            ['kode' => '612', 'nama' => 'Beban Sewa',          'icon' => '🏠'],
-            ['kode' => '613', 'nama' => 'Beban Gaji/Upah',     'icon' => '👥'],
-            ['kode' => '614', 'nama' => 'Beban Transport',     'icon' => '🚛'],
-            ['kode' => '615', 'nama' => 'Beban Internet/Telp', 'icon' => '📱'],
-            ['kode' => '616', 'nama' => 'Beban Kemasan',       'icon' => '📦'],
-            ['kode' => '699', 'nama' => 'Beban Lain-lain',     'icon' => '📋'],
+            ['kode' => '610', 'nama' => 'Beban Listrik',       'icon' => 'zap'],
+            ['kode' => '611', 'nama' => 'Beban Air',           'icon' => 'droplet'],
+            ['kode' => '612', 'nama' => 'Beban Sewa',          'icon' => 'home'],
+            ['kode' => '613', 'nama' => 'Beban Gaji/Upah',     'icon' => 'users'],
+            ['kode' => '614', 'nama' => 'Beban Transport',     'icon' => 'truck'],
+            ['kode' => '615', 'nama' => 'Beban Internet/Telp', 'icon' => 'smartphone'],
+            ['kode' => '616', 'nama' => 'Beban Kemasan',       'icon' => 'package'],
+            ['kode' => '699', 'nama' => 'Beban Lain-lain',     'icon' => 'file-text'],
         ];
     }
 

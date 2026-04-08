@@ -20,12 +20,7 @@
         <a href="{{ route('admin.iuran-periode.index') }}" class="btn btn-outline-secondary">← Kembali</a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+    
 
     {{-- Summary Cards --}}
     <div class="row g-3 mb-4">

@@ -13,9 +13,7 @@
         </div>
 
         {{-- SUCCESS MESSAGE --}}
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+        
 
         {{-- ERROR MESSAGE --}}
         @if($errors->any())

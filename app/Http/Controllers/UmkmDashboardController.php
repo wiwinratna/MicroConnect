@@ -131,6 +131,12 @@ class UmkmDashboardController extends Controller
             // kalau tabel tidak ada / namanya beda, biarin 0 semua
         }
 
+        // =========================
+        // CEK IURAN BULAN INI
+        // =========================
+        $iuranBulanIni = app(\App\Services\IuranService::class)->getOrCreate($umkm->id);
+        $iuranBelumLunas = ($iuranBulanIni && $iuranBulanIni->status !== 'lunas') ? $iuranBulanIni : null;
+
         return view('umkm.dashboard.index', compact(
             'penjualanHariIni',
             'trxHariIni',
@@ -145,7 +151,8 @@ class UmkmDashboardController extends Controller
             'produkMenipis',
             'penjualanTerakhir',
             'produksiLabels7',
-            'produksiData7'
+            'produksiData7',
+            'iuranBelumLunas'
         ));
     }
 }

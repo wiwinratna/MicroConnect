@@ -17,12 +17,7 @@
             </div>
         </div>
 
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <div class="alert-message">{{ session('success') }}</div>
-        </div>
-        @endif
+        
 
         <div class="card">
             <div class="card-body">

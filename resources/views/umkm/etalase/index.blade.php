@@ -24,16 +24,8 @@
             <span class="badge bg-white text-dark border shadow-sm px-3 py-2 rounded-pill">{{ $produk->count() }} Jenis Produk</span>
         </div>
 
-        @if(session('error'))
-            <div class="alert alert-danger mb-4 shadow-sm border-0 rounded-3">
-                <i data-feather="alert-circle" class="me-2" style="width:18px;"></i>{{ session('error') }}
-            </div>
-        @endif
-        @if(session('success'))
-            <div class="alert alert-success mb-4 shadow-sm border-0 rounded-3">
-                <i data-feather="check-circle" class="me-2" style="width:18px;"></i>{{ session('success') }}
-            </div>
-        @endif
+        
+        
 
         {{-- Grid Produk --}}
         <div class="row g-4" id="productGrid">

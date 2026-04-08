@@ -9,38 +9,7 @@
   </div>
 </div>
 
-{{-- Status bulan ini --}}
-@php
-  $bulanIni = $iuranList->firstWhere('periode', now()->format('Y-m'));
-@endphp
 
-@if($bulanIni)
-  <div class="alert {{ $bulanIni->status === 'lunas' ? 'alert-success' : ($bulanIni->isTerlambat() ? 'alert-danger' : 'alert-warning') }} d-flex align-items-center gap-3 mb-4">
-    <div class="flex-grow-1">
-      @if($bulanIni->status === 'lunas')
-        <strong>✅ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} sudah dibayar.</strong>
-        @if($bulanIni->dibayar_pada)
-          <br><small class="text-muted">Dibayar pada: {{ $bulanIni->dibayar_pada->isoFormat('D MMMM Y, HH:mm') }}</small>
-        @endif
-      @elseif($bulanIni->isTerlambat())
-        <strong>❌ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} sudah melewati jatuh tempo!</strong>
-        <br>
-        <small>Nominal: <strong>{{ rupiah($bulanIni->nominal) }}</strong>
-        &bull; Jatuh tempo: <strong>{{ $bulanIni->jatuh_tempo?->isoFormat('D MMMM Y') ?? '-' }}</strong></small>
-      @else
-        <strong>⚠️ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} belum dibayar.</strong>
-        <br>
-        <small>Nominal: <strong>{{ rupiah($bulanIni->nominal) }}</strong>
-        &bull; Jatuh tempo: <strong>{{ $bulanIni->jatuh_tempo?->isoFormat('D MMMM Y') ?? '-' }}</strong></small>
-      @endif
-    </div>
-    @if($bulanIni->isBayarable())
-      <button class="btn btn-success btn-sm fw-semibold px-3" onclick="bayarIuran({{ $bulanIni->id }})">
-        💳 Bayar Sekarang
-      </button>
-    @endif
-  </div>
-@endif
 
 {{-- Riwayat Iuran --}}
 <div class="card border-0 shadow-sm">

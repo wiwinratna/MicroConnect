@@ -12,9 +12,7 @@
     <a href="{{ route('admin.umkm.create') }}" class="btn btn-primary">+ Daftarkan UMKM Baru</a>
   </div>
 
-  @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-  @endif
+  
 
   {{-- KPI Row --}}
   <div class="row g-3 mb-4">

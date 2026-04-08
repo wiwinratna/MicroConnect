@@ -21,10 +21,10 @@
                 </a>
             </li>
 
-            <li class="sidebar-item {{ request()->routeIs('admin.iuran.*') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('admin.iuran.index') }}">
+            <li class="sidebar-item {{ request()->routeIs('admin.iuran-periode.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.iuran-periode.index') }}">
                     <i class="align-middle" data-feather="credit-card"></i>
-                    <span class="align-middle">Iuran</span>
+                    <span class="align-middle">Iuran Periode</span>
                 </a>
             </li>
 

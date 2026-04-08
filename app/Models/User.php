@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_group',   // 'admin' | 'pelakuusaha'
+        'user_group',           // 'admin' | 'pelakuusaha'
+        'must_change_password', // true jika password sementara (dari admin)
     ];
 
     protected $hidden = [

@@ -8,9 +8,12 @@ use App\Models\UmkmLevel;
 use App\Models\User;
 use App\Models\IuranBulanan;
 use App\Services\IuranService;
+use App\Mail\UmkmAccountCreatedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UmkmController extends Controller
 {
@@ -64,12 +67,15 @@ class UmkmController extends Controller
         return view('admin.umkm.create', compact('levels'));
     }
 
+    /**
+     * Simpan UMKM baru + kirim email akun sementara.
+     * Password di-generate otomatis, user WAJIB ganti saat login pertama.
+     */
     public function store(Request $request)
     {
         $request->validate([
             'name'             => 'required|string|max:100',
             'email'            => 'required|email|unique:users,email',
-            'password'         => 'required|string|min:6',
             'nama_usaha'       => 'nullable|string|max:255',
             'nib'              => 'nullable|string|max:100',
             'alamat'           => 'nullable|string|max:500',
@@ -81,15 +87,22 @@ class UmkmController extends Controller
             'inventory_method' => 'nullable|in:FIFO,LIFO,Average',
         ]);
 
-        DB::transaction(function () use ($request) {
+        // Generate password sementara (8 karakter random)
+        $tempPassword = Str::random(8);
+
+        $user = null;
+        $umkm = null;
+
+        DB::transaction(function () use ($request, $tempPassword, &$user, &$umkm) {
             $user = User::create([
-                'name'       => $request->name,
-                'email'      => $request->email,
-                'password'   => Hash::make($request->password),
-                'user_group' => 'pelakuusaha',
+                'name'                 => $request->name,
+                'email'                => $request->email,
+                'password'             => Hash::make($tempPassword),
+                'user_group'           => 'pelakuusaha',
+                'must_change_password' => true, // ← wajib ganti saat login pertama
             ]);
 
-            Umkm::create([
+            $umkm = Umkm::create([
                 'kode_umkm'        => Umkm::getKodeUmkm(),
                 'user_id'          => $user->id,
                 'level_id'         => $request->level_id,
@@ -105,8 +118,22 @@ class UmkmController extends Controller
             ]);
         });
 
+        // Kirim email informasi akun ke UMKM
+        try {
+            Mail::to($user->email)->send(new UmkmAccountCreatedMail(
+                user: $user,
+                umkm: $umkm,
+                tempPassword: $tempPassword,
+            ));
+        } catch (\Exception $e) {
+            // Jangan gagalkan pembuatan akun jika email gagal kirim
+            return redirect()->route('admin.umkm.index')
+                ->with('success', 'UMKM berhasil didaftarkan.')
+                ->with('warning', 'Email gagal dikirim: ' . $e->getMessage());
+        }
+
         return redirect()->route('admin.umkm.index')
-                         ->with('success', 'UMKM berhasil didaftarkan.');
+                         ->with('success', 'UMKM berhasil didaftarkan. Email informasi akun telah dikirim.');
     }
 
     // ===================== DETAIL UMKM =====================
@@ -177,21 +204,5 @@ class UmkmController extends Controller
         ]);
 
         return back()->with('success', 'Status UMKM diperbarui menjadi ' . $umkm->fresh()->status . '.');
-    }
-
-    // ===================== DAFTAR IURAN =====================
-    public function iuranIndex(Request $request)
-    {
-        $query = IuranBulanan::with('umkm')
-            ->orderByDesc('periode')
-            ->orderByDesc('created_at');
-            
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $iuranList = $query->paginate(20)->withQueryString();
-
-        return view('admin.iuran.index', compact('iuranList'));
     }
 }

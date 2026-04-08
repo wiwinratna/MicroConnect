@@ -14,8 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'pelakuusaha' => \App\Http\Middleware\PelakuUsaha::class,
-            'adminonly'   => \App\Http\Middleware\AdminOnly::class,
+            'pelakuusaha'          => \App\Http\Middleware\PelakuUsaha::class,
+            'adminonly'            => \App\Http\Middleware\AdminOnly::class,
+            'must_change_password' => \App\Http\Middleware\MustChangePassword::class,
+        ]);
+
+        // Exclude Midtrans webhook dari CSRF verification
+        $middleware->validateCsrfTokens(except: [
+            'midtrans/notification',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

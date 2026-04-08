@@ -5,7 +5,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
   <div>
     <h1 class="h3 mb-1"><strong>Iuran</strong> Bulanan</h1>
-    <p class="text-muted mb-0">Status pembayaran iuran aplikasi MINECT per bulan.</p>
+    <p class="text-muted mb-0">Status pembayaran iuran aplikasi MicroConnect per bulan.</p>
   </div>
 </div>
 
@@ -15,23 +15,30 @@
 @endphp
 
 @if($bulanIni)
-  <div class="alert {{ $bulanIni->status === 'lunas' ? 'alert-success' : 'alert-warning' }} d-flex align-items-center gap-3 mb-4">
-    <div>
+  <div class="alert {{ $bulanIni->status === 'lunas' ? 'alert-success' : ($bulanIni->isTerlambat() ? 'alert-danger' : 'alert-warning') }} d-flex align-items-center gap-3 mb-4">
+    <div class="flex-grow-1">
       @if($bulanIni->status === 'lunas')
         <strong>✅ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} sudah dibayar.</strong>
         @if($bulanIni->dibayar_pada)
           <br><small class="text-muted">Dibayar pada: {{ $bulanIni->dibayar_pada->isoFormat('D MMMM Y, HH:mm') }}</small>
         @endif
+      @elseif($bulanIni->isTerlambat())
+        <strong>❌ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} sudah melewati jatuh tempo!</strong>
+        <br>
+        <small>Nominal: <strong>{{ rupiah($bulanIni->nominal) }}</strong>
+        &bull; Jatuh tempo: <strong>{{ $bulanIni->jatuh_tempo?->isoFormat('D MMMM Y') ?? '-' }}</strong></small>
       @else
         <strong>⚠️ Iuran bulan {{ \Carbon\Carbon::createFromFormat('Y-m', $bulanIni->periode)->isoFormat('MMMM Y') }} belum dibayar.</strong>
         <br>
         <small>Nominal: <strong>{{ rupiah($bulanIni->nominal) }}</strong>
         &bull; Jatuh tempo: <strong>{{ $bulanIni->jatuh_tempo?->isoFormat('D MMMM Y') ?? '-' }}</strong></small>
-        <br>
-        {{-- Tombol bayar — placeholder (Midtrans diintegrasikan di pengembangan lanjutan) --}}
-        <small class="text-muted">Silakan hubungi admin KADIN untuk informasi pembayaran.</small>
       @endif
     </div>
+    @if($bulanIni->isBayarable())
+      <button class="btn btn-success btn-sm fw-semibold px-3" onclick="bayarIuran({{ $bulanIni->id }})">
+        💳 Bayar Sekarang
+      </button>
+    @endif
   </div>
 @endif
 
@@ -47,6 +54,7 @@
           <th>Jatuh Tempo</th>
           <th>Status</th>
           <th>Dibayar Pada</th>
+          <th>Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -61,18 +69,23 @@
             <td class="text-end fw-medium">{{ rupiah($iuran->nominal) }}</td>
             <td>{{ $iuran->jatuh_tempo?->isoFormat('D MMM Y') ?? '-' }}</td>
             <td>
-              @if($iuran->status === 'lunas')
-                <span class="badge bg-success">Lunas</span>
-              @elseif($iuran->status === 'terlambat')
-                <span class="badge bg-danger">Terlambat</span>
-              @else
-                <span class="badge bg-warning text-dark">Belum Bayar</span>
-              @endif
+              <span class="badge {{ $iuran->statusBadgeClass() }}">
+                {{ $iuran->statusLabel() }}
+              </span>
             </td>
             <td class="text-muted small">{{ $iuran->dibayar_pada?->isoFormat('D MMM Y') ?? '-' }}</td>
+            <td>
+              @if($iuran->isBayarable())
+                <button class="btn btn-sm btn-outline-success" onclick="bayarIuran({{ $iuran->id }})">
+                  Bayar
+                </button>
+              @else
+                <span class="text-muted small">-</span>
+              @endif
+            </td>
           </tr>
         @empty
-          <tr><td colspan="5" class="text-center text-muted py-4">Belum ada data iuran.</td></tr>
+          <tr><td colspan="6" class="text-center text-muted py-4">Belum ada data iuran.</td></tr>
         @endforelse
       </tbody>
     </table>
@@ -81,8 +94,66 @@
 
 <div class="mt-3">
   <small class="text-muted">
-    💡 Iuran dikenakan sebesar <strong>{{ rupiah(env('IURAN_DEFAULT', 50000)) }}</strong>/bulan untuk semua level UMKM.
-    Integrasi pembayaran digital (Midtrans) tersedia di pengembangan lanjutan.
+    💡 Pembayaran iuran dilakukan melalui Midtrans. Klik tombol "Bayar" untuk memulai proses pembayaran.
   </small>
 </div>
 @endsection
+
+@push('scripts')
+{{-- Midtrans SNAP JS --}}
+<script src="{{ $midtransSnapUrl }}" data-client-key="{{ $midtransClientKey }}"></script>
+<script>
+    function bayarIuran(iuranId) {
+        // Tampilkan loading
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Memproses...';
+
+        // Request SNAP token dari server
+        fetch(`/umkm/iuran/${iuranId}/bayar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+
+            if (!data.success) {
+                alert(data.message || 'Gagal membuat transaksi.');
+                return;
+            }
+
+            // Buka SNAP popup Midtrans
+            window.snap.pay(data.snap_token, {
+                onSuccess: function(result) {
+                    alert('Pembayaran berhasil! Status akan diperbarui otomatis.');
+                    window.location.reload();
+                },
+                onPending: function(result) {
+                    alert('Pembayaran sedang diproses. Status akan diperbarui saat pembayaran selesai.');
+                    window.location.reload();
+                },
+                onError: function(result) {
+                    alert('Pembayaran gagal. Silakan coba lagi.');
+                },
+                onClose: function() {
+                    // User menutup popup tanpa menyelesaikan pembayaran
+                    console.log('Popup pembayaran ditutup.');
+                }
+            });
+        })
+        .catch(error => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+            console.error('Error:', error);
+        });
+    }
+</script>
+@endpush

@@ -30,13 +30,7 @@
 			@if($level >= 3)
 			<li class="sidebar-header">Master Data</li>
 
-			{{-- MODE KASIR (ETALASE) --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.etalase*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.etalase.index') }}" target="_blank">
-					<i class="align-middle" data-feather="monitor"></i>
-					<span class="align-middle">Mode Kasir</span>
-				</a>
-			</li>
+
 
 			{{-- BAHAN BAKU --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.bahan*') ? 'active' : '' }}">
@@ -101,11 +95,11 @@
 				</a>
 			</li>
 
-			{{-- MODE ETALASE --}}
+			{{-- MODE KASIR --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.etalase*') ? 'active' : '' }}">
-				<a class="sidebar-link text-primary fw-semibold" href="{{ route('umkm.etalase.index') }}">
-					<i class="align-middle text-primary" data-feather="monitor"></i>
-					<span class="align-middle">Mode Etalase (POS)</span>
+				<a class="sidebar-link" href="{{ route('umkm.etalase.index') }}">
+					<i class="align-middle" data-feather="monitor"></i>
+					<span class="align-middle">Kasir (POS)</span>
 				</a>
 			</li>
 

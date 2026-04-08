@@ -1,6 +1,16 @@
 @extends('layouts.umkm')
 @section('title', 'Catat Beban Operasional')
 
+@push('styles')
+<style>
+    .kategori-card:hover {
+        border-color: var(--mn-primary) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1) !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -58,11 +68,13 @@
                                    value="{{ $k['kode'] }}"
                                    class="d-none kategori-radio"
                                    {{ old('kode_beban') === $k['kode'] ? 'checked' : '' }}>
-                            <div class="card border-2 kategori-card h-100 text-center py-3 px-2"
-                                 style="cursor:pointer; border-radius:12px; border-color:#dee2e6; transition: all .2s;">
-                                <div style="font-size:2rem;">{{ $k['icon'] }}</div>
+                            <div class="card kategori-card h-100 text-center py-3 px-2"
+                                 style="cursor:pointer; border: 2px solid var(--mn-border-color); transition: var(--mn-transition);">
+                                <div class="mb-2 text-primary" style="opacity: 0.85;">
+                                    <i data-feather="{{ $k['icon'] }}" style="width: 28px; height: 28px;"></i>
+                                </div>
                                 <div class="fw-semibold small mt-1">{{ $k['nama'] }}</div>
-                                <div class="text-muted" style="font-size:0.7rem;">Akun {{ $k['kode'] }}</div>
+                                <div class="text-subtext mt-1">Akun {{ $k['kode'] }}</div>
                             </div>
                         </label>
                     </div>
@@ -103,12 +115,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function update(radio) {
         // Style kartu
         cards.forEach(c => {
-            c.style.borderColor = '#dee2e6';
-            c.style.background  = '#fff';
+            c.style.borderColor = 'var(--mn-border-color)';
+            c.style.background  = 'var(--mn-surface)';
         });
         const selectedCard = radio.closest('label').querySelector('.kategori-card');
-        selectedCard.style.borderColor = '#0d6efd';
-        selectedCard.style.background  = '#e9f2ff';
+        selectedCard.style.borderColor = 'var(--mn-primary)';
+        selectedCard.style.background  = 'var(--mn-primary-soft)';
 
         // Info jurnal
         namaEl.textContent = kategoriMap[radio.value] ?? radio.value;

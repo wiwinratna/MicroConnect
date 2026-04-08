@@ -1,0 +1,58 @@
+:root {
+  /* Primary / Brand */
+  --mn-primary: #2563eb; 
+  --mn-primary-hover: #1d4ed8;
+  --mn-primary-soft: #DBEAFE; /* 10-15% tint */
+  --mn-sidebar-bg: #0F172A;
+
+  /* Surface & Text */
+  --mn-bg-body: #F8FAFC; 
+  --mn-surface: #FFFFFF;
+  --mn-text-main: #1F2937;
+  --mn-text-muted: #6B7280;
+  --mn-border-color: #E2E8F0;
+
+  /* Semantic SOFT BACKGROUNDS */
+  --mn-success-bg: #DCFCE7;
+  --mn-success-text: #16A34A;
+  --mn-success-border: #BBF7D0;
+
+  --mn-warning-bg: #FEF3C7;
+  --mn-warning-text: #D97706;
+  --mn-warning-border: #FDE68A;
+
+  --mn-danger-bg: #FEE2E2;
+  --mn-danger-text: #DC2626;
+  --mn-danger-border: #FECACA;
+
+  --mn-info-bg: #EFF6FF;
+  --mn-info-text: #2563EB;
+  --mn-info-border: #BFDBFE;
+
+  /* Geometry & Spacing */
+  --mn-radius-sm: 0.375rem; /* 6px */
+  --mn-radius-md: 0.5rem;   /* 8px */
+  --mn-radius-lg: 1rem;     /* 16px -> cards */
+  --mn-radius-pill: 9999px; /* Status badge */
+
+  --mn-transition: all 0.2s ease-in-out;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--mn-bg-body);
+  color: var(--mn-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Base Headings */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Utility tambahan untuk subtext konsisten */
+.text-subtext {
+  font-size: 0.8125rem;
+  color: var(--mn-text-muted);
+}

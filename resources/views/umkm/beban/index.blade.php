@@ -17,9 +17,7 @@
     <button class="btn btn-outline-primary">Filter</button>
 </form>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
+
 
 {{-- Ringkasan --}}
 <div class="card border-0 shadow-sm mb-4" style="border-radius:12px; background:linear-gradient(135deg,#ff6b6b,#ee5a24);">

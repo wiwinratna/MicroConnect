@@ -10,6 +10,21 @@
     </div>
 </div>
 
+@if(isset($iuranBelumLunas))
+<div class="alert alert-warning border-0 d-flex align-items-center gap-3 mb-4 rounded-4 shadow-sm" style="background: rgba(245, 158, 11, 0.1); color: var(--mn-warning-text); border-left: 5px solid var(--mn-warning-bg) !important;">
+    <div class="flex-grow-1">
+        <strong class="d-block mb-1 fs-5">⚠️ Perhatian: Iuran Aplikasi Menunggu Pembayaran.</strong> Segera bayar iuran bulan <strong>{{ \Carbon\Carbon::createFromFormat('Y-m', $iuranBelumLunas->periode)->isoFormat('MMMM Y') }}</strong> sebesar <strong>{{ rupiah($iuranBelumLunas->nominal) }}</strong>.
+        @if($iuranBelumLunas->jatuh_tempo)
+        <br>
+        <span class="small mt-1 d-block opacity-75">Tenggat pembayaran: <strong>{{ $iuranBelumLunas->jatuh_tempo->isoFormat('D MMMM Y') }}</strong>. Mohon diselesaikan untuk menghindari ganguan akses.</span>
+        @endif
+    </div>
+    <div>
+        <a href="{{ route('umkm.iuran.index') }}" class="btn btn-warning fw-bold px-4 rounded-pill shadow-sm text-dark">Bayar Sekarang &rarr;</a>
+    </div>
+</div>
+@endif
+
 {{-- KPI CARDS --}}
 <div class="row g-3 mb-3">
     <div class="col-md-3">

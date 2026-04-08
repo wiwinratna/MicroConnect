@@ -1,0 +1,62 @@
+/* SIDBAR OVERRIDE */
+.sidebar {
+  background-color: var(--mn-sidebar-bg) !important;
+}
+
+.sidebar-content {
+  background-color: var(--mn-sidebar-bg) !important;
+}
+
+.sidebar-item.active > .sidebar-link,
+.sidebar-item.active .sidebar-link:hover {
+  background-color: rgba(37, 99, 235, 0.15) !important; /* Soft primary bluu */
+  color: var(--mn-primary) !important;
+  border-radius: var(--mn-radius-pill) !important;
+  margin: 0.25rem 1rem !important;
+  padding: 0.65rem 1.5rem !important;
+  border-left: none !important;
+}
+
+/* Hilangkan background abu default AdminKit */
+.sidebar-item:not(.active) > .sidebar-link {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Buat jarak kalau tidak aktif biar rapi sejajar dengan yang aktif */
+.sidebar-link {
+  margin: 0.25rem 1rem !important;
+  padding: 0.65rem 1.5rem !important;
+  border-radius: var(--mn-radius-pill) !important;
+  transition: var(--mn-transition);
+}
+
+.sidebar-link i, .sidebar-link svg {
+  color: inherit !important; 
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* TOPBAR / NAVBAR OVERRIDE */
+.navbar {
+  background-color: var(--mn-surface) !important;
+  border-bottom: 1px solid var(--mn-border-color) !important;
+  box-shadow: none !important;
+  padding: 0.75rem 1.5rem !important;
+}
+
+/* CONTENT WRAPPER */
+.main {
+  background-color: var(--mn-bg-body) !important;
+}
+
+.content {
+  padding: 2rem 2rem 1.5rem 2rem;
+}
+
+/* GLOBAL SPACING HELPERS */
+.section-mb {
+  margin-bottom: 2rem !important;
+}

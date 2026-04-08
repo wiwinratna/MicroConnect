@@ -1,0 +1,55 @@
+/* TABLE SYSTEM OVERRIDES */
+.table {
+  color: var(--mn-text-main) !important;
+  vertical-align: middle !important;
+  margin-bottom: 0 !important;
+}
+
+.table > :not(caption) > * > * {
+  padding: 1rem 1.5rem !important; /* Spacing yang lebih lega berdasar referensi */
+  background-color: var(--mn-surface) !important;
+  border-bottom-color: var(--mn-border-color) !important;
+}
+
+/* Header Tabel khas MINECT (Uppercase kecil & warna muted) */
+.table thead th {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: var(--mn-text-muted) !important;
+  border-top: none !important;
+  border-bottom: 1px solid var(--mn-border-color) !important;
+  background-color: transparent !important;
+}
+
+.table tbody tr {
+  transition: var(--mn-transition);
+}
+
+.table-hover tbody tr:hover > * {
+  background-color: var(--mn-bg-body) !important;
+}
+
+/* Modifikasi Pagination Bawaan */
+.pagination {
+  margin-bottom: 0;
+}
+
+.page-link {
+  border-radius: var(--mn-radius-sm);
+  margin: 0 0.125rem;
+  color: var(--mn-text-main);
+  border: 1px solid transparent; /* Hilangkan batas keras */
+}
+
+.page-link:hover {
+  background-color: var(--mn-bg-body);
+  border-color: var(--mn-border-color);
+}
+
+.page-item.active .page-link {
+  background-color: var(--mn-primary);
+  border-color: var(--mn-primary);
+  color: #fff;
+}

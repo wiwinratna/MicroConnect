@@ -11,47 +11,11 @@
 </div>
 
 {{-- Toast Notifications --}}
-@if(session('success'))
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;">
-    <div class="toast align-items-center text-bg-success border-0 show" role="alert" id="toastSuccess">
-        <div class="d-flex">
-            <div class="toast-body fw-medium">
-                <i data-feather="check-circle" style="width:16px;height:16px;"></i>
-                {{ session('success') }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-</div>
-@endif
 
-@if(session('warning'))
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;">
-    <div class="toast align-items-center text-bg-warning border-0 show" role="alert" id="toastWarning">
-        <div class="d-flex">
-            <div class="toast-body fw-medium text-dark">
-                <i data-feather="alert-triangle" style="width:16px;height:16px;"></i>
-                {{ session('warning') }}
-            </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-</div>
-@endif
 
-@if(session('error'))
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;">
-    <div class="toast align-items-center text-bg-danger border-0 show" role="alert" id="toastError">
-        <div class="d-flex">
-            <div class="toast-body fw-medium">
-                <i data-feather="x-circle" style="width:16px;height:16px;"></i>
-                {{ session('error') }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-</div>
-@endif
+
+
+
 
 <div class="card border-0 shadow-sm mb-3">
     <div class="card-body pb-2">

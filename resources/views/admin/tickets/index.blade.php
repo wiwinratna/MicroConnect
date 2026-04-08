@@ -7,12 +7,7 @@
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3"><strong>Ticketing UMKM</strong> (Pengaduan & Konsultasi)</h1>
 
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <div class="alert-message">{{ session('success') }}</div>
-        </div>
-        @endif
+        
 
         <div class="card">
             <div class="card-header bg-light">

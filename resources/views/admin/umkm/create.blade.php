@@ -35,9 +35,9 @@
             <label class="form-label">Email <span class="text-danger">*</span></label>
             <input type="email" name="email" class="form-control" required value="{{ old('email') }}" placeholder="email@domain.com">
           </div>
-          <div class="mb-0">
-            <label class="form-label">Password <span class="text-danger">*</span></label>
-            <input type="password" name="password" class="form-control" required placeholder="Min. 6 karakter">
+          <div class="alert alert-info mb-0" style="font-size: 0.85rem;">
+            🔑 Password sementara akan di-<strong>generate otomatis</strong> dan dikirim ke email UMKM.
+            UMKM wajib mengganti password saat login pertama.
           </div>
         </div>
       </div>

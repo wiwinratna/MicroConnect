@@ -57,6 +57,12 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        // Jika user harus ganti password sementara
+        if (auth()->user()->must_change_password) {
+            return redirect()->route('password.change')
+                ->with('warning', 'Anda harus mengganti password sementara terlebih dahulu.');
+        }
+
         return redirect()->route('umkm.dashboard');
     }
 
@@ -185,5 +191,40 @@ class AuthController extends Controller
         }
 
         return redirect()->route('umkm.login');
+    }
+
+    // =========================
+    // GANTI PASSWORD (WAJIB)
+    // =========================
+
+    /**
+     * Form ganti password sementara.
+     * Ditampilkan saat user dengan must_change_password=true login.
+     */
+    public function changePassword()
+    {
+        return view('auth.change-password');
+    }
+
+    /**
+     * Proses ganti password sementara.
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min'       => 'Password minimal 6 karakter.',
+        ]);
+
+        $user = auth()->user();
+        $user->update([
+            'password'             => Hash::make($request->password),
+            'must_change_password' => false,
+        ]);
+
+        return redirect()->route('umkm.dashboard')
+            ->with('success', 'Password berhasil diubah. Selamat menggunakan sistem!');
     }
 }

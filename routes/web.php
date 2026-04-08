@@ -17,6 +17,8 @@ use App\Http\Controllers\Umkm\PiutangController;
 use App\Http\Controllers\Umkm\IuranController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UmkmController;
+use App\Http\Controllers\Admin\IuranPeriodeController;
+use App\Http\Controllers\MidtransWebhookController;
 
 // ================== ROOT ==================
 Route::get('/', function () {
@@ -43,6 +45,18 @@ Route::middleware('guest')->group(function () {
 // ================== LOGOUT ==================
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+// ================== GANTI PASSWORD (WAJIB) ==================
+Route::middleware('auth')->group(function () {
+    Route::get('/ganti-password', [AuthController::class, 'changePassword'])->name('password.change');
+    Route::post('/ganti-password', [AuthController::class, 'updatePassword'])->name('password.change.update');
+});
+
+// ================== MIDTRANS WEBHOOK ==================
+// Tanpa auth — Midtrans mengirim POST langsung ke URL ini
+// Daftarkan di Midtrans Dashboard → Settings → Payment Notification URL
+Route::post('/midtrans/notification', [MidtransWebhookController::class, 'handle'])
+    ->name('midtrans.notification');
+
 // ================== ADMIN AREA ==================
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group(function () {
 
@@ -58,7 +72,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
         Route::patch('/{id}/toggle-status', [UmkmController::class, 'toggleStatus'])->name('toggleStatus');
     });
 
-    Route::get('/iuran', [UmkmController::class, 'iuranIndex'])->name('iuran.index');
+    // ==================== IURAN PERIODE ====================
+    Route::prefix('iuran-periode')->name('iuran-periode.')->group(function () {
+        Route::get('/', [IuranPeriodeController::class, 'index'])->name('index');
+        Route::get('/create', [IuranPeriodeController::class, 'create'])->name('create');
+        Route::post('/', [IuranPeriodeController::class, 'store'])->name('store');
+        Route::get('/{id}', [IuranPeriodeController::class, 'show'])->name('show');
+        Route::post('/{periodeId}/konfirmasi/{iuranId}', [IuranPeriodeController::class, 'konfirmasiLunas'])->name('konfirmasi');
+    });
 
     // Ticketing / Pengaduan UMKM
     Route::get('/tickets', [\App\Http\Controllers\Admin\TicketController::class, 'index'])->name('tickets.index');
@@ -69,7 +90,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
 
 
 // ================== UMKM AREA ==================
-Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group(function () {
+Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_change_password'])->group(function () {
 
     // Pilih Level
     Route::get('/pilih-level', [UmkmLevelController::class, 'index'])->name('level.choose');
@@ -165,6 +186,7 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha'])->group
 
     // ==================== IURAN BULANAN ====================
     Route::get('/iuran', [IuranController::class, 'index'])->name('iuran.index');
+    Route::post('/iuran/{id}/bayar', [IuranController::class, 'bayar'])->name('iuran.bayar');
 
     // ==================== MODE ETALASE / KASIR ====================
     Route::prefix('kasir')->name('etalase.')->group(function () {

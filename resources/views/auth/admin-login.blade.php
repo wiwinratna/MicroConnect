@@ -512,11 +512,6 @@
                     </button>
                 </form>
 
-                <div class="register-link animate-in delay-5">
-                    Belum punya akun admin?
-                    <a href="{{ route('admin.register') }}">Daftar Admin</a>
-                </div>
-
                 <div class="security-note animate-in delay-5">
                     🔐 Halaman ini hanya untuk administrator KADIN yang berwenang.<br>
                     Segala aktivitas login tersimpan dalam sistem audit.

@@ -3,23 +3,59 @@
 namespace App\Services;
 
 use App\Models\IuranBulanan;
+use App\Models\IuranPeriode;
 use App\Models\Umkm;
-use App\Models\UmkmLevel;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 /**
  * IuranService
  *
  * Mengelola logika iuran bulanan UMKM:
- * - Generate tagihan untuk semua UMKM aktif
- * - Lazy create: getOrCreate per UMKM per periode
+ * - Generate tagihan berdasarkan IuranPeriode
+ * - Lazy create per UMKM per periode
+ * - Mark lunas
  */
 class IuranService
 {
     /**
+     * Generate tagihan iuran untuk semua UMKM aktif berdasarkan IuranPeriode.
+     * Dipanggil saat admin membuat/menerbitkan periode iuran baru.
+     *
+     * @param IuranPeriode $iuranPeriode  Master periode iuran
+     * @return int  Jumlah record baru yang dibuat
+     */
+    public function generateFromPeriode(IuranPeriode $iuranPeriode): int
+    {
+        $umkmAktif = Umkm::where('status', 'aktif')->get();
+
+        $count = 0;
+        foreach ($umkmAktif as $umkm) {
+            // firstOrCreate agar tidak duplikat
+            $created = IuranBulanan::firstOrCreate(
+                [
+                    'umkm_id' => $umkm->id,
+                    'periode' => $iuranPeriode->periode,
+                ],
+                [
+                    'iuran_periode_id' => $iuranPeriode->id,
+                    'nominal'          => $iuranPeriode->nominal_default,
+                    'status'           => 'belum_bayar',
+                    'jatuh_tempo'      => $iuranPeriode->jatuh_tempo,
+                ]
+            );
+
+            // Jika record baru dibuat (bukan existing), hitung
+            if ($created->wasRecentlyCreated) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
      * Generate tagihan iuran untuk semua UMKM aktif di periode tertentu.
-     * Panggil via Artisan command tiap awal bulan.
+     * Kompatibel dengan pemanggilan lama (tanpa master periode).
      *
      * @param string $periode  Format "2026-03" (default: bulan ini)
      * @return int  Jumlah record baru yang dibuat
@@ -28,31 +64,31 @@ class IuranService
     {
         $periode = $periode ?? now()->format('Y-m');
 
-        // Ambil nominal iuran dari level (semua level sama, ambil saja dari level manapun)
-        // Fallback: ambil dari setting atau hardcode default
-        $defaultNominal = $this->getNominalIuran();
+        // Cek apakah ada master periode
+        $iuranPeriode = IuranPeriode::where('periode', $periode)->first();
 
-        // Jatuh tempo: akhir bulan periode
+        if ($iuranPeriode) {
+            return $this->generateFromPeriode($iuranPeriode);
+        }
+
+        // Fallback legacy: tanpa master periode
+        $defaultNominal = $this->getNominalIuran();
         $jatuhTempo = Carbon::createFromFormat('Y-m', $periode)->endOfMonth()->toDateString();
 
-        $umkmAktif = Umkm::where('status', 'aktif')
-                         ->whereNotNull('level_id')  // hanya yang sudah pilih level
-                         ->get();
+        $umkmAktif = Umkm::where('status', 'aktif')->get();
 
         $count = 0;
         foreach ($umkmAktif as $umkm) {
-            // Hindari duplikasi dengan firstOrCreate
-            $exists = IuranBulanan::where('umkm_id', $umkm->id)
-                                  ->where('periode', $periode)
-                                  ->exists();
-            if (!$exists) {
-                IuranBulanan::create([
-                    'umkm_id'     => $umkm->id,
-                    'periode'     => $periode,
+            $created = IuranBulanan::firstOrCreate(
+                ['umkm_id' => $umkm->id, 'periode' => $periode],
+                [
                     'nominal'     => $defaultNominal,
                     'status'      => 'belum_bayar',
                     'jatuh_tempo' => $jatuhTempo,
-                ]);
+                ]
+            );
+
+            if ($created->wasRecentlyCreated) {
                 $count++;
             }
         }
@@ -66,16 +102,23 @@ class IuranService
      */
     public function getOrCreate(int $umkmId, string $periode = null): IuranBulanan
     {
-        $periode      = $periode ?? now()->format('Y-m');
-        $jatuhTempo   = Carbon::createFromFormat('Y-m', $periode)->endOfMonth()->toDateString();
-        $defaultNominal = $this->getNominalIuran();
+        $periode    = $periode ?? now()->format('Y-m');
+        $jatuhTempo = Carbon::createFromFormat('Y-m', $periode)->endOfMonth()->toDateString();
+
+        // Cek apakah ada master periode untuk ambil nominal & jatuh tempo
+        $iuranPeriode = IuranPeriode::where('periode', $periode)->first();
+
+        $nominal    = $iuranPeriode ? $iuranPeriode->nominal_default : $this->getNominalIuran();
+        $jatuhTempo = $iuranPeriode ? $iuranPeriode->jatuh_tempo->toDateString() : $jatuhTempo;
+        $periodeId  = $iuranPeriode ? $iuranPeriode->id : null;
 
         return IuranBulanan::firstOrCreate(
             ['umkm_id' => $umkmId, 'periode' => $periode],
             [
-                'nominal'     => $defaultNominal,
-                'status'      => 'belum_bayar',
-                'jatuh_tempo' => $jatuhTempo,
+                'iuran_periode_id' => $periodeId,
+                'nominal'          => $nominal,
+                'status'           => 'belum_bayar',
+                'jatuh_tempo'      => $jatuhTempo,
             ]
         );
     }
@@ -89,18 +132,11 @@ class IuranService
     }
 
     /**
-     * Ambil nominal iuran.
-     * Sesuai aturan bisnis: semua level iurannya sama.
-     * Ambil dari UmkmLevel level pertama, fallback ke .env atau hardcode.
+     * Ambil nominal iuran default.
+     * Fallback ke env / hardcode jika tidak ada master periode.
      */
     private function getNominalIuran(): float
     {
-        $level = UmkmLevel::first();
-        if ($level && $level->iuran_bulanan > 0) {
-            return (float) $level->iuran_bulanan;
-        }
-
-        // Fallback ke env / default
         return (float) env('IURAN_DEFAULT', 50000);
     }
 }

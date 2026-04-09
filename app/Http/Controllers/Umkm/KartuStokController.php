@@ -19,10 +19,11 @@ class KartuStokController extends Controller
         $bahanList = BahanBaku::where('umkm_id', $umkm->id)->orderBy('nama_bahan')->get();
         
         $ledger        = [];
-        $saldoAwalQty  = 0;
-        $saldoAwalNilai= 0;
-        $selectedBahan = null;
-        $activeBatches = [];
+        $saldoAwalQty     = 0;
+        $saldoAwalNilai   = 0;
+        $saldoAwalBatches = [];
+        $selectedBahan    = null;
+        $activeBatches    = [];
 
         if ($bahanId) {
             $selectedBahan = BahanBaku::where('umkm_id', $umkm->id)->find($bahanId);
@@ -45,12 +46,21 @@ class KartuStokController extends Controller
 
                     if ($tglStr < $awalBulan) {
                         // Terjadi sebelum bulan terpilih, catat ini untuk Saldo Awal terakhir
-                        $saldoAwalQty   = $row['saldo_qty'];
-                        $saldoAwalNilai = $row['saldo_nilai'];
+                        $saldoAwalQty     = $row['saldo_qty'];
+                        $saldoAwalNilai   = $row['saldo_nilai'];
+                        $saldoAwalBatches = $row['active_batches_snapshot'] ?? [];
                     } elseif ($tglStr <= $akhirBulan) {
                         // Terjadi DI DALAM bulan terpilih
                         $ledger[] = $row;
                     }
+                }
+
+                // Ambil activeBatches tepat di akhir waktu yang dipilih
+                if (!empty($ledger)) {
+                    $lastRow = end($ledger);
+                    $activeBatches = $lastRow['active_batches_snapshot'] ?? [];
+                } else {
+                    $activeBatches = $saldoAwalBatches;
                 }
             }
         }
@@ -63,6 +73,7 @@ class KartuStokController extends Controller
             'selectedBahan',
             'saldoAwalQty',
             'saldoAwalNilai',
+            'saldoAwalBatches',
             'ledger',
             'activeBatches'
         ));

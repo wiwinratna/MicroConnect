@@ -153,6 +153,7 @@ class InventoryService
             $row['saldo_qty']   = $saldoQty;
             $row['saldo_nilai'] = $saldoNilai;
             $row['avg_price']   = round($avgPrice ?? 0, 2);
+            $row['active_batches_snapshot'] = $activeBatches;
             
             $ledger[] = $row;
         }

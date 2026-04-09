@@ -99,20 +99,44 @@
             </thead>
             <tbody>
                 {{-- BARIS SALDO AWAL --}}
-                <tr class="fw-bold bg-white">
-                    <td class="text-start text-dark border-end" colspan="2">SALDO AWAL — Per 1 {{ $namaBulan }}</td>
-                    <td colspan="3" class="text-muted text-center border-end">—</td>
-                    <td colspan="3" class="text-muted text-center border-end">—</td>
-                    <td class="text-end fw-bold text-dark">{{ format_angka($saldoAwalQty) }}</td>
-                    <td class="text-end fw-bold text-dark">
-                        @if($saldoAwalQty > 0)
-                            {{ rupiah($saldoAwalNilai / $saldoAwalQty) }}
-                        @else
-                            —
+                @if($methodStr !== 'AVERAGE' && isset($saldoAwalBatches) && count($saldoAwalBatches) > 0)
+                    @foreach($saldoAwalBatches as $idx => $batch)
+                    <tr class="fw-bold bg-white">
+                        @if($idx === 0)
+                        <td class="text-start text-dark border-end" colspan="2" rowspan="{{ count($saldoAwalBatches) }}">SALDO AWAL — Per 1 {{ $namaBulan }}</td>
                         @endif
-                    </td>
-                    <td class="text-end fw-bold text-dark">{{ rupiah($saldoAwalNilai) }}</td>
-                </tr>
+                        <td colspan="3" class="text-muted text-center border-end">—</td>
+                        <td colspan="3" class="text-muted text-center border-end">—</td>
+                        <td class="text-end fw-bold text-dark">{{ format_angka($batch['qty']) }}</td>
+                        <td class="text-end fw-bold text-dark">{{ format_angka($batch['harga']) }}</td>
+                        <td class="text-end fw-bold text-dark">{{ format_angka($batch['qty'] * $batch['harga']) }}</td>
+                    </tr>
+                    @endforeach
+                @else
+                    <tr class="fw-bold bg-white">
+                        <td class="text-start text-dark border-end" colspan="2">SALDO AWAL — Per 1 {{ $namaBulan }}</td>
+                        <td colspan="3" class="text-muted text-center border-end">—</td>
+                        <td colspan="3" class="text-muted text-center border-end">—</td>
+                        <td class="text-end fw-bold text-dark">{{ format_angka($saldoAwalQty) }}</td>
+                        <td class="text-end fw-bold text-dark">
+                            @if($saldoAwalQty > 0)
+                                {{ rupiah($saldoAwalNilai / $saldoAwalQty) }}
+                            @else
+                                —
+                            @endif
+                        </td>
+                        <td class="text-end fw-bold text-dark">{{ rupiah($saldoAwalNilai) }}</td>
+                    </tr>
+                @endif
+
+                @php
+                    $sumMasukQty = 0;
+                    $sumMasukNilai = 0;
+                    $sumKeluarQty = 0;
+                    $sumKeluarNilai = 0;
+                    $finalSaldoQty = $saldoAwalQty;
+                    $finalSaldoNilai = $saldoAwalNilai;
+                @endphp
 
                 {{-- LOOPING LEDGER BULAN INI --}}
                 @forelse($ledger as $row)
@@ -143,113 +167,147 @@
 
                         // Jumlah baris yang dibutuhkan untuk transaksi KELUAR multi-layer
                         $numRows = (!$isMasuk && count($keluarDetails) > 1) ? count($keluarDetails) : 1;
+
+                        // Cek apakah saldo akhir dipecah jadi multiline
+                        $isMultiActive = isset($row['active_batches_snapshot']) && count($row['active_batches_snapshot']) > 1;
+
+                        // Hitung total nilai keluar untuk row ini
+                        $keluarNilaiTotalThisRow = 0;
+                        if (!$isMasuk) {
+                            if (count($keluarDetails) > 0) {
+                                foreach($keluarDetails as $kDet) {
+                                    $keluarNilaiTotalThisRow += ($kDet['qty'] * $kDet['harga']);
+                                }
+                            } else {
+                                $keluarNilaiTotalThisRow = $keluarQtyTotal * $saldoHarga;
+                            }
+                        }
+
+                        // Akumulasi footer
+                        $sumMasukQty += $isMasuk ? $row['masuk_qty'] : 0;
+                        $sumMasukNilai += $masukNilai;
+                        $sumKeluarQty += $isMasuk ? 0 : $keluarQtyTotal;
+                        $sumKeluarNilai += $keluarNilaiTotalThisRow;
+                        $finalSaldoQty = $row['saldo_qty'];
+                        $finalSaldoNilai = $row['saldo_nilai'];
+
+                        // PREPARE IN_OUT LAYERS
+                        $inOutLayers = [];
+                        if ($isMasuk) {
+                            $inOutLayers[] = [
+                                'jenis' => 'MASUK',
+                                'qty' => $row['masuk_qty'],
+                                'harga' => $row['masuk_harga'],
+                                'nilai' => $masukNilai,
+                                'info' => ''
+                            ];
+                        } else {
+                            if (count($keluarDetails) > 0) {
+                                foreach($keluarDetails as $kd) {
+                                    $inOutLayers[] = [
+                                        'jenis' => 'KELUAR',
+                                        'qty' => $kd['qty'],
+                                        'harga' => $kd['harga'],
+                                        'nilai' => $kd['qty'] * $kd['harga'],
+                                        'info' => $kd['batch'] ?? ''
+                                    ];
+                                }
+                            } else {
+                                $inOutLayers[] = [
+                                    'jenis' => 'KELUAR',
+                                    'qty' => $keluarQtyTotal,
+                                    'harga' => $saldoHarga,
+                                    'nilai' => $keluarQtyTotal * $saldoHarga,
+                                    'info' => ''
+                                ];
+                            }
+                        }
+
+                        // PREPARE SALDO LAYERS
+                        $saldoLayers = [];
+                        if (isset($row['active_batches_snapshot']) && count($row['active_batches_snapshot']) > 0 && $methodStr !== 'AVERAGE') {
+                            foreach($row['active_batches_snapshot'] as $b) {
+                                $saldoLayers[] = [
+                                    'qty' => $b['qty'],
+                                    'harga' => $b['harga'],
+                                    'nilai' => $b['qty'] * $b['harga']
+                                ];
+                            }
+                        } else {
+                            $saldoLayers[] = [
+                                'qty' => $row['saldo_qty'],
+                                'harga' => $saldoHarga,
+                                'nilai' => $row['saldo_nilai']
+                            ];
+                        }
+
+                        $maxRows = max(count($inOutLayers), count($saldoLayers));
                     @endphp
 
-                    @if($isMasuk)
-                    {{-- BARIS MASUK: satu baris saja --}}
-                    <tr>
-                        <td class="text-start text-muted border-end">{{ $tgl }}</td>
-                        <td class="border-end text-start">
-                            <span class="badge bg-success-subtle text-success border border-success border-opacity-25 rounded-pill me-1" style="font-size:10px; padding: 3px 8px;">IN</span>
-                            <span class="fw-medium text-dark">{{ $ketLabel }}</span>
-                            <br><small class="text-muted" style="font-size:0.75rem;">{{ $refTipe }} #{{ $refId }}</small>
-                        </td>
-                        {{-- MASUK --}}
-                        <td class="text-end text-success fw-medium">{{ format_angka($row['masuk_qty']) }}</td>
-                        <td class="text-end text-success">{{ format_angka($row['masuk_harga']) }}</td>
-                        <td class="text-end text-success fw-semibold border-end">{{ format_angka($masukNilai) }}</td>
-                        {{-- KELUAR (kosong) --}}
-                        <td class="text-center text-muted" colspan="3" class="border-end">—</td>
-                        {{-- SALDO --}}
-                        <td class="text-end text-dark fw-bold bg-light fw-bold">{{ format_angka($row['saldo_qty']) }}</td>
-                        <td class="text-end text-dark fw-bold bg-light">
-                            {{ format_angka($saldoHarga) }}
-                            @if($methodStr === 'AVERAGE')
-                                <br><span class="opacity-50" style="font-size:0.70rem;">(Avg)</span>
-                            @endif
-                        </td>
-                        <td class="text-end text-dark fw-bold bg-light fw-bold">{{ format_angka($row['saldo_nilai']) }}</td>
-                    </tr>
-
-                    @elseif(count($keluarDetails) <= 1)
-                    {{-- BARIS KELUAR: satu layer / Average --}}
-                    @php
-                        $det = $keluarDetails[0] ?? null;
-                        $keluarHarga = $det ? $det['harga'] : 0;
-                        $keluarNilai = $keluarQtyTotal * $keluarHarga;
-                    @endphp
-                    <tr>
-                        <td class="text-start text-muted border-end">{{ $tgl }}</td>
-                        <td class="border-end text-start">
-                            <span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 rounded-pill me-1" style="font-size:10px; padding: 3px 8px;">OUT</span>
-                            <span class="fw-medium text-dark">{{ $ketLabel }}</span>
-                            <br><small class="text-muted" style="font-size:0.75rem;">{{ $refTipe }} #{{ $refId }}</small>
-                            @if($det && isset($det['is_avg']) && $det['is_avg'])
-                                <br><small class="text-muted" style="font-size:0.70rem;">(Weighted Average)</small>
-                            @endif
-                        </td>
-                        {{-- MASUK (kosong) --}}
-                        <td class="text-center text-muted border-end" colspan="3">—</td>
-                        {{-- KELUAR --}}
-                        <td class="text-end text-danger fw-medium">{{ format_angka($keluarQtyTotal) }}</td>
-                        <td class="text-end text-danger">{{ $det ? format_angka($keluarHarga) : '—' }}</td>
-                        <td class="text-end text-danger fw-semibold border-end">{{ $det ? format_angka($keluarNilai) : '—' }}</td>
-                        {{-- SALDO --}}
-                        <td class="text-end text-dark fw-bold bg-light fw-bold">{{ format_angka($row['saldo_qty']) }}</td>
-                        <td class="text-end text-dark fw-bold bg-light">
-                            {{ format_angka($saldoHarga) }}
-                            @if($methodStr === 'AVERAGE')
-                                <br><span class="opacity-50" style="font-size:0.70rem;">(Avg)</span>
-                            @endif
-                        </td>
-                        <td class="text-end text-dark fw-bold bg-light fw-bold">{{ format_angka($row['saldo_nilai']) }}</td>
-                    </tr>
-
-                    @else
-                    {{-- BARIS KELUAR MULTI-LAYER (FIFO/LIFO): setiap layer = satu baris --}}
-                    @foreach($keluarDetails as $li => $det)
+                    @for($i = 0; $i < $maxRows; $i++)
                         @php
-                            $detQty   = $det['qty'];
-                            $detHarga = $det['harga'];
-                            $detNilai = $detQty * $detHarga;
-                            $isFirst  = ($li === 0);
-                            $isLast   = ($li === count($keluarDetails) - 1);
+                            $inOut = $inOutLayers[$i] ?? null;
+                            $sdo   = $saldoLayers[$i] ?? null;
                         @endphp
                         <tr>
-                            @if($isFirst)
-                            <td class="text-start text-muted border-end" rowspan="{{ count($keluarDetails) }}">{{ $tgl }}</td>
-                            <td class="border-end text-start" rowspan="{{ count($keluarDetails) }}">
-                                <span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 rounded-pill me-1" style="font-size:10px; padding: 3px 8px;">OUT</span>
-                                <span class="fw-medium text-dark">{{ $ketLabel }}</span>
-                                <br><small class="text-muted" style="font-size:0.75rem;">{{ $refTipe }} #{{ $refId }}</small>
-                                <br><span class="badge bg-light text-dark fw-normal mt-1 border border-secondary" style="font-size:0.70rem;">{{ count($keluarDetails) }} layer {{ $methodStr }}</span>
-                            </td>
+                            @if($i === 0)
+                                <td class="text-start text-muted border-end" rowspan="{{ $maxRows }}">{{ $tgl }}</td>
+                                <td class="border-end text-start" rowspan="{{ $maxRows }}">
+                                    @if($isMasuk)
+                                        <span class="badge bg-success-subtle text-success border border-success border-opacity-25 rounded-pill me-1" style="font-size:10px; padding: 3px 8px;">IN</span>
+                                    @else
+                                        <span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 rounded-pill me-1" style="font-size:10px; padding: 3px 8px;">OUT</span>
+                                    @endif
+                                    <span class="fw-medium text-dark">{{ $ketLabel }}</span>
+                                    <br><small class="text-muted" style="font-size:0.75rem;">{{ $refTipe }} #{{ $refId }}</small>
+                                </td>
                             @endif
-                            
-                            {{-- MASUK (kosong) --}}
-                            <td class="text-center text-muted border-end" colspan="3">—</td>
-                            
-                            {{-- KELUAR: detail tiap layer --}}
-                            <td class="text-end text-danger fw-medium">{{ format_angka($detQty) }}</td>
-                            <td class="text-end text-danger">
-                                {{ format_angka($detHarga) }}
-                                @if(isset($det['batch']))
-                                    <br><small class="text-muted" style="font-size:0.70rem; opacity: 0.7;">
-                                        Batch: {{ $det['batch'] }}
-                                    </small>
-                                @endif
-                            </td>
-                            <td class="text-end text-danger fw-semibold border-end">{{ format_angka($detNilai) }}</td>
-                            
-                            {{-- SALDO: hanya tampil di baris terakhir layer --}}
-                            @if($isFirst)
-                                <td rowspan="{{ count($keluarDetails) }}" class="text-end text-dark fw-bold bg-light fw-bold">{{ format_angka($row['saldo_qty']) }}</td>
-                                <td rowspan="{{ count($keluarDetails) }}" class="text-end text-dark fw-bold bg-light">{{ format_angka($saldoHarga) }}</td>
-                                <td rowspan="{{ count($keluarDetails) }}" class="text-end text-dark fw-bold bg-light fw-bold">{{ format_angka($row['saldo_nilai']) }}</td>
+
+                            {{-- KOLOM MASUK --}}
+                            @if($inOut && $inOut['jenis'] === 'MASUK')
+                                <td class="text-end text-success fw-medium">{{ format_angka($inOut['qty']) }}</td>
+                                <td class="text-end text-success">{{ format_angka($inOut['harga']) }}</td>
+                                <td class="text-end text-success fw-semibold border-end">{{ format_angka($inOut['nilai']) }}</td>
+                            @elseif($inOut && $inOut['jenis'] === 'KELUAR')
+                                <td class="text-center text-muted border-end" colspan="3">—</td>
+                            @else
+                                <td class="text-center border-end" colspan="3">&nbsp;</td>
+                            @endif
+
+                            {{-- KOLOM KELUAR --}}
+                            @if($inOut && $inOut['jenis'] === 'KELUAR')
+                                <td class="text-end text-danger fw-medium">{{ format_angka($inOut['qty']) }}</td>
+                                <td class="text-end text-danger">
+                                    {{ format_angka($inOut['harga']) }}
+                                    @if(!empty($inOut['info']) && $methodStr !== 'AVERAGE')
+                                        <br><small class="text-muted" style="font-size:0.65rem; opacity:0.8;">Batch {{ $inOut['info'] }}</small>
+                                    @endif
+                                    @if(empty($inOut['info']) && count($keluarDetails) <= 1 && $methodStr === 'AVERAGE')
+                                        <br><small class="text-muted" style="font-size:0.65rem; opacity:0.8;">(Avg)</small>
+                                    @endif
+                                </td>
+                                <td class="text-end text-danger fw-semibold border-end">{{ format_angka($inOut['nilai']) }}</td>
+                            @elseif($inOut && $inOut['jenis'] === 'MASUK')
+                                <td class="text-center text-muted border-end" colspan="3">—</td>
+                            @else
+                                <td class="text-center border-end" colspan="3">&nbsp;</td>
+                            @endif
+
+                            {{-- KOLOM SALDO --}}
+                            @if($sdo)
+                                <td class="text-end text-dark fw-bold bg-light" style="{{ $sdo['qty'] <= 0 ? 'opacity:0.5;' : '' }}">{{ format_angka($sdo['qty']) }}</td>
+                                <td class="text-end text-dark fw-bold bg-light" style="{{ $sdo['qty'] <= 0 ? 'opacity:0.5;' : '' }}">
+                                    {{ $sdo['qty'] > 0 ? format_angka($sdo['harga']) : '—' }}
+                                    @if($methodStr === 'AVERAGE' && $i === 0 && count($saldoLayers) === 1 && $sdo['qty'] > 0)
+                                        <br><span class="opacity-50" style="font-size:0.70rem;">(Avg)</span>
+                                    @endif
+                                </td>
+                                <td class="text-end text-dark fw-bold bg-light fw-bold" style="{{ $sdo['qty'] <= 0 ? 'opacity:0.5;' : '' }}">{{ format_angka($sdo['nilai']) }}</td>
+                            @else
+                                <td colspan="3" class="text-center border-start-0 border-end-0 bg-light">&nbsp;</td>
                             @endif
                         </tr>
-                    @endforeach
-                    @endif
+                    @endfor
 
                 @empty
                     <tr>
@@ -260,59 +318,49 @@
                         </td>
                     </tr>
                 @endforelse
+
+                {{-- TOTAL FOOTER --}}
+                @if(count($ledger) > 0 || $saldoAwalQty > 0)
+                    @if($methodStr !== 'AVERAGE' && count($activeBatches) > 0)
+                        @foreach($activeBatches as $idx => $batch)
+                        <tr class="fw-bold text-end bg-light" style="{{ $idx === 0 ? 'border-top: 2px solid #ccc;' : '' }}">
+                            @if($idx === 0)
+                            <td colspan="2" class="text-start text-dark" rowspan="{{ count($activeBatches) }}">TOTAL PERGERAKAN & SALDO AKHIR</td>
+                            <td class="text-success" rowspan="{{ count($activeBatches) }}">{{ format_angka($sumMasukQty) }}</td>
+                            <td class="text-success" rowspan="{{ count($activeBatches) }}">―</td>
+                            <td class="text-success" rowspan="{{ count($activeBatches) }}">{{ format_angka($sumMasukNilai) }}</td>
+                            <td class="text-danger" rowspan="{{ count($activeBatches) }}">{{ format_angka($sumKeluarQty) }}</td>
+                            <td class="text-danger" rowspan="{{ count($activeBatches) }}">―</td>
+                            <td class="text-danger" rowspan="{{ count($activeBatches) }}">{{ format_angka($sumKeluarNilai) }}</td>
+                            @endif
+                            <td class="text-dark">{{ format_angka($batch['qty']) }}</td>
+                            <td class="text-dark">{{ format_angka($batch['harga']) }}</td>
+                            <td class="text-dark">{{ format_angka($batch['qty'] * $batch['harga']) }}</td>
+                        </tr>
+                        @endforeach
+                    @else
+                        <tr class="fw-bold text-end bg-light" style="border-top: 2px solid #ccc;">
+                            <td colspan="2" class="text-start text-dark">TOTAL PERGERAKAN & SALDO AKHIR</td>
+                            <td class="text-success">{{ format_angka($sumMasukQty) }}</td>
+                            <td class="text-success">―</td>
+                            <td class="text-success">{{ format_angka($sumMasukNilai) }}</td>
+                            <td class="text-danger">{{ format_angka($sumKeluarQty) }}</td>
+                            <td class="text-danger">―</td>
+                            <td class="text-danger">{{ format_angka($sumKeluarNilai) }}</td>
+                            <td class="text-dark">{{ format_angka($finalSaldoQty) }}</td>
+                            <td class="text-dark">
+                                {{ $finalSaldoQty > 0 ? format_angka($finalSaldoNilai / $finalSaldoQty) : '―' }}
+                            </td>
+                            <td class="text-dark">{{ format_angka($finalSaldoNilai) }}</td>
+                        </tr>
+                    @endif
+                @endif
             </tbody>
         </table>
     </div>
 </div>
 
-{{-- SECTION ACTIVE BATCHES (hanya untuk FIFO/LIFO) --}}
-@if($methodStr !== 'AVERAGE' && count($activeBatches) > 0)
-<div class="row">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0 border-top border-3 border-success">
-            <div class="card-header bg-white">
-                <h6 class="mb-0 fw-bold">Sisa Batch Aktif ({{ $methodStr }})</h6>
-                <p class="text-muted small mb-0">Batch stok yang masih tersedia dan akan dipakai berikutnya.</p>
-            </div>
-            <div class="card-body p-0">
-                <ul class="list-group list-group-flush">
-                    @foreach($activeBatches as $idx => $batch)
-                    <li class="list-group-item d-flex justify-content-between align-items-center {{ $idx === 0 && $methodStr === 'FIFO' ? 'bg-success bg-opacity-10' : ($idx === count($activeBatches)-1 && $methodStr === 'LIFO' ? 'bg-warning bg-opacity-10' : '') }}">
-                        <div>
-                            <span class="fw-semibold">Batch #{{ $batch['id'] }}</span>
-                            @if($idx === 0 && $methodStr === 'FIFO')
-                                <span class="badge bg-success ms-1">Next (FIFO)</span>
-                            @endif
-                            @if($idx === count($activeBatches)-1 && $methodStr === 'LIFO')
-                                <span class="badge bg-warning ms-1">Next (LIFO)</span>
-                            @endif
-                            <br>
-                            <small class="text-muted">Sumber: {{ strtoupper($batch['ref_tipe']) }} #{{ $batch['ref_id'] }} | Tgl: {{ \Carbon\Carbon::parse($batch['tanggal'])->format('d/m/Y') }}</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="fs-6 fw-bold text-dark">{{ format_angka($batch['qty']) }}</span>
-                            <small class="text-muted"> {{ $selectedBahan->satuan }}</small>
-                            <br>
-                            <small class="text-muted">@ {{ rupiah($batch['harga']) }}</small>
-                            <br>
-                            <small class="fw-semibold text-primary">Nilai: {{ rupiah($batch['qty'] * $batch['harga']) }}</small>
-                        </div>
-                    </li>
-                    @endforeach
-                </ul>
-            </div>
-            <div class="card-footer bg-light text-end">
-                @php
-                    $totalQty = array_sum(array_column($activeBatches, 'qty'));
-                    $totalNilai = array_sum(array_map(fn($b) => $b['qty'] * $b['harga'], $activeBatches));
-                @endphp
-                <small class="text-muted me-3">Total Qty: <strong>{{ format_angka($totalQty) }}</strong></small>
-                <small class="text-muted">Total Nilai: <strong class="text-primary">{{ rupiah($totalNilai) }}</strong></small>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+
 
 @endif
 

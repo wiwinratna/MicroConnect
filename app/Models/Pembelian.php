@@ -22,6 +22,10 @@ class Pembelian extends Model
         'bukti_pembelian',
     ];
 
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
+
     public function details()
     {
         return $this->hasMany(PembelianDetail::class);
@@ -38,5 +42,17 @@ class Pembelian extends Model
         $lastNum = $last ? (int) substr($last->kode_pembelian, -5) : 0;
 
         return 'PB-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
+    }
+
+    public function isUsed(): bool
+    {
+        // Check if the purchased materials have been used in any outgoing stock transaction later on
+        $bahanIds = $this->details()->pluck('bahan_id');
+        if($bahanIds->isEmpty()) return false;
+
+        return \App\Models\StokMutasi::whereIn('bahan_id', $bahanIds)
+            ->where('jenis', 'Keluar')
+            ->where('created_at', '>', $this->created_at)
+            ->exists();
     }
 }

@@ -224,5 +224,13 @@
         <a href="{{ route('umkm.etalase.index') }}" class="btn-back">&larr; Kembali ke Kasir</a>
     </div>
 
+    <script>
+        // Auto-trigger print when loaded
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        });
+    </script>
 </body>
 </html>

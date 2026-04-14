@@ -24,11 +24,33 @@
     <div class="card-body">
         {{-- ===================== TAB NAV ===================== --}}
         <ul class="nav nav-tabs border-bottom-0 gap-1 mb-3" id="laporanTab" role="tablist">
+            {{-- Level 1+ : Jurnal Umum --}}
             <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-jurnal">Jurnal Umum</button></li>
+
+            {{-- Level 1+ : Laporan Pembelian & Penjualan (via Lainnya dropdown) --}}
+
+            {{-- Level 2+ : Buku Besar --}}
+            @if(feature_can('buku_besar'))
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-bukubesar">Buku Besar</button></li>
+            @endif
+
+            {{-- Level 2+ : Laba Rugi --}}
+            @if(feature_can('laba_rugi'))
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-labarugi">Laba Rugi</button></li>
+            @endif
+
+            {{-- Level 3 : Perubahan Modal --}}
+            @if(feature_can('perubahan_modal'))
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-modal">Perubahan Modal</button></li>
+            @endif
+
+            {{-- Level 3 : Arus Kas --}}
+            @if(feature_can('arus_kas'))
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-kas">Arus Kas</button></li>
+            @endif
+
+            {{-- Level 2+ : Kartu Stok & Rekap Mutasi --}}
+            @if(feature_can('kartu_stok'))
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Persediaan Barang</a>
                 <ul class="dropdown-menu shadow-sm border-0">
@@ -36,12 +58,21 @@
                     <li><a class="dropdown-item text-primary fw-semibold" href="{{ route('umkm.laporan.kartu_stok') }}">Lihat Kartu Stok (FIFO/LIFO/Avg)</a></li>
                 </ul>
             </li>
+            @endif
+
+            {{-- Level 1+ : Laporan Penjualan, Pembelian — Level 2+ : tambah Piutang --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Lainnya</a>
                 <ul class="dropdown-menu shadow-sm border-0">
+                    @if(feature_can('laporan_pembelian'))
                     <li><button class="dropdown-item" data-bs-toggle="tab" data-bs-target="#tab-beli">Laporan Pembelian</button></li>
+                    @endif
+                    @if(feature_can('laporan_penjualan'))
                     <li><button class="dropdown-item" data-bs-toggle="tab" data-bs-target="#tab-jual">Laporan Penjualan</button></li>
+                    @endif
+                    @if(feature_can('piutang'))
                     <li><button class="dropdown-item" data-bs-toggle="tab" data-bs-target="#tab-piutang">Laporan Piutang</button></li>
+                    @endif
                 </ul>
             </li>
         </ul>

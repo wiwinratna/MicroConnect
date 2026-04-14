@@ -11,10 +11,18 @@ class Pelanggan extends Model
     protected $fillable = [
         'umkm_id',
         'nama_pelanggan',
+        'nama_instansi',
+        'no_ktp',
+        'foto_ktp',
         'no_whatsapp',
+        'kontak_alternatif',
         'email',
         'alamat',
+        'nama_pic',
         'catatan',
+        'batas_maksimal_piutang',
+        'jatuh_tempo_default',
+        'catatan_penagihan',
     ];
 
     // ===================== RELASI =====================

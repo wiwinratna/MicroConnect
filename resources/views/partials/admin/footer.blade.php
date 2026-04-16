@@ -8,7 +8,6 @@
 				</p>
 			</div>
 			<div class="col-6 text-end">
-				<small class="text-muted">D3 Sistem Informasi Akuntansi</small>
 			</div>
 		</div>
 	</div>

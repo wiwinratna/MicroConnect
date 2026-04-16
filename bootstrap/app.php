@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'pelakuusaha'          => \App\Http\Middleware\PelakuUsaha::class,
             'adminonly'            => \App\Http\Middleware\AdminOnly::class,
             'must_change_password' => \App\Http\Middleware\MustChangePassword::class,
+            'umkm.feature'         => \App\Http\Middleware\CheckUmkmFeature::class,
         ]);
 
         // Exclude Midtrans webhook dari CSRF verification

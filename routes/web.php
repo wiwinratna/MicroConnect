@@ -122,6 +122,7 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_c
     Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
     Route::get('/pembelian/{id}/edit', [PembelianController::class, 'edit'])->name('pembelian.edit');
     Route::put('/pembelian/{id}', [PembelianController::class, 'update'])->name('pembelian.update');
+    Route::delete('/pembelian/{id}', [PembelianController::class, 'destroy'])->name('pembelian.destroy');
 
 
     // [NONAKTIF SEMENTARA] Anggaran Estimasi - dinonaktifkan per permintaan revisi
@@ -138,6 +139,9 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_c
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/penjualan/create', [PenjualanController::class, 'create'])->name('penjualan.create');
     Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store');
+    Route::get('/penjualan/{id}/edit', [PenjualanController::class, 'edit'])->name('penjualan.edit');
+    Route::put('/penjualan/{id}', [PenjualanController::class, 'update'])->name('penjualan.update');
+    Route::delete('/penjualan/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
 
     // Mode Etalase
     Route::prefix('etalase')->name('etalase.')->group(function () {
@@ -145,37 +149,44 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_c
         Route::post('/checkout', [\App\Http\Controllers\Umkm\EtalaseController::class, 'checkout'])->name('checkout');
         Route::get('/nota/{id}', [\App\Http\Controllers\Umkm\EtalaseController::class, 'nota'])->name('nota');
     });
-    // Ekspor (PDF/Excel)
+    // Ekspor (PDF/Excel) — dilindungi middleware feature level
     Route::prefix('export')->name('export.')->group(function () {
-        Route::get('/jurnal-umum', [\App\Http\Controllers\Umkm\ExportController::class, 'jurnalUmum'])->name('jurnal_umum');
-        Route::get('/buku-besar', [\App\Http\Controllers\Umkm\ExportController::class, 'bukuBesar'])->name('buku_besar');
-        Route::get('/laba-rugi', [\App\Http\Controllers\Umkm\ExportController::class, 'labaRugi'])->name('laba_rugi');
-        Route::get('/perubahan-modal', [\App\Http\Controllers\Umkm\ExportController::class, 'perubahanModal'])->name('perubahan_modal');
-        Route::get('/arus-kas', [\App\Http\Controllers\Umkm\ExportController::class, 'arusKas'])->name('arus_kas');
-        Route::get('/rekap-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'rekapStok'])->name('rekap_stok');
-        Route::get('/kartu-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'kartuStokDetail'])->name('kartu_stok');
-        Route::get('/laporan-pembelian', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPembelian'])->name('laporan_pembelian');
-        Route::get('/laporan-penjualan', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPenjualan'])->name('laporan_penjualan');
-        Route::get('/laporan-piutang', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPiutang'])->name('laporan_piutang');
+        // Level 1: jurnal umum, laporan pembelian, laporan penjualan
+        Route::get('/jurnal-umum', [\App\Http\Controllers\Umkm\ExportController::class, 'jurnalUmum'])->name('jurnal_umum')->middleware('umkm.feature:export_jurnal_umum');
+        Route::get('/laporan-pembelian', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPembelian'])->name('laporan_pembelian')->middleware('umkm.feature:export_laporan_pembelian');
+        Route::get('/laporan-penjualan', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPenjualan'])->name('laporan_penjualan')->middleware('umkm.feature:export_laporan_penjualan');
+
+        // Level 2: buku besar, laba rugi, kartu stok, rekap stok, piutang
+        Route::get('/buku-besar', [\App\Http\Controllers\Umkm\ExportController::class, 'bukuBesar'])->name('buku_besar')->middleware('umkm.feature:export_buku_besar');
+        Route::get('/laba-rugi', [\App\Http\Controllers\Umkm\ExportController::class, 'labaRugi'])->name('laba_rugi')->middleware('umkm.feature:export_laba_rugi');
+        Route::get('/rekap-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'rekapStok'])->name('rekap_stok')->middleware('umkm.feature:export_rekap_stok');
+        Route::get('/kartu-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'kartuStokDetail'])->name('kartu_stok')->middleware('umkm.feature:export_kartu_stok');
+        Route::get('/laporan-piutang', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPiutang'])->name('laporan_piutang')->middleware('umkm.feature:export_laporan_piutang');
+
+        // Level 3: perubahan modal, arus kas
+        Route::get('/perubahan-modal', [\App\Http\Controllers\Umkm\ExportController::class, 'perubahanModal'])->name('perubahan_modal')->middleware('umkm.feature:export_perubahan_modal');
+        Route::get('/arus-kas', [\App\Http\Controllers\Umkm\ExportController::class, 'arusKas'])->name('arus_kas')->middleware('umkm.feature:export_arus_kas');
     });
 
-    // Laporan
+    // Laporan (semua level bisa akses halaman laporan, tapi konten di-guard di view)
     Route::get('/laporan', [LaporanKeuanganController::class, 'index'])->name('laporan.index');
-    Route::get('/kartu-stok', [\App\Http\Controllers\Umkm\KartuStokController::class, 'index'])->name('laporan.kartu_stok');
 
-    // Beban Operasional
+    // Kartu Stok — Level 2+
+    Route::get('/kartu-stok', [\App\Http\Controllers\Umkm\KartuStokController::class, 'index'])->name('laporan.kartu_stok')->middleware('umkm.feature:kartu_stok');
+
+    // Beban Operasional — Level 1+
     Route::get('/beban', [\App\Http\Controllers\Umkm\BebanController::class, 'index'])->name('beban.index');
     Route::get('/beban/create', [\App\Http\Controllers\Umkm\BebanController::class, 'create'])->name('beban.create');
     Route::post('/beban', [\App\Http\Controllers\Umkm\BebanController::class, 'store'])->name('beban.store');
 
-    // Jurnal Umum
-    Route::get('/jurnal', [\App\Http\Controllers\Umkm\JurnalController::class, 'index'])->name('jurnal.index');
-    Route::get('/jurnal/create', [\App\Http\Controllers\Umkm\JurnalController::class, 'create'])->name('jurnal.create');
-    Route::post('/jurnal', [\App\Http\Controllers\Umkm\JurnalController::class, 'store'])->name('jurnal.store');
+    // Jurnal Umum — Level 1+
+    Route::get('/jurnal', [\App\Http\Controllers\Umkm\JurnalController::class, 'index'])->name('jurnal.index')->middleware('umkm.feature:jurnal_umum');
+    Route::get('/jurnal/create', [\App\Http\Controllers\Umkm\JurnalController::class, 'create'])->name('jurnal.create')->middleware('umkm.feature:jurnal_umum');
+    Route::post('/jurnal', [\App\Http\Controllers\Umkm\JurnalController::class, 'store'])->name('jurnal.store')->middleware('umkm.feature:jurnal_umum');
 
-    // COA
-    Route::resource('/coa', CoaController::class)->names('coa')->except(['show']);
-    Route::get('/coa/preview', [CoaController::class, 'preview'])->name('coa.preview');
+    // COA — Level 3 only
+    Route::resource('/coa', CoaController::class)->names('coa')->except(['show'])->middleware('umkm.feature:coa');
+    Route::get('/coa/preview', [CoaController::class, 'preview'])->name('coa.preview')->middleware('umkm.feature:coa');
 
     // Ticketing / Pengaduan
     Route::get('/tickets', [\App\Http\Controllers\Umkm\TicketController::class, 'index'])->name('tickets.index');
@@ -195,18 +206,21 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_c
         Route::get('/nota/{id}', [\App\Http\Controllers\Umkm\EtalaseController::class, 'nota'])->name('nota');
         // Pelanggan
         Route::get('/pelanggan', [PiutangController::class, 'indexPelanggan'])->name('pelanggan.index');
+        Route::get('/pelanggan/create', [PiutangController::class, 'createPelanggan'])->name('pelanggan.create');
         Route::post('/pelanggan', [PiutangController::class, 'storePelanggan'])->name('pelanggan.store');
+        Route::get('/pelanggan/{pelanggan}/edit', [PiutangController::class, 'editPelanggan'])->name('pelanggan.edit');
+        Route::put('/pelanggan/{pelanggan}', [PiutangController::class, 'updatePelanggan'])->name('pelanggan.update');
         Route::delete('/pelanggan/{pelanggan}', [PiutangController::class, 'destroyPelanggan'])->name('pelanggan.destroy');
     });
 
-    // ==================== PIUTANG ====================
-    Route::prefix('piutang')->name('piutang.')->group(function () {
+    // ==================== PIUTANG — Level 2+ ====================
+    Route::prefix('piutang')->name('piutang.')->middleware('umkm.feature:piutang')->group(function () {
         Route::get('/', [PiutangController::class, 'index'])->name('index');
         Route::get('/create', [PiutangController::class, 'create'])->name('create');
         Route::post('/', [PiutangController::class, 'store'])->name('store');
         Route::get('/{piutang}', [PiutangController::class, 'show'])->name('show');
         Route::post('/{piutang}/bayar', [PiutangController::class, 'bayar'])->name('bayar');
-        
+
         // Email Reminders
         Route::get('/{piutang}/email/preview', [\App\Http\Controllers\Umkm\PiutangEmailController::class, 'preview'])->name('email.preview');
         Route::post('/{piutang}/email/send', [\App\Http\Controllers\Umkm\PiutangEmailController::class, 'sendManual'])->name('email.send');

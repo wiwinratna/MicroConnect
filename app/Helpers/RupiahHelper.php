@@ -67,3 +67,34 @@ if (!function_exists('format_angka')) {
         return $formatted;
     }
 }
+
+if (!function_exists('feature_can')) {
+    /**
+     * Cek apakah user UMKM yang login boleh mengakses fitur tertentu.
+     *
+     * Shorthand untuk \App\Helpers\FeatureAccess::can($feature)
+     *
+     * @param string $feature  Kunci fitur (misal: 'buku_besar', 'kartu_stok')
+     * @return bool
+     *
+     * Penggunaan di Blade:
+     *   @if(feature_can('buku_besar')) ... @endif
+     *
+     * Penggunaan di PHP:
+     *   if (!feature_can('buku_besar')) abort(403);
+     */
+    function feature_can(string $feature): bool
+    {
+        return \App\Helpers\FeatureAccess::can($feature);
+    }
+}
+
+if (!function_exists('feature_level')) {
+    /**
+     * Kembalikan level UMKM user yang sedang login (integer 1–3).
+     */
+    function feature_level(): int
+    {
+        return \App\Helpers\FeatureAccess::getCurrentLevel();
+    }
+}

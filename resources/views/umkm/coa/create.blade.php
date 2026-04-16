@@ -19,8 +19,8 @@
         <div class="col-md-3">
           <label class="form-label">Header Akun</label>
           <select name="header_akun" id="header_akun" class="form-select" required>
-            @foreach(['Aset','Modal','Pendapatan','Beban'] as $h)
-              <option value="{{ $h }}" @selected(old('header_akun')==$h)>{{ $h }}</option>
+            @foreach([1=>'Aset', 2=>'Kewajiban', 3=>'Modal', 4=>'Pendapatan', 5=>'Beban'] as $v => $l)
+              <option value="{{ $v }}" @selected(old('header_akun')=="$v")>{{ $l }}</option>
             @endforeach
           </select>
           <small class="text-muted">Pilih kelompok akun, sistem akan isi kode & posisi otomatis.</small>

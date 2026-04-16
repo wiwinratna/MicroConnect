@@ -10,17 +10,17 @@ use Illuminate\Validation\Rule;
 class CoaController extends Controller
 {
     private array $startKode = [
-        'Aset'       => 111,
-        'Kewajiban'  => 211,
-        'Modal'      => 311,
-        'Pendapatan' => 400,
-        'Beban'      => 501,
+        '1' => 111,
+        '2' => 211,
+        '3' => 311,
+        '4' => 400,
+        '5' => 501,
     ];
 
     private function posisiDefault(string $header): string
     {
         // Normal balance
-        return in_array($header, ['Aset', 'Beban'], true) ? 'Debit' : 'Kredit';
+        return in_array($header, ['1', '5'], true) ? 'Debit' : 'Kredit';
     }
 
     private function nextKodeAkun(int $umkmId, string $header): string
@@ -37,14 +37,27 @@ class CoaController extends Controller
         return (string) $next;
     }
 
-    // ====== INDEX ======
-    public function index()
+    public function index(Request $request)
     {
         $umkm = auth()->user()->umkm;
 
-        $data = Coa::where('umkm_id', $umkm->id)
-            ->orderByRaw('CAST(kode_akun AS UNSIGNED) ASC')
-            ->get();
+        $query = Coa::where('umkm_id', $umkm->id);
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode_akun', 'like', "%{$search}%")
+                  ->orWhere('nama_akun', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('filter_header') && $request->filter_header != '') {
+            $query->where('header_akun', $request->filter_header);
+        }
+
+        $data = $query->orderByRaw('CAST(kode_akun AS UNSIGNED) ASC')
+                      ->paginate(15)
+                      ->withQueryString();
 
         return view('umkm.coa.index', compact('data'));
     }
@@ -68,7 +81,7 @@ class CoaController extends Controller
         $header = $request->header;
 
         // kalau kamu mau batasi header valid:
-        $allowed = ['Aset','Kewajiban','Modal','Pendapatan','Beban'];
+        $allowed = ['1','2','3','4','5'];
         if (!in_array($header, $allowed, true)) {
             return response()->json([
                 'error' => 'Header akun tidak valid.'

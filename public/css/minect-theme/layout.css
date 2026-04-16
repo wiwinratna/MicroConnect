@@ -1,19 +1,59 @@
-/* SIDBAR OVERRIDE */
-.sidebar {
-  background-color: var(--mn-sidebar-bg) !important;
-}
+/* LAYOUT OVERRIDES — Compact Desktop Scale */
 
+/* ── SIDEBAR ── */
+.sidebar,
 .sidebar-content {
+  min-width: 220px !important;
+  max-width: 220px !important;
   background-color: var(--mn-sidebar-bg) !important;
 }
 
+.sidebar.collapsed {
+  margin-left: -220px !important;
+}
+
+/* Sidebar section headers */
+.sidebar-header {
+  padding: 1.1rem 1rem 0.25rem !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.06em !important;
+  opacity: 0.6;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Sidebar links — compact */
+.sidebar-link {
+  margin: 0.125rem 0.75rem !important;
+  padding: 0.45rem 1rem !important;  /* was 0.65rem 1.5rem */
+  border-radius: 7px !important;
+  transition: var(--mn-transition);
+  font-size: 0.8rem !important;
+  font-weight: 500;
+}
+
+.sidebar-link i,
+.sidebar-link svg {
+  color: inherit !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 8px !important;
+  stroke-width: 1.8px;
+  flex-shrink: 0;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Active sidebar item */
 .sidebar-item.active > .sidebar-link,
 .sidebar-item.active .sidebar-link:hover {
-  background-color: rgba(37, 99, 235, 0.15) !important; /* Soft primary bluu */
+  background-color: rgba(37, 99, 235, 0.15) !important;
   color: var(--mn-primary) !important;
-  border-radius: var(--mn-radius-pill) !important;
-  margin: 0.25rem 1rem !important;
-  padding: 0.65rem 1.5rem !important;
+  border-radius: 7px !important;
+  margin: 0.125rem 0.75rem !important;
+  padding: 0.45rem 1rem !important;
   border-left: none !important;
 }
 
@@ -23,40 +63,42 @@
   background-color: transparent !important;
 }
 
-/* Buat jarak kalau tidak aktif biar rapi sejajar dengan yang aktif */
-.sidebar-link {
-  margin: 0.25rem 1rem !important;
-  padding: 0.65rem 1.5rem !important;
-  border-radius: var(--mn-radius-pill) !important;
-  transition: var(--mn-transition);
-}
-
-.sidebar-link i, .sidebar-link svg {
-  color: inherit !important; 
-}
-
-.sidebar-link:hover {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* TOPBAR / NAVBAR OVERRIDE */
+/* ── TOPBAR / NAVBAR ── */
 .navbar {
   background-color: var(--mn-surface) !important;
   border-bottom: 1px solid var(--mn-border-color) !important;
   box-shadow: none !important;
-  padding: 0.75rem 1.5rem !important;
+  padding: 0.4rem 1.25rem !important;  /* was 0.75rem 1.5rem */
+  min-height: 52px !important;
 }
 
-/* CONTENT WRAPPER */
+.navbar-bg {
+  min-height: 52px !important;
+  padding: 0.4rem 1.25rem !important;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.hamburger {
+  padding: 0;
+}
+
+/* Fix avatar size on topbar */
+.navbar-nav .avatar,
+.navbar .avatar {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+/* ── CONTENT AREA ── */
 .main {
   background-color: var(--mn-bg-body) !important;
 }
 
 .content {
-  padding: 2rem 2rem 1.5rem 2rem;
+  padding: 1.25rem 1.25rem 1rem 1.25rem !important; /* was 2rem */
 }
 
-/* GLOBAL SPACING HELPERS */
+/* ── GLOBAL SPACING HELPERS ── */
 .section-mb {
-  margin-bottom: 2rem !important;
+  margin-bottom: 1.25rem !important; /* was 2rem */
 }

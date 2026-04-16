@@ -16,21 +16,44 @@
     <link href="{{ asset('css/custom-polish.css') }}" rel="stylesheet">
     <link href="{{ asset('css/minect-theme/main.css') }}" rel="stylesheet">
 
+    <style>
+        /* Modern App Layout — Fixed Sidebar & Navbar */
+        html, body { height: 100%; overflow: hidden; }
+        .wrapper { height: 100vh; overflow: hidden; display: flex; width: 100%; }
+        
+        /* Sidebar stays fixed by nature of flex */
+        .sidebar, .sidebar-content { min-width: 220px !important; max-width: 220px !important; height: 100vh; }
+        .sidebar.collapsed { margin-left: -220px !important; }
+        
+        /* Main container is the vertical flex parent */
+        .main { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            min-width: 0; /* Prevents flex children from pushing width */
+        }
+        
+        /* This makes the navbar stick to the top of the .main container */
+        .navbar { flex-shrink: 0; }
+        
+        /* The content area is the one that actually scrolls */
+        .content { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 1.25rem 1.25rem 2rem !important; 
+            background: #f8fafc;
+        }
+        
+        .hamburger { padding: 0; }
+    </style>
+
 	@stack('styles')
 </head>
 <body>
 	@php
-		$user = auth()->user();
-		$level = 1; // Default
-		if ($user && $user->umkm && $user->umkm->level) {
-			
-			// Misal kode level 'LVL1' atau id 1. Kita mapping simple ID ke angka level
-			// karena data realnya di UmkmLevel ID 1, 2, 3 biasanya merepresentasikan Level.
-			$level = (int) preg_replace('/[^0-9]/', '', $user->umkm->level->kode) ?: $user->umkm->level_id;
-			
-			// Fallback proteksi
-			if ($level < 1) $level = 1;
-		}
+		$umkmLevel = feature_level();
 	@endphp
 	<div class="wrapper">
 
@@ -93,7 +116,6 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			const deleteButtons = document.querySelectorAll('.btn-delete, form[method="POST"] button.text-danger');
 			deleteButtons.forEach(btn => {
-				// jika ada form yg membungkusnya
 				const form = btn.closest('form');
 				if(form && form.querySelector('input[name="_method"][value="DELETE"]')) {
 					btn.addEventListener('click', function(e) {

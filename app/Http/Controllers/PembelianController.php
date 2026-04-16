@@ -9,14 +9,21 @@ use Illuminate\Http\Request;
 
 class PembelianController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $umkm = auth()->user()->umkm;
 
-        $data = Pembelian::where('umkm_id', $umkm->id)
-                          ->with('details.bahan')
-                          ->orderByDesc('tanggal')
-                          ->get();
+        $query = Pembelian::where('umkm_id', $umkm->id)->with('details.bahan');
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nomor_nota', 'like', "%{$search}%")
+                  ->orWhere('supplier', 'like', "%{$search}%");
+            });
+        }
+
+        $data = $query->orderByDesc('tanggal')->paginate(15)->withQueryString();
 
         return view('umkm.pembelian.index', compact('data'));
     }
@@ -132,10 +139,66 @@ class PembelianController extends Controller
         return view('umkm.pembelian.edit', compact('pembelian'));
     }
 
+    public function destroy($id)
+    {
+        $umkm = auth()->user()->umkm;
+        $pembelian = Pembelian::where('umkm_id', $umkm->id)->findOrFail($id);
+
+        if ($pembelian->isUsed()) {
+            return redirect()
+                ->route('umkm.pembelian.index')
+                ->with('error', 'Pembelian gagal dihapus. Stok bahan dari transaksi ini sudah dicatat penggunaannya (telah direstock keluar).');
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($pembelian) {
+            // Revert stok awal visual cache
+            foreach ($pembelian->details as $detail) {
+                $bahan = \App\Models\BahanBaku::find($detail->bahan_id);
+                if ($bahan) {
+                    $bahan->update([
+                        'stok_awal' => max(0, ($bahan->stok_awal ?? 0) - $detail->qty)
+                    ]);
+                }
+            }
+
+            // Hapus Stok Mutasi (MASUK)
+            \App\Models\StokMutasi::where('ref_tipe', 'pembelian')
+                ->where('ref_id', $pembelian->id)
+                ->delete();
+
+            // Hapus Jurnal Umum otomatis ter-create by system
+            \App\Models\JurnalUmum::where('umkm_id', $pembelian->umkm_id)
+                ->where('ref_tipe', 'pembelian')
+                ->where('ref_id', $pembelian->id)
+                ->delete();
+
+            // Hapus Detail (Jika tidak cascade)
+            $pembelian->details()->delete();
+
+            // Hapus file bukti
+            if ($pembelian->bukti_pembelian) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($pembelian->bukti_pembelian);
+            }
+
+            // Hapus Pembelian Utama
+            $pembelian->delete();
+        });
+
+        return redirect()
+            ->route('umkm.pembelian.index')
+            ->with('success', 'Riwayat Pembelian berhasil dihapus, mutasi stok ditarik kembali.');
+    }
+
     public function update(Request $request, $id)
     {
         $umkm = auth()->user()->umkm;
         $pembelian = Pembelian::where('umkm_id', $umkm->id)->findOrFail($id);
+
+        if ($pembelian->isUsed()) {
+            return redirect()
+                ->route('umkm.pembelian.index')
+                ->with('error', 'Pembelian gagal diedit. Stok bahan dari transaksi ini sudah dicatat penggunaannya (telah direstock keluar).');
+        }
 
         $request->validate([
             'nomor_nota'=> 'nullable|string|max:100',

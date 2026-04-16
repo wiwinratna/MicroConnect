@@ -1,5 +1,5 @@
 @extends('layouts.umkm')
-@section('title', 'Tambah Penjualan')
+@section('title', 'Edit Penjualan')
 
 @push('styles')
 <style>
@@ -44,8 +44,8 @@
     <div class="col-xl-9">
         <div class="d-flex justify-content-between align-items-start page-header">
             <div>
-                <h1 class="page-title">Tambah <strong>Penjualan Baru</strong></h1>
-                <p class="page-subtitle">Sistem akan otomatis menghitung stok bahan baku sesuai resep & mencatat jurnal transaksi.</p>
+                <h1 class="page-title">Edit <strong>Penjualan</strong></h1>
+                <p class="page-subtitle">Menyesuaikan transaksi <strong>{{ $penjualan->kode_penjualan }}</strong>. Sistem akan merestorasi stok dan jurnal otomatis.</p>
             </div>
             <a href="{{ route('umkm.penjualan.index') }}" class="btn btn-light shadow-sm" style="border-radius: 10px; padding: 0.625rem 1.25rem; font-weight: 600; color: #64748b; font-size: 0.8125rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i data-feather="arrow-left" style="width: 14px; height: 14px;"></i> Kembali
@@ -62,8 +62,9 @@
         </div>
         @endif
 
-        <form method="POST" action="{{ route('umkm.penjualan.store') }}">
+        <form method="POST" action="{{ route('umkm.penjualan.update', $penjualan->id) }}">
             @csrf
+            @method('PUT')
 
             <div class="premium-card mb-4">
                 <div class="p-4 p-md-5">
@@ -72,25 +73,31 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group-custom">
                                 <label class="label-custom">Tanggal Penjualan</label>
-                                <input type="date" name="tanggal" class="input-custom" required value="{{ old('tanggal', date('Y-m-d')) }}">
+                                <input type="date" name="tanggal" class="input-custom" required value="{{ old('tanggal', $penjualan->tanggal->format('Y-m-d')) }}">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group-custom">
                                 <label class="label-custom">Metode Pembayaran</label>
                                 <select name="metode_pembayaran" id="metode_pembayaran" class="input-custom select-custom" onchange="togglePiutangFields()">
-                                    <option value="tunai" {{ old('metode_pembayaran') == 'tunai' ? 'selected' : '' }}>Tunai (Lunas)</option>
-                                    <option value="piutang" {{ old('metode_pembayaran') == 'piutang' ? 'selected' : '' }}>Piutang (Kredit)</option>
+                                    <option value="tunai" {{ old('metode_pembayaran', $penjualan->piutang ? 'piutang' : 'tunai') == 'tunai' ? 'selected' : '' }}>Tunai (Lunas)</option>
+                                    <option value="piutang" {{ old('metode_pembayaran', $penjualan->piutang ? 'piutang' : 'tunai') == 'piutang' ? 'selected' : '' }}>Piutang (Kredit)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group-custom">
                                 <label class="label-custom">Nama Pembeli (Opsional)</label>
-                                <input type="text" name="pembeli" class="input-custom" value="{{ old('pembeli') }}" placeholder="Contoh: Bpk. Jefri">
+                                <input type="text" name="pembeli" class="input-custom" value="{{ old('pembeli', $penjualan->pembeli) }}" placeholder="Nama pembeli...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group-custom">
+                                <label class="label-custom">Kode Transaksi</label>
+                                <input type="text" class="input-custom bg-light" value="{{ $penjualan->kode_penjualan }}" readonly style="font-family: monospace;">
                             </div>
                         </div>
                     </div>
@@ -99,8 +106,7 @@
                         <div class="piutang-banner">
                             <i data-feather="alert-circle"></i>
                             <div style="font-size: 0.8125rem; line-height: 1.4;">
-                                <strong>Transaksi Kredit Mendeteksikan Piutang.</strong><br>
-                                Pastikan Anda memilih pelanggan yang terdaftar untuk pelacakan tagihan di masa depan.
+                                <strong>Transaksi Kredit.</strong> Perubahan data di sini akan secara otomatis memperbarui catatan piutang terkait.
                             </div>
                         </div>
                         <div class="row">
@@ -109,18 +115,16 @@
                                     <label class="label-custom">Pelanggan Terdaftar</label>
                                     <select name="pelanggan_id" id="pelanggan_id" class="input-custom select-custom">
                                         <option value="">-- Pilih Pelanggan --</option>
-                                        @if(isset($pelanggan))
-                                            @foreach($pelanggan as $plg)
-                                                <option value="{{ $plg->id }}" {{ old('pelanggan_id') == $plg->id ? 'selected' : '' }}>{{ $plg->nama_pelanggan }}</option>
-                                            @endforeach
-                                        @endif
+                                        @foreach($pelanggan as $plg)
+                                            <option value="{{ $plg->id }}" {{ old('pelanggan_id', $penjualan->piutang->pelanggan_id ?? '') == $plg->id ? 'selected' : '' }}>{{ $plg->nama_pelanggan }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group-custom">
                                     <label class="label-custom">Batas Waktu Jatuh Tempo</label>
-                                    <input type="date" name="jatuh_tempo" id="jatuh_tempo" class="input-custom" value="{{ old('jatuh_tempo') }}">
+                                    <input type="date" name="jatuh_tempo" id="jatuh_tempo" class="input-custom" value="{{ old('jatuh_tempo', optional(optional($penjualan->piutang)->jatuh_tempo)->format('Y-m-d')) }}">
                                 </div>
                             </div>
                         </div>
@@ -128,7 +132,7 @@
 
                     <div class="form-group-custom mt-2">
                         <label class="label-custom">Catatan Tambahan</label>
-                        <textarea name="catatan" class="input-custom" rows="2" placeholder="Tulis catatan internal jika ada...">{{ old('catatan') }}</textarea>
+                        <textarea name="catatan" class="input-custom" rows="2" placeholder="Tulis catatan internal jika ada...">{{ old('catatan', $penjualan->catatan) }}</textarea>
                     </div>
 
                     <div class="mt-5 mb-4">
@@ -145,6 +149,13 @@
                         </div>
 
                         <div id="item-rows">
+                            @php
+                                $details = old('produk_id') ? collect(old('produk_id'))->map(function($id, $i) {
+                                    return (object) ['produk_id' => $id, 'qty' => old('qty')[$i]];
+                                }) : $penjualan->details;
+                            @endphp
+
+                            @foreach($details as $index => $det)
                             <div class="row-item">
                                 <div class="row g-3 align-items-center">
                                     <div class="col-md-8">
@@ -152,13 +163,13 @@
                                         <select name="produk_id[]" class="input-custom select-custom" required>
                                             <option value="">- pilih produk -</option>
                                             @foreach($produk as $p)
-                                                <option value="{{ $p->id }}">{{ $p->nama_produk }} — {{ rupiah($p->harga_jual) }}</option>
+                                                <option value="{{ $p->id }}" {{ $det->produk_id == $p->id ? 'selected' : '' }}>{{ $p->nama_produk }} — {{ rupiah($p->harga_jual) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="label-custom d-md-none">Qty</label>
-                                        <input type="number" step="0.001" name="qty[]" class="input-custom text-center" placeholder="0" required>
+                                        <input type="number" step="0.001" name="qty[]" class="input-custom text-center" placeholder="0" required value="{{ $det->qty }}">
                                     </div>
                                     <div class="col-md-1 d-flex justify-content-end">
                                         <button type="button" class="btn-delete-row" onclick="removeRow(this)">
@@ -167,6 +178,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
 
                         <div class="mt-4">
@@ -179,10 +191,10 @@
 
                 <div class="form-actions">
                     <div class="text-muted small">
-                        * Stok akan berkurang otomatis sesuai resep.
+                        * Perubahan akan menghapus log stok lama & membuat log mutasi stok baru.
                     </div>
                     <button type="submit" class="btn btn-primary btn-submit-premium">
-                        Simpan Transaksi Penjualan
+                        Simpan Perubahan Penjualan
                     </button>
                 </div>
             </div>

@@ -1,46 +1,54 @@
-/* TABLE SYSTEM OVERRIDES */
+/* TABLE SYSTEM OVERRIDES — Compact Desktop Scale */
 .table {
   color: var(--mn-text-main) !important;
   vertical-align: middle !important;
   margin-bottom: 0 !important;
+  font-size: 0.8125rem !important; /* 13px — compact tapi terbaca */
 }
 
+/* Padding seragam compact: th & td */
 .table > :not(caption) > * > * {
-  padding: 1rem 1.5rem !important; /* Spacing yang lebih lega berdasar referensi */
+  padding: 0.5rem 0.875rem !important; /* was 1rem 1.5rem */
   background-color: var(--mn-surface) !important;
   border-bottom-color: var(--mn-border-color) !important;
+  line-height: 1.45 !important;
 }
 
-/* Header Tabel khas MINECT (Uppercase kecil & warna muted) */
+/* Header Tabel khas MINECT */
 .table thead th {
-  font-size: 0.75rem !important;
+  font-size: 0.6875rem !important; /* 11px */
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.06em !important;
   color: var(--mn-text-muted) !important;
   border-top: none !important;
   border-bottom: 1px solid var(--mn-border-color) !important;
-  background-color: transparent !important;
+  background-color: #f8fafc !important;
+  white-space: nowrap;
 }
 
+/* Row transition */
 .table tbody tr {
   transition: var(--mn-transition);
 }
 
 .table-hover tbody tr:hover > * {
-  background-color: var(--mn-bg-body) !important;
+  background-color: #f8fafc !important;
 }
 
-/* Modifikasi Pagination Bawaan */
+/* Pagination */
 .pagination {
   margin-bottom: 0;
+  font-size: 0.8125rem;
 }
 
 .page-link {
   border-radius: var(--mn-radius-sm);
   margin: 0 0.125rem;
   color: var(--mn-text-main);
-  border: 1px solid transparent; /* Hilangkan batas keras */
+  border: 1px solid transparent;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8125rem;
 }
 
 .page-link:hover {

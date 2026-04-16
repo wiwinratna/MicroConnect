@@ -46,6 +46,7 @@ class DashboardController extends Controller
             ->select(
                 'u.id',
                 'u.nama_usaha',
+                'u.created_at',
                 DB::raw("COALESCE(ul.kode, 'NONE') as kode_level"),
                 'ul.nama_level'
             )

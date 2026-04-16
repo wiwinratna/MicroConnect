@@ -23,6 +23,43 @@ svg {
     max-height: 1.25em;
 }
 
+/* ── Pagination Fix (Global) ── */
+.pagination {
+    display: flex !important;
+    list-style: none !important;
+    padding-left: 0 !important;
+    justify-content: center !important;
+    gap: 4px;
+    margin-top: 1rem;
+}
+.page-item .page-link {
+    display: block !important;
+    border-radius: 7px !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #64748b !important;
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    background-color: #fff !important;
+    transition: all 0.2s ease;
+}
+.page-item.active .page-link {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #fff !important;
+}
+.page-item.disabled .page-link {
+    color: #cbd5e1 !important;
+    pointer-events: none;
+    background-color: #f8fafc !important;
+}
+.page-item:hover:not(.active):not(.disabled) .page-link {
+    background-color: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+    color: #1e293b !important;
+}
+
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
     color: #1e293b;

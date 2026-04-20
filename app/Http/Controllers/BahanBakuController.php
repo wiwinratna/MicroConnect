@@ -63,7 +63,9 @@ class BahanBakuController extends Controller
             });
         }
 
-        $bahan = $query->orderBy('nama_bahan')->get();
+        $bahan = $query->orderBy('nama_bahan')
+            ->select('bahan_baku.*', \Illuminate\Support\Facades\DB::raw('(COALESCE((SELECT SUM(qty) FROM stok_mutasi WHERE bahan_id = bahan_baku.id AND jenis = "MASUK"), 0) - COALESCE((SELECT SUM(qty) FROM stok_mutasi WHERE bahan_id = bahan_baku.id AND jenis = "KELUAR"), 0)) as current_stok'))
+            ->get();
 
         return view('umkm.bahan.index', compact('bahan', 'q'));
     }

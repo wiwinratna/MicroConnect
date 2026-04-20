@@ -3,6 +3,8 @@
 @section('title', 'Dashboard UMKM')
 
 @push('styles')
+{{-- Flatpickr CSS --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
     /* Dashboard Compact Enhancements */
     h1.h3 { font-size: 1.35rem !important; font-weight: 700; letter-spacing: -0.02em; }
@@ -10,15 +12,22 @@
     .card-body { padding: 1.25rem 1.5rem !important; }
     .table > :not(caption) > * > * { padding: 0.5rem 0.5rem !important; font-size: 0.85rem; }
     .table th { font-weight: 600; font-size: 0.75rem !important; text-transform: uppercase; color: #64748b; letter-spacing: 0.3px; }
+    
+    /* Flatpickr override to match bootstrap inputs */
+    .flatpickr-input { background-color: #fff !important; }
 </style>
 @endpush
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
         <h1 class="h3 mb-1 text-dark"><strong>Dashboard</strong> UMKM</h1>
         <p class="text-muted mb-0" style="font-size: 0.85rem;">Ringkasan penjualan, stok, dan performa usaha.</p>
     </div>
+    <form method="GET" action="{{ route('umkm.dashboard') }}" class="d-flex gap-2 align-items-center">
+        <input type="text" id="daterangePicker" name="daterange" class="form-control form-control-sm text-secondary" placeholder="Pilih Tanggal..." value="{{ $daterange }}" style="width: 210px; font-size: 0.85rem; font-family: inherit;">
+        <button type="submit" class="btn btn-primary btn-sm px-3" style="font-size: 0.85rem;">Terapkan</button>
+    </form>
 </div>
 
 @if(isset($iuranBelumLunas))
@@ -39,118 +48,61 @@
 
 {{-- KPI CARDS --}}
 <div class="row g-3 mb-3">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Penjualan Hari Ini</div>
-                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ rupiah($penjualanHariIni) }}</div>
-                <div class="text-muted mt-2" style="font-size: 0.75rem;">{{ $trxHariIni }} transaksi</div>
+                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Omzet Terpilih</div>
+                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ rupiah($penjualanRentang) }}</div>
+                <div class="text-muted mt-2 text-truncate" style="font-size: 0.75rem;">{{ $labelRentang }}</div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Penjualan Bulan Ini</div>
-                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ rupiah($penjualanBulanIni) }}</div>
-                <div class="text-muted mt-2" style="font-size: 0.75rem;">{{ now()->format('F Y') }}</div>
+                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Transaksi</div>
+                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ format_angka($trxRentang) }}</div>
+                <div class="text-muted mt-2 text-truncate" style="font-size: 0.75rem;">Penjualan sukses ({{ $labelRentang }})</div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Jumlah Produk</div>
-                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ $totalProduk }}</div>
-                <div class="text-muted mt-2" style="font-size: 0.75rem;">item produk</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Stok Produk</div>
-                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ format_angka($totalStokProduk) }}</div>
-                <div class="text-muted mt-2" style="font-size: 0.75rem;">akumulasi stok</div>
+                <div class="text-muted fw-semibold mb-1" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Item Bahan Aktif</div>
+                <div class="fs-4 fw-bold text-dark mb-0 lh-1">{{ format_angka($totalBahanAktif) }}</div>
+                <div class="text-muted mt-2" style="font-size: 0.75rem;">Berdasarkan master bahan baku</div>
             </div>
         </div>
     </div>
 </div>
 
-{{-- GRAFIK --}}
+{{-- STOK MENIPIS + TRANSAKSI TERAKHIR (PINDAH KE ATAS) --}}
 <div class="row g-3 mb-3">
-    <div class="col-lg-8">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="fw-semibold text-dark" style="font-size: 0.9rem;">Penjualan 7 Hari Terakhir</div>
-                </div>
-                <div style="position: relative; height: 200px; width: 100%;">
-                    <canvas id="chartSales7"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div class="fw-semibold text-dark mb-3" style="font-size: 0.9rem;">Top 5 Produk Terlaris</div>
-                <div style="position: relative; height: 200px; width: 100%;">
-                    <canvas id="chartTopProduk"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- OPSIONAL: PRODUKSI --}}
-<div class="row g-3 mb-3">
-    <div class="col-lg-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="fw-semibold text-dark mb-2" style="font-size: 0.9rem;">Produksi 7 Hari Terakhir (opsional)</div>
-                <div style="position: relative; height: 180px; width: 100%;">
-                    <canvas id="chartProduksi7"></canvas>
-                </div>
-                <div class="text-muted mt-2" style="font-size: 0.75rem;">
-                    Kalau grafik ini 0 semua, berarti nama tabel produksi kamu beda (aman, dashboard tetap jalan).
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- ALERT STOK MENIPIS + TRANSAKSI TERAKHIR --}}
-<div class="row g-3">
     <div class="col-lg-6">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
-                <div class="fw-semibold text-dark mb-3" style="font-size: 0.9rem;">Stok Menipis</div>
+                <div class="fw-semibold text-dark mb-3" style="font-size: 0.9rem;">Stok Bahan Menipis</div>
 
                 <div class="mb-3">
-                    <div class="text-muted fw-medium mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Bahan Baku</div>
                     @if($bahanMenipis->count())
-                        <ul class="mb-0 ps-3" style="font-size: 0.85rem;">
+                        <div class="d-flex flex-column gap-2 mt-2">
                             @foreach($bahanMenipis as $b)
-                                <li class="mb-1">{{ $b->nama_bahan }} <span class="text-muted">—</span> <b class="text-danger">{{ format_angka($b->stok_awal) }}</b> {{ $b->satuan }}</li>
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <div class="d-flex align-items-center gap-2 text-truncate" style="font-size: 0.85rem; max-width: 70%;">
+                                        <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #ef4444; flex-shrink: 0;"></div>
+                                        <span class="text-dark fw-medium text-truncate">{{ $b->nama_bahan }}</span>
+                                    </div>
+                                    <div class="text-end" style="font-size: 0.82rem; white-space: nowrap;">
+                                        <span class="text-secondary">Sisa:</span> <span class="fw-bold text-dark">{{ format_angka($b->current_stok) }}</span> <span class="text-secondary">{{ $b->satuan }}</span>
+                                    </div>
+                                </div>
                             @endforeach
-                        </ul>
+                        </div>
                     @else
-                        <div class="text-muted" style="font-size: 0.85rem;">Aman, belum ada bahan yang menipis.</div>
-                    @endif
-                </div>
-
-                <div>
-                    <div class="text-muted fw-medium mb-1" style="font-size: 0.75rem; text-transform: uppercase;">Produk</div>
-                    @if($produkMenipis->count())
-                        <ul class="mb-0 ps-3" style="font-size: 0.85rem;">
-                            @foreach($produkMenipis as $p)
-                                <li class="mb-1">{{ $p->nama_produk }} <span class="text-muted">—</span> <b class="text-danger">{{ format_angka($p->stok) }}</b></li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <div class="text-muted" style="font-size: 0.85rem;">Aman, belum ada produk yang menipis.</div>
+                        <div class="text-muted d-flex align-items-center gap-2 mt-2" style="font-size: 0.85rem; background: #f8fafc; padding: 0.6rem; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                            <span style="font-size: 1rem;">✅</span> Stok bahan baku terpantau aman.
+                        </div>
                     @endif
                 </div>
 
@@ -194,34 +146,68 @@
         </div>
     </div>
 </div>
+
+{{-- GRAFIK (PINDAH KE BAWAH) --}}
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="fw-semibold text-dark text-truncate" style="font-size: 0.9rem;">Tren Penjualan (<span class="text-primary">{{ $labelRentang }}</span>)</div>
+                </div>
+                <div style="position: relative; height: 200px; width: 100%;">
+                    <canvas id="chartSales7"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <div class="fw-semibold text-dark mb-3 text-truncate" style="font-size: 0.9rem;">Top 5 Produk (<span class="text-primary">{{ $labelRentang }}</span>)</div>
+                <div style="position: relative; height: 200px; width: 100%;">
+                    <canvas id="chartTopProduk"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
-{{-- Chart.js CDN --}}
+{{-- Chart.js & Flatpickr CDN --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    const labels7 = @json($labels7);
-    const data7   = @json($data7);
+    document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("#daterangePicker", {
+            mode: "range",
+            maxDate: "today",
+            dateFormat: "Y-m-d",
+            defaultDate: "{{ $daterange ?? '' }}"
+        });
+    });
+
+    const labelsGrafik = @json($labelsGrafik);
+    const dataGrafik   = @json($dataGrafik);
 
     const topLabels = @json($topLabels);
     const topData   = @json($topData);
-
-    const produksiLabels7 = @json($produksiLabels7);
-    const produksiData7   = @json($produksiData7);
 
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = '#64748b';
     Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.04)';
 
-    // Penjualan 7 hari
+    // Penjualan Rentang Waktu
     new Chart(document.getElementById('chartSales7'), {
         type: 'line',
         data: {
-            labels: labels7,
+            labels: labelsGrafik,
             datasets: [{
                 label: 'Total Penjualan',
-                data: data7,
+                data: dataGrafik,
                 tension: 0.4,
                 borderColor: '#4f46e5',
                 backgroundColor: 'rgba(79, 70, 229, 0.1)',
@@ -274,27 +260,5 @@
         }
     });
 
-    // Produksi 7 hari (opsional)
-    new Chart(document.getElementById('chartProduksi7'), {
-        type: 'bar',
-        data: {
-            labels: produksiLabels7,
-            datasets: [{
-                label: 'Qty Produksi',
-                data: produksiData7,
-                backgroundColor: '#10b981',
-                borderRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, border: { display: false } },
-                x: { border: { display: false }, grid: { display: false } }
-            }
-        }
-    });
 </script>
 @endpush

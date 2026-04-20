@@ -2,10 +2,24 @@
 
 @section('content')
 <div class="container-fluid p-0">
-  <div class="row mb-3">
-    <div class="col-auto">
+  <div class="row mb-3 align-items-center">
+    <div class="col-md-5 col-12 mb-3 mb-md-0">
       <h1 class="h3 mb-1">Monitoring <strong>UMKM</strong></h1>
-      <p class="text-muted small">Wawasan performa dan status kesehatan UMKM binaan KADIN.</p>
+      <p class="text-muted small mb-1">Wawasan performa dan status kesehatan UMKM binaan KADIN.</p>
+      <div><span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-medium"><i data-feather="calendar" class="me-1" style="width: 12px; height: 12px;"></i> Periode: {{ $periodeString }}</span></div>
+    </div>
+    <div class="col-md-7 col-12 d-flex justify-content-md-end">
+        <form method="GET" action="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 bg-white p-2 border rounded shadow-sm">
+            <div class="d-flex align-items-center gap-2">
+                <input type="month" name="start_month" class="form-control form-control-sm border-0 bg-light" value="{{ $startMonth }}" required style="width: 130px;">
+                <span class="text-muted small px-1"><i data-feather="arrow-right" style="width: 14px;"></i></span>
+                <input type="month" name="end_month" class="form-control form-control-sm border-0 bg-light" value="{{ $endMonth }}" required style="width: 130px;">
+            </div>
+            <div class="ms-2 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-primary px-3 rounded-pill">Terapkan</button>
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-light border rounded-pill" title="Reset Data"><i data-feather="refresh-ccw" style="width: 14px;"></i></a>
+            </div>
+        </form>
     </div>
   </div>
 
@@ -45,7 +59,7 @@
                     <div class="flex-grow-1">
                         <p class="text-muted text-uppercase fw-bold x-small mb-1">UMKM Tanpa Transaksi</p>
                         <h2 class="fw-bold mb-1 text-warning">{{ $umkmNolTrx }}</h2>
-                        <small class="text-muted">0 Transaksi dalam 30 hari terakhir</small>
+                        <small class="text-muted">0 Transaksi pada rentang waktu terpilih</small>
                     </div>
                     <div class="ms-3">
                         <div class="p-3 bg-warning-subtle rounded-4 text-warning">
@@ -64,7 +78,7 @@
                     <div class="flex-grow-1">
                         <p class="text-muted text-uppercase fw-bold x-small mb-1">Tiket Support Open</p>
                         <h2 class="fw-bold mb-1 text-danger">{{ $openTickets }}</h2>
-                        <small class="text-muted">Butuh respon segera oleh Admin</small>
+                        <small class="text-muted">Butuh pantauan/tindak lanjut segera</small>
                     </div>
                     <div class="ms-3">
                         <div class="p-3 bg-danger-subtle rounded-4 text-danger">
@@ -97,9 +111,10 @@
                       {{ $u->nama_usaha }} 
                       <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal">{{ $u->kode_level }}</span>
                     </div>
-                    <div class="text-muted x-small">
-                      <span class="me-2"><i data-feather="repeat" class="me-1" style="width: 10px;"></i>{{ $u->trx }} transaksi</span>
-                      <span><i data-feather="pie-chart" class="me-1" style="width: 10px;"></i>Margin: {!! is_null($u->margin) ? '—' : ($u->margin < 10 ? '<span class="text-danger">'.$u->margin.'%</span>' : $u->margin.'%') !!}</span>
+                    <div class="mt-1">
+                      <span class="badge bg-danger-subtle text-danger fw-normal px-2 py-1" style="font-size: 11px;">
+                         <i data-feather="info" class="me-1" style="width: 10px;"></i>{{ $u->alasan_prioritas }}
+                      </span>
                     </div>
                   </div>
                   <div class="text-end">
@@ -129,7 +144,7 @@
           <div class="p-2 bg-success-subtle text-success rounded-3 me-3">
             <i data-feather="award" style="width: 18px; height: 18px;"></i>
           </div>
-          <h5 class="card-title mb-0 fw-bold">UMKM Terbaik Bulan Ini</h5>
+          <h5 class="card-title mb-0 fw-bold">UMKM Terbaik Periode Ini</h5>
         </div>
         <div class="card-body px-0 py-0">
           <div class="list-group list-group-flush">
@@ -144,8 +159,8 @@
                         <span class="badge bg-primary-subtle text-primary ms-1 fw-normal">{{ $u->kode_level }}</span>
                       </div>
                       <div class="text-muted x-small">
-                        <span class="me-2">Profit: <span class="text-success fw-bold">{{ rupiah($u->laba_bersih) }}</span></span>
-                        <span>Royalty: {{ is_null($u->margin) ? '—' : $u->margin.'%' }}</span>
+                        <span class="me-2">Estimasi Laba: <span class="text-success fw-bold">{{ rupiah($u->laba_bersih) }}</span></span>
+                        <span>Margin Profit: {{ is_null($u->margin) ? '—' : $u->margin.'%' }}</span>
                       </div>
                     </div>
                   </div>
@@ -158,7 +173,7 @@
             @empty
               <div class="p-5 text-center">
                 <div class="text-muted mb-2"><i data-feather="bar-chart-2" style="width: 48px; height: 48px; opacity: 0.3;"></i></div>
-                <div class="text-muted">Belum ada UMKM dengan performa "Sehat" bulan ini.</div>
+                <div class="text-muted">Belum ada UMKM dengan performa "Sehat" pada periode ini.</div>
               </div>
             @endforelse
           </div>
@@ -180,11 +195,11 @@
           <tr>
             <th class="ps-4">Identitas Usaha</th>
             <th>Level</th>
-            <th>Volume Trx</th>
-            <th>Omzet (Rolling)</th>
-            <th>Estimasi Laba</th>
+            <th class="text-center">Jumlah Transaksi</th>
+            <th class="text-end">Omzet (Periode Ini)</th>
+            <th class="text-end">Estimasi Laba</th>
             <th>Margin (%)</th>
-            <th>Kesehatan</th>
+            <th>Status Kesehatan</th>
             <th class="pe-4 text-end">Aksi</th>
           </tr>
         </thead>

@@ -18,7 +18,19 @@ class LaporanKeuanganController extends Controller
 {
     public function index(Request $request)
     {
-        $umkm  = auth()->user()->umkm;
+        $umkm = auth()->user()->umkm;
+        return $this->buildLaporan($request, $umkm);
+    }
+
+    public function adminView(Request $request, $id)
+    {
+        if (auth()->user()->user_group !== 'admin') abort(403);
+        $umkm = \App\Models\Umkm::findOrFail($id);
+        return $this->buildLaporan($request, $umkm);
+    }
+
+    private function buildLaporan(Request $request, $umkm)
+    {
         $bulan = $request->get('bulan', now()->format('Y-m'));
         [$year, $month] = explode('-', $bulan);
 
@@ -118,9 +130,9 @@ class LaporanKeuanganController extends Controller
         $modalAkhir = $modalAwal + $labaBersih - $prive;
 
         // ================================================================
-        // ARUS KAS SEDERHANA (dari jurnal akun 111)
+        // LAPORAN ARUS KAS (dari jurnal akun 111)
         // ================================================================
-        $kasJurnal       = $jurnal->filter(fn($j) => $j->kode_akun === '111');
+        $kasJurnal       = $jurnal->filter(fn($j) => $j->kode_akun === '111')->values();
         $kasIn           = $kasJurnal->sum('debit');
         $kasOut          = $kasJurnal->sum('kredit');
         $netKas          = $kasIn - $kasOut;
@@ -129,6 +141,65 @@ class LaporanKeuanganController extends Controller
             ->where('tanggal', '<', $awal)
             ->sum(DB::raw('debit - kredit')) ?: 0;
         $kasAkhirPeriode = $kasAwalPeriode + $netKas;
+
+        // Detail Arus Kas (Pengelompokan Otomatis)
+        $arusKasGrup = [
+            'Aktivitas Operasional' => ['masuk' => [], 'keluar' => [], 'total_masuk' => 0, 'total_keluar' => 0],
+            'Aktivitas Investasi & Pendanaan' => ['masuk' => [], 'keluar' => [], 'total_masuk' => 0, 'total_keluar' => 0],
+        ];
+
+        foreach ($kasJurnal as $kas) {
+            $isMasuk = $kas->debit > 0;
+            $nominal = $isMasuk ? $kas->debit : $kas->kredit;
+            $tipe = $kas->ref_tipe;
+            
+            $sumber = 'Transaksi Kas Lainnya';
+            $grup = 'Aktivitas Operasional';
+
+            if ($tipe === 'penjualan') {
+                $sumber = 'Penerimaan Penjualan';
+            } elseif ($tipe === 'pembayaran_piutang') {
+                $sumber = 'Penerimaan Pelunasan Piutang';
+            } elseif ($tipe === 'pembelian') {
+                $sumber = 'Pembayaran Pembelian Bahan/Barang';
+            } elseif ($tipe === 'beban') {
+                // Cari akun lawannya untuk tahu beban apa (karena beban tdk pakai ref_id)
+                $lawan = $jurnal->where('tanggal', $kas->tanggal)
+                                ->where('ref_tipe', 'beban')
+                                ->where('keterangan', $kas->keterangan)
+                                ->where('id', '!=', $kas->id)
+                                ->first();
+                $sumber = $lawan ? $lawan->nama_akun : 'Pembayaran Beban Operasional';
+            } else {
+                // Jurnal manual, cari lawannya di date & ket yg sama
+                $lawan = $jurnal->where('tanggal', $kas->tanggal)
+                                ->where('keterangan', $kas->keterangan)
+                                ->where('id', '!=', $kas->id)
+                                ->first();
+                if ($lawan) {
+                    $sumber = $lawan->nama_akun;
+                    // Tentukan grup dari kode_akun lawan
+                    $awalan = substr($lawan->kode_akun, 0, 1);
+                    if (in_array($awalan, ['2', '3'])) {
+                        $grup = 'Aktivitas Investasi & Pendanaan'; // Hutang / Modal
+                    } elseif ($awalan == '1' && !in_array($lawan->kode_akun, ['111','112','113','114','115','116'])) {
+                        // Aset tetap (Peralatan dll) -> Investasi
+                        $grup = 'Aktivitas Investasi & Pendanaan';
+                    }
+                }
+            }
+
+            // Masukkan ke grup
+            if ($isMasuk) {
+                if (!isset($arusKasGrup[$grup]['masuk'][$sumber])) $arusKasGrup[$grup]['masuk'][$sumber] = 0;
+                $arusKasGrup[$grup]['masuk'][$sumber] += $nominal;
+                $arusKasGrup[$grup]['total_masuk'] += $nominal;
+            } else {
+                if (!isset($arusKasGrup[$grup]['keluar'][$sumber])) $arusKasGrup[$grup]['keluar'][$sumber] = 0;
+                $arusKasGrup[$grup]['keluar'][$sumber] += $nominal;
+                $arusKasGrup[$grup]['total_keluar'] += $nominal;
+            }
+        }
 
         // ================================================================
         // LAPORAN PEMBELIAN (detail)
@@ -215,6 +286,7 @@ class LaporanKeuanganController extends Controller
             'modalAwal', 'prive', 'modalAkhir',
             // kas
             'kasIn', 'kasOut', 'netKas', 'kasAwalPeriode', 'kasAkhirPeriode', 'mutasiKas',
+            'arusKasGrup',
             // pembelian
             'pembelianList', 'totalPembelian',
             // penjualan

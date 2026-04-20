@@ -39,14 +39,15 @@ class UmkmLevelController extends Controller
             $umkm = \App\Models\Umkm::create([
                 'user_id' => $user->id,
                 'level_id' => $request->level_id,
-                // kode_umkm nggak usah diisi, akan auto dari model
             ]);
         } else {
-            // kalau sudah ada, cukup update level-nya
             $umkm->update([
                 'level_id' => $request->level_id,
             ]);
         }
+
+        // Seed COA default jika belum ada
+        $umkm->seedDefaultCoa();
 
         return redirect()->route('umkm.dashboard')
             ->with('success', 'Level UMKM kamu berhasil disimpan.');

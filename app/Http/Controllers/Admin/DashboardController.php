@@ -11,10 +11,23 @@ use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $start = Carbon::now()->startOfMonth()->toDateString();
-        $end   = Carbon::now()->endOfMonth()->toDateString();
+        $startMonth = $request->get('start_month', date('Y-m'));
+        $endMonth   = $request->get('end_month', date('Y-m'));
+
+        if ($startMonth > $endMonth) {
+            $temp = $startMonth;
+            $startMonth = $endMonth;
+            $endMonth = $temp;
+        }
+
+        $start = Carbon::parse($startMonth . '-01')->startOfMonth()->toDateString();
+        $end   = Carbon::parse($endMonth . '-01')->endOfMonth()->toDateString();
+        
+        $startLabel = Carbon::parse($startMonth . '-01')->translatedFormat('F Y');
+        $endLabel   = Carbon::parse($endMonth . '-01')->translatedFormat('F Y');
+        $periodeString = ($startMonth === $endMonth) ? $startLabel : "$startLabel - $endLabel";
 
         $thresholdOmzet = 100000;   // batas omzet rendah
         $thresholdMargin = 10;      // margin rendah (%)
@@ -30,14 +43,7 @@ class DashboardController extends Controller
             ->get()
             ->pluck('total', 'kode'); // e.g ['LVL1' => 10, 'LVL2' => 5]
 
-        $openTickets = Schema::hasTable('tickets') ? Ticket::where('status', 'Open')->count() : 0;
-
-        // 2. QUERY AGGREGATE PER UMKM
-        // Untuk margin akurat di Level 2/3, idealnya: OMZET - HPP - BEBAN OPERASIONAL
-        // Mari gabung penjualan (omzet, hpp) dan beban.
-        
-        // HPP Column protection
-        $hppColumn = Schema::hasColumn('produk', 'hpp') ? 'pr.hpp' : '0';
+        $openTickets = Schema::hasTable('tickets') ? Ticket::whereIn('status', ['Open', 'In Progress'])->count() : 0;
 
         $base = DB::table('umkm as u')
             ->leftJoin('umkm_level as ul', 'u.level_id', '=', 'ul.id')
@@ -51,25 +57,22 @@ class DashboardController extends Controller
                 'ul.nama_level'
             )
             ->addSelect(DB::raw("
-                (SELECT COALESCE(SUM(total), 0) FROM penjualan 
-                 WHERE umkm_id = u.id AND tanggal BETWEEN '{$start}' AND '{$end}') as omzet
+                (SELECT COALESCE(SUM(kredit - debit), 0) FROM jurnal_umum 
+                 WHERE umkm_id = u.id AND kode_akun LIKE '4%' AND tanggal BETWEEN '{$start}' AND '{$end}') as omzet
             "))
             ->addSelect(DB::raw("
                 (SELECT COUNT(id) FROM penjualan 
                  WHERE umkm_id = u.id AND tanggal BETWEEN '{$start}' AND '{$end}') as trx
             "))
             ->addSelect(DB::raw("
-                (SELECT COALESCE(SUM(pd.qty * {$hppColumn}), 0) 
-                 FROM penjualan p
-                 JOIN penjualan_detail pd ON p.id = pd.penjualan_id 
-                 JOIN produk pr ON pr.id = pd.produk_id 
-                 WHERE p.umkm_id = u.id AND p.tanggal BETWEEN '{$start}' AND '{$end}') as total_hpp
+                (SELECT COALESCE(SUM(debit - kredit), 0) FROM jurnal_umum 
+                 WHERE umkm_id = u.id AND kode_akun LIKE '5%' AND tanggal BETWEEN '{$start}' AND '{$end}') as total_hpp
             "))
             ->addSelect(DB::raw("
-                (SELECT COALESCE(SUM(j.debit), 0) 
-                 FROM jurnal_umum j 
-                 WHERE j.umkm_id = u.id AND j.kode_akun LIKE '6%' 
-                 AND j.tanggal BETWEEN '{$start}' AND '{$end}') as beban_ops
+                (SELECT COALESCE(SUM(debit - kredit), 0) 
+                 FROM jurnal_umum 
+                 WHERE umkm_id = u.id AND kode_akun LIKE '6%' 
+                 AND tanggal BETWEEN '{$start}' AND '{$end}') as beban_ops
             "));
 
         $umkmStats = clone $base;
@@ -84,19 +87,32 @@ class DashboardController extends Controller
                 $item->margin = null;
             }
 
-            // Hitung Status Kesehatan & Perhatian
+            // Hitung Status Kesehatan & Alasan Prioritas
+            $item->alasan_prioritas = '';
             if ($item->trx == 0) {
                 $item->status_kesehatan = 'Tidak Aktif';
                 $item->badge_color = 'secondary';
-                $item->score = 0; // untuk resighting
-            } elseif ($item->omzet < $thresholdOmzet || ($item->margin !== null && $item->margin < $thresholdMargin)) {
-                $item->status_kesehatan = 'Waspada / Perlu Perhatian';
+                $item->score = 0; 
+                $item->alasan_prioritas = 'Tidak ada transaksi pada periode ini';
+            } elseif ($item->laba_bersih < 0) {
+                $item->status_kesehatan = 'Prioritas Pendampingan';
+                $item->badge_color = 'danger';
+                $item->score = 1; 
+                $item->alasan_prioritas = 'Mengalami kerugian (Laba Negatif)';
+            } elseif ($item->omzet < $thresholdOmzet) {
+                $item->status_kesehatan = 'Waspada / Perlu Pantauan';
                 $item->badge_color = 'warning';
                 $item->score = 1; 
+                $item->alasan_prioritas = 'Omzet terpantau sangat rendah';
+            } elseif ($item->margin !== null && $item->margin < $thresholdMargin) {
+                $item->status_kesehatan = 'Waspada / Perlu Pantauan';
+                $item->badge_color = 'warning';
+                $item->score = 1; 
+                $item->alasan_prioritas = 'Margin keuntungan rendah (< ' . $thresholdMargin . '%)';
             } else {
                 $item->status_kesehatan = 'Sehat';
                 $item->badge_color = 'success';
-                $item->score = 2; // Makin tinggi makin bagus performanya (berdasar omzet+laba)
+                $item->score = 2;
             }
 
             return $item;
@@ -124,17 +140,18 @@ class DashboardController extends Controller
         $perPage = 10;
         $sortedItems = $umkmStats->sortByDesc('omzet')->values();
         
-        $allUmkm = new \Illuminate\Pagination\LengthAwarePaginator(
+        $allUmkm = (new \Illuminate\Pagination\LengthAwarePaginator(
             $sortedItems->forPage($currentPage, $perPage),
             $sortedItems->count(),
             $perPage,
             $currentPage,
             ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
-        );
+        ))->withQueryString();
 
         return view('admin.dashboard', compact(
             'totalUmkmAktif', 'levelCounts', 'totalOmzet', 'umkmNolTrx', 'openTickets',
-            'topUmkm', 'warningUmkm', 'allUmkm'
+            'topUmkm', 'warningUmkm', 'allUmkm',
+            'startMonth', 'endMonth', 'periodeString'
         ));
     }
 }

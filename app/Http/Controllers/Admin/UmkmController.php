@@ -116,6 +116,9 @@ class UmkmController extends Controller
                 'inventory_method' => $request->inventory_method ?? 'Average',
                 'status'           => 'aktif',
             ]);
+
+            // Seed COA default untuk UMKM baru
+            $umkm->seedDefaultCoa();
         });
 
         // Kirim email informasi akun ke UMKM

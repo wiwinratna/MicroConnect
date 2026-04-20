@@ -11,61 +11,82 @@ use App\Models\BahanBaku;
 
 class UmkmDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $umkm = auth()->user()->umkm;
 
-        $today = now()->toDateString();
-        $start7 = now()->subDays(6)->startOfDay()->toDateString(); // 7 hari termasuk hari ini
-        $startMonth = now()->startOfMonth()->toDateString();
-        $endMonth = now()->endOfMonth()->toDateString();
+        $daterange = $request->get('daterange');
+        $startDateStr = now()->subDays(6)->toDateString();
+        $endDateStr = now()->toDateString();
+        
+        if ($daterange && str_contains($daterange, ' to ')) {
+            $parts = explode(' to ', $daterange);
+            $startDateStr = trim($parts[0]);
+            $endDateStr = trim($parts[1] ?? $startDateStr);
+        } elseif ($daterange) {
+            $startDateStr = $daterange;
+            $endDateStr = $daterange;
+        }
+        
+        $start = \Carbon\Carbon::parse($startDateStr)->startOfDay();
+        $end = \Carbon\Carbon::parse($endDateStr)->endOfDay();
+        
+        // Pengecekan batas maksimum agar jika user jahil milih 1 bulan tidak error
+        if ($start->diffInDays($end) > 31) {
+            $start = $end->clone()->subDays(31)->startOfDay();
+        }
+
+        $tanggalMulai = $start->toDateString();
+        $tanggalAkhir = $end->toDateString();
+        
+        $labelRentang = $start->translatedFormat('d M') . ' - ' . $end->translatedFormat('d M Y');
+        if ($start->isSameDay($end)) {
+            $labelRentang = $start->translatedFormat('d F Y');
+        }
 
         // =========================
         // KPI CARDS
         // =========================
-        $penjualanHariIni = (float) Penjualan::where('umkm_id', $umkm->id)
-            ->whereDate('tanggal', $today)
+        $penjualanRentang = (float) Penjualan::where('umkm_id', $umkm->id)
+            ->whereBetween('tanggal', [$start, $end])
             ->sum('total');
 
-        $trxHariIni = (int) Penjualan::where('umkm_id', $umkm->id)
-            ->whereDate('tanggal', $today)
+        $trxRentang = (int) Penjualan::where('umkm_id', $umkm->id)
+            ->whereBetween('tanggal', [$start, $end])
             ->count();
 
-        $penjualanBulanIni = (float) Penjualan::where('umkm_id', $umkm->id)
-            ->whereBetween('tanggal', [$startMonth, $endMonth])
-            ->sum('total');
-
-        $totalProduk = (int) Produk::where('umkm_id', $umkm->id)->count();
-        $totalStokProduk = (float) Produk::where('umkm_id', $umkm->id)->sum('stok');
-
+        $totalBahanAktif = (int) BahanBaku::where('umkm_id', $umkm->id)->where('is_archived', false)->count();
         // =========================
-        // GRAFIK: PENJUALAN 7 HARI
+        // GRAFIK: PENJUALAN RENTANG WAKTU
         // =========================
-        $sales7 = Penjualan::where('umkm_id', $umkm->id)
-            ->whereBetween('tanggal', [$start7, $today])
+        $salesDataRaw = Penjualan::where('umkm_id', $umkm->id)
+            ->whereBetween('tanggal', [$start, $end])
             ->selectRaw('DATE(tanggal) as tgl, SUM(total) as total')
             ->groupBy('tgl')
             ->orderBy('tgl')
             ->pluck('total', 'tgl')
             ->toArray();
 
-        // bikin label 7 hari full (biar tanggal kosong tampil 0)
-        $labels7 = [];
-        $data7 = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $d = now()->subDays($i)->toDateString();
-            $labels7[] = $d;
-            $data7[] = (float) ($sales7[$d] ?? 0);
+        // Bikin label sesuai durasi dari start ke end
+        $labelsGrafik = [];
+        $dataGrafik = [];
+        $currentDate = $start->clone();
+        
+        while ($currentDate->lte($end)) {
+            $d = $currentDate->toDateString();
+            $labelsGrafik[] = $currentDate->translatedFormat('d M'); // Biar muat & rapi
+            $dataGrafik[] = (float) ($salesDataRaw[$d] ?? 0);
+            $currentDate->addDay();
         }
 
         // =========================
-        // TOP 5 PRODUK TERLARIS BULAN INI (qty)
+        // TOP 5 PRODUK TERLARIS (Periode Terpilih)
         // =========================
         $topProduk = DB::table('penjualan_detail as pd')
             ->join('penjualan as p', 'p.id', '=', 'pd.penjualan_id')
             ->join('produk as pr', 'pr.id', '=', 'pd.produk_id')
             ->where('p.umkm_id', $umkm->id)
-            ->whereBetween('p.tanggal', [$startMonth, $endMonth])
+            ->whereBetween('p.tanggal', [$start, $end])
             ->selectRaw('pr.nama_produk as nama, SUM(pd.qty) as qty')
             ->groupBy('pr.nama_produk')
             ->orderByDesc('qty')
@@ -76,20 +97,15 @@ class UmkmDashboardController extends Controller
         $topData = $topProduk->pluck('qty')->map(fn($v) => (float)$v)->toArray();
 
         // =========================
-        // ALERT: STOK MENIPIS
+        // ALERT: STOK MENIPIS (Berdasarkan Kalkulasi Mutasi Real-Time)
         // =========================
         $batasBahan = 5;  // kamu bisa ganti
-        $batasProduk = 5; // kamu bisa ganti
 
         $bahanMenipis = BahanBaku::where('umkm_id', $umkm->id)
-            ->where('stok_awal', '<', $batasBahan)
-            ->orderBy('stok_awal')
-            ->limit(6)
-            ->get();
-
-        $produkMenipis = Produk::where('umkm_id', $umkm->id)
-            ->where('stok', '<', $batasProduk)
-            ->orderBy('stok')
+            ->where('is_archived', false)
+            ->select('bahan_baku.*', DB::raw('(COALESCE((SELECT SUM(qty) FROM stok_mutasi WHERE bahan_id = bahan_baku.id AND jenis = "MASUK"), 0) - COALESCE((SELECT SUM(qty) FROM stok_mutasi WHERE bahan_id = bahan_baku.id AND jenis = "KELUAR"), 0)) as current_stok'))
+            ->having('current_stok', '<', $batasBahan)
+            ->orderBy('current_stok')
             ->limit(6)
             ->get();
 
@@ -102,34 +118,7 @@ class UmkmDashboardController extends Controller
             ->limit(6)
             ->get();
 
-        // =========================
-        // (OPSIONAL) GRAFIK: PRODUKSI 7 HARI (kalau tabelnya ada)
-        // Kalau tabelmu beda nama, skip aja bagian ini.
-        // =========================
-        $produksiLabels7 = $labels7;
-        $produksiData7 = array_fill(0, 7, 0);
-
-        // Contoh asumsi tabel: produksi(tanggal, umkm_id) & produksi_detail(qty_hasil)
-        // Kalau kamu belum yakin, amanin pake try-catch
-        try {
-            $prod = DB::table('produksi as pr')
-                ->join('produksi_detail as pd', 'pd.produksi_id', '=', 'pr.id')
-                ->where('pr.umkm_id', $umkm->id)
-                ->whereBetween('pr.tanggal', [$start7, $today])
-                ->selectRaw('DATE(pr.tanggal) as tgl, SUM(pd.qty_hasil) as total')
-                ->groupBy('tgl')
-                ->orderBy('tgl')
-                ->pluck('total', 'tgl')
-                ->toArray();
-
-            $produksiData7 = [];
-            for ($i = 6; $i >= 0; $i--) {
-                $d = now()->subDays($i)->toDateString();
-                $produksiData7[] = (float) ($prod[$d] ?? 0);
-            }
-        } catch (\Throwable $e) {
-            // kalau tabel tidak ada / namanya beda, biarin 0 semua
-        }
+        // (Logika produksi telah dihapus sesuai instruksi karena sistem ini tidak lagi memisahkan alur produksi)
 
         // =========================
         // CEK IURAN BULAN INI
@@ -138,20 +127,17 @@ class UmkmDashboardController extends Controller
         $iuranBelumLunas = ($iuranBulanIni && $iuranBulanIni->status !== 'lunas') ? $iuranBulanIni : null;
 
         return view('umkm.dashboard.index', compact(
-            'penjualanHariIni',
-            'trxHariIni',
-            'penjualanBulanIni',
-            'totalProduk',
-            'totalStokProduk',
-            'labels7',
-            'data7',
+            'daterange',
+            'labelRentang',
+            'penjualanRentang',
+            'trxRentang',
+            'totalBahanAktif',
+            'labelsGrafik',
+            'dataGrafik',
             'topLabels',
             'topData',
             'bahanMenipis',
-            'produkMenipis',
             'penjualanTerakhir',
-            'produksiLabels7',
-            'produksiData7',
             'iuranBelumLunas'
         ));
     }

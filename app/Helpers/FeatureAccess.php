@@ -151,7 +151,15 @@ class FeatureAccess
     {
         $user = auth()->user();
 
-        if (!$user || !$user->umkm || !$user->umkm->level) {
+        if (!$user) {
+            return 1;
+        }
+
+        if ($user->user_group === 'admin') {
+            return 3;
+        }
+
+        if (!$user->umkm || !$user->umkm->level) {
             return 1;
         }
 

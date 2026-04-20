@@ -67,6 +67,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
         Route::get('/create', [UmkmController::class, 'create'])->name('create');
         Route::post('/', [UmkmController::class, 'store'])->name('store');
         Route::get('/{id}', [UmkmController::class, 'show'])->name('show');
+        Route::get('/{id}/laporan', [\App\Http\Controllers\Umkm\LaporanKeuanganController::class, 'adminView'])->name('laporan');
         Route::put('/{id}/level', [UmkmController::class, 'updateLevel'])->name('updateLevel');
         Route::post('/{id}/iuran', [UmkmController::class, 'konfirmasiIuran'])->name('konfirmasiIuran');
         Route::patch('/{id}/toggle-status', [UmkmController::class, 'toggleStatus'])->name('toggleStatus');

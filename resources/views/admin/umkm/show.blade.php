@@ -14,8 +14,11 @@
             <p class="text-muted small mb-0"><i data-feather="hash" class="me-1" style="width: 12px;"></i>{{ $umkm->kode_umkm }} &bull; <i data-feather="mail" class="me-1 ms-2" style="width: 12px;"></i>{{ $umkm->user->email }}</p>
         </div>
     </div>
-    <div>
-      <form method="POST" action="{{ route('admin.umkm.toggleStatus', $umkm->id) }}">
+    <div class="d-flex align-items-center gap-2">
+      <a href="{{ route('admin.umkm.laporan', $umkm->id) }}" class="btn btn-primary px-3 rounded-pill btn-sm d-flex align-items-center shadow-sm">
+          <i data-feather="file-text" class="me-1" style="width: 14px;"></i> Lihat Laporan Keuangan
+      </a>
+      <form method="POST" action="{{ route('admin.umkm.toggleStatus', $umkm->id) }}" class="mb-0">
         @csrf @method('PATCH')
         <button type="submit" class="btn {{ $umkm->status === 'aktif' ? 'btn-outline-danger' : 'btn-success' }} px-3 rounded-pill btn-sm d-flex align-items-center shadow-sm">
           <i data-feather="{{ $umkm->status === 'aktif' ? 'user-x' : 'user-check' }}" class="me-1" style="width: 14px;"></i>

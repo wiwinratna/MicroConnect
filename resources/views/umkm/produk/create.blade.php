@@ -338,12 +338,22 @@
 @endsection
 
 @push('scripts')
+@php
+$bahanMaster = isset($bahanBaku)
+    ? $bahanBaku->map(fn($b) => [
+        'id'     => $b->id,
+        'nama'   => $b->nama_bahan,
+        'satuan' => $b->satuan,
+        'harga'  => $b->harga_last ?? 0,
+    ])
+    : collect();
+@endphp
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     if (typeof feather !== 'undefined') feather.replace();
 
     /* ─── DATA ─── */
-    const bahanMaster    = @json($bahanMaster ?? []);
+    const bahanMaster    = @json($bahanMaster);
     const satuanOptions  = @json($satuanOptions ?? []);
     const overheadPerUnit = {{ $overheadPerUnit ?? 0 }};
 

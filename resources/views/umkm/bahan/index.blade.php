@@ -107,7 +107,7 @@
                             <th style="width:110px; padding-left:1.25rem;">Kode</th>
                             <th>Nama Bahan</th>
                             <th style="width:80px;">Satuan</th>
-                            <th style="width:110px;" class="text-end">Stok Awal</th>
+                            <th style="width:110px;" class="text-end">Stok Terkini</th>
                             <th style="width:200px;">Keterangan</th>
                             <th style="width:90px;" class="text-center">Status</th>
                             <th style="width:140px;" class="text-center">Aksi</th>
@@ -122,7 +122,7 @@
                                 <td class="fw-medium" style="color:#1e293b;">{{ $item->nama_bahan }}</td>
                                 <td class="text-muted">{{ $item->satuan }}</td>
                                 <td class="text-end fw-semibold" style="color:#1e293b;">
-                                    {{ format_angka($item->stok_awal) }}
+                                    {{ format_angka($item->current_stok) }}
                                 </td>
                                 <td class="text-muted" style="
                                     max-width:200px;

@@ -125,11 +125,14 @@ class AuthController extends Controller
         // Buat data UMKM default
         $kodeUmkm = Umkm::getKodeUmkm();
 
-        Umkm::create([
+        $umkm = Umkm::create([
             'kode_umkm' => $kodeUmkm,
             'user_id'   => $user->id,
             'level_id'  => null,
         ]);
+
+        // Seed COA default untuk UMKM baru
+        $umkm->seedDefaultCoa();
 
         Auth::login($user);
         $request->session()->regenerate();

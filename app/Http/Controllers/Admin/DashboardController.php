@@ -29,8 +29,7 @@ class DashboardController extends Controller
         $endLabel   = Carbon::parse($endMonth . '-01')->translatedFormat('F Y');
         $periodeString = ($startMonth === $endMonth) ? $startLabel : "$startLabel - $endLabel";
 
-        $thresholdOmzet = 100000;   // batas omzet rendah
-        $thresholdMargin = 10;      // margin rendah (%)
+        $thresholdMargin = 10;      // batas margin laba operasional (%)
 
         // 1. SUMMARY METRICS GLOBAL
         $totalUmkm = Umkm::count();
@@ -76,7 +75,7 @@ class DashboardController extends Controller
             "));
 
         $umkmStats = clone $base;
-        $umkmStats = $umkmStats->get()->map(function($item) use ($thresholdOmzet, $thresholdMargin) {
+        $umkmStats = $umkmStats->get()->map(function($item) use ($thresholdMargin) {
             
             // Hitung Profitabilitas
             $item->laba_bersih = $item->omzet - $item->total_hpp - $item->beban_ops;
@@ -88,27 +87,23 @@ class DashboardController extends Controller
             }
 
             // Hitung Status Kesehatan & Alasan Prioritas
+            // 3 Status: Tidak Aktif | Perlu Pemantauan | Sehat
             $item->alasan_prioritas = '';
             if ($item->trx == 0) {
                 $item->status_kesehatan = 'Tidak Aktif';
                 $item->badge_color = 'secondary';
-                $item->score = 0; 
+                $item->score = 0;
                 $item->alasan_prioritas = 'Tidak ada transaksi pada periode ini';
             } elseif ($item->laba_bersih < 0) {
-                $item->status_kesehatan = 'Prioritas Pendampingan';
-                $item->badge_color = 'danger';
-                $item->score = 1; 
-                $item->alasan_prioritas = 'Mengalami kerugian (Laba Negatif)';
-            } elseif ($item->omzet < $thresholdOmzet) {
-                $item->status_kesehatan = 'Waspada / Perlu Pantauan';
+                $item->status_kesehatan = 'Perlu Pemantauan';
                 $item->badge_color = 'warning';
-                $item->score = 1; 
-                $item->alasan_prioritas = 'Omzet terpantau sangat rendah';
+                $item->score = 1;
+                $item->alasan_prioritas = 'Mengalami kerugian (Laba Operasional Negatif)';
             } elseif ($item->margin !== null && $item->margin < $thresholdMargin) {
-                $item->status_kesehatan = 'Waspada / Perlu Pantauan';
+                $item->status_kesehatan = 'Perlu Pemantauan';
                 $item->badge_color = 'warning';
-                $item->score = 1; 
-                $item->alasan_prioritas = 'Margin keuntungan rendah (< ' . $thresholdMargin . '%)';
+                $item->score = 1;
+                $item->alasan_prioritas = 'Margin laba operasional rendah (< ' . $thresholdMargin . '%)';
             } else {
                 $item->status_kesehatan = 'Sehat';
                 $item->badge_color = 'success';

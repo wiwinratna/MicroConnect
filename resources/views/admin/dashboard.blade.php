@@ -99,7 +99,7 @@
           <div class="p-2 bg-danger-subtle text-danger rounded-3 me-3">
             <i data-feather="alert-triangle" style="width: 18px; height: 18px;"></i>
           </div>
-          <h5 class="card-title mb-0 fw-bold">Prioritas Pendampingan</h5>
+          <h5 class="card-title mb-0 fw-bold">Perlu Pemantauan</h5>
         </div>
         <div class="card-body px-0 py-0">
           <div class="list-group list-group-flush">

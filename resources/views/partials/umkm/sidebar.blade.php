@@ -38,7 +38,7 @@
 			<li class="sidebar-item {{ request()->routeIs('umkm.bahan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.bahan.index') }}">
 					<i class="align-middle" data-feather="archive"></i>
-					<span class="align-middle">Bahan Baku</span>
+					<span class="align-middle">Bahan</span>
 				</a>
 			</li>
 
@@ -95,7 +95,7 @@
 				class="sidebar-item {{ request()->routeIs('umkm.etalase*') && !request()->routeIs('umkm.etalase.pelanggan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.etalase.index') }}">
 					<i class="align-middle" data-feather="monitor"></i>
-					<span class="align-middle">Kasir (POS)</span>
+					<span class="align-middle">Kasir</span>
 				</a>
 			</li>
 
@@ -119,7 +119,7 @@
 			<li class="sidebar-item {{ request()->routeIs('umkm.beban*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.beban.index') }}">
 					<i class="align-middle" data-feather="trending-down"></i>
-					<span class="align-middle">Beban Aktual (Pengeluaran)</span>
+					<span class="align-middle">Beban Operasional</span>
 				</a>
 			</li>
 

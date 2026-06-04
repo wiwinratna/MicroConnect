@@ -36,7 +36,13 @@
     /* ── Special Notification ── */
     .piutang-banner { padding: 1rem; border-radius: 12px; background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
     .piutang-banner i { color: #f59e0b; }
+    
+    /* Tom Select Overrides */
+    .ts-control { border-radius: 10px; border: 1px solid #e2e8f0; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #1e293b; background-color: #fff; box-shadow: none; min-height: 42px; }
+    .ts-control.focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+    .ts-dropdown { border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); font-size: 0.85rem; }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -89,8 +95,23 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group-custom">
-                                <label class="label-custom">Nama Pembeli (Opsional)</label>
-                                <input type="text" name="pembeli" class="input-custom" value="{{ old('pembeli') }}" placeholder="Contoh: Bpk. Jefri">
+                                <label class="label-custom">Pembeli (Ketik Data Pelanggan/Baru)</label>
+                                <select id="pembeli_tomselect" name="pembeli" class="input-custom" placeholder="Ketik nama / no. telp / instansi...">
+                                    <option value="">Ketik nama / no. telp / instansi...</option>
+                                    @if(old('pembeli') && !collect($pelanggan)->contains('nama_pelanggan', old('pembeli')))
+                                        <option value="{{ old('pembeli') }}" selected>{{ old('pembeli') }}</option>
+                                    @endif
+                                    @if(isset($pelanggan))
+                                        @foreach($pelanggan as $plg)
+                                            @php 
+                                                $optText = $plg->nama_pelanggan;
+                                                if ($plg->no_telp) $optText .= ' | Telp: '.$plg->no_telp;
+                                                if ($plg->instansi) $optText .= ' | Instansi: '.$plg->instansi;
+                                            @endphp
+                                            <option value="{{ $plg->nama_pelanggan }}" {{ old('pembeli') == $plg->nama_pelanggan ? 'selected' : '' }}>{{ $optText }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -243,5 +264,26 @@ function removeRow(btn) {
         inputs.forEach(el => el.value = '');
     }
 }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    new TomSelect("#pembeli_tomselect",{
+        create: true,
+        sortField: {
+            field: "text",
+            direction: "asc"
+        },
+        maxOptions: null,
+        render: {
+            option_create: function(data, escape) {
+                return '<div class="create">Tambahkan pelanggan baru: <strong>' + escape(data.input) + '</strong>&hellip;</div>';
+            },
+            no_results: function(data, escape) {
+                return '<div class="no-results">Tidak ada pelanggan dari pencarian "'+escape(data.input)+'"</div>';
+            }
+        }
+    });
+});
 </script>
 @endsection

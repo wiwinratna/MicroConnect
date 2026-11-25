@@ -20,8 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
+        'no_wa',
         'password',
-        'user_group',           // 'admin' | 'pelakuusaha'
+        'user_group',          // 'admin' | 'pelakuusaha'
         'must_change_password', // true jika password sementara (dari admin)
     ];
 

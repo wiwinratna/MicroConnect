@@ -142,41 +142,6 @@ class AuthController extends Controller
     }
 
     // =========================
-    // REGISTER ADMIN (opsional)
-    // =========================
-    public function showAdminRegisterForm()
-    {
-        return view('auth.admin-register');
-    }
-
-    public function registerAdmin(Request $request)
-    {
-        $request->validate([
-            'name'       => 'required|string|max:100',
-            'email'      => 'required|email|unique:users,email',
-            'password'   => 'required|min:6|confirmed',
-            'admin_code' => 'required',
-        ]);
-
-        // pengaman: harus ada kode
-        if ($request->admin_code !== env('ADMIN_REGISTER_CODE')) {
-            return back()->withErrors(['admin_code' => 'Kode admin salah'])->withInput();
-        }
-
-        $user = User::create([
-            'name'       => $request->name,
-            'email'      => $request->email,
-            'password'   => Hash::make($request->password),
-            'user_group' => 'admin',
-        ]);
-
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->route('admin.dashboard');
-    }
-
-    // =========================
     // LOGOUT
     // =========================
     public function logout(Request $request)

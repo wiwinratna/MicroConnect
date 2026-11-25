@@ -21,6 +21,13 @@ class Umkm extends Model
         'no_telepon',
         // Fields baru
         'jenis_usaha',
+        'jenis_usaha_id',
+        'rumpun',
+        'memiliki_persediaan',
+        'melakukan_produksi',
+        'persetujuan_data_pribadi',
+        'tanggal_persetujuan',
+        'tanggal_aktivasi',
         'no_whatsapp',
         'recording_method',
         'inventory_method',

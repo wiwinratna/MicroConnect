@@ -36,9 +36,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.process');
 
-    Route::get('/admin/register', [AuthController::class, 'showAdminRegisterForm'])->name('admin.register');
-    Route::post('/admin/register', [AuthController::class, 'registerAdmin'])->name('admin.register.process');
-
     Route::get('/login', fn () => redirect()->route('umkm.login'))->name('login');
 });
 

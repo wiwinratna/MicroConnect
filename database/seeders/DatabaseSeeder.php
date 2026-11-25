@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UmkmLevelSeeder::class);
         $this->call(UserSeeder::class);
 
+        // v1.1: data awal kuesioner, jenis usaha, dan aturan modul
+        $this->call(JenisUsahaSeeder::class);
+        $this->call(ModulSeeder::class);
+        $this->call(IndikatorSeeder::class);
+
     }
 }

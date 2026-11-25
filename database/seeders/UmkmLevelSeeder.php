@@ -20,16 +20,17 @@ class UmkmLevelSeeder extends Seeder
 {
     public function run(): void
     {
-        Schema::disableForeignKeyConstraints();
-        UmkmLevel::truncate();
-        Schema::enableForeignKeyConstraints();
+        // v1.1: tidak lagi truncate. updateOrCreate per kode agar id level dan
+        // level_id UMKM lama tidak berubah (BR-14).
 
         // ================================================================
         // LEVEL 1 — Dasar / Starter
         // ================================================================
-        UmkmLevel::create([
-            'kode'          => 'L1',
+        UmkmLevel::updateOrCreate(['kode' => 'L1'], [
             'nama_level'    => 'Level 1 - Dasar',
+            'urutan'        => 1,
+            'skor_min'      => 4,
+            'skor_max'      => 6,
             'deskripsi'     => 'Fitur dasar: transaksi harian, bahan baku, produk, kasir, iuran, '
                              . 'jurnal umum, laporan penjualan & pembelian.',
             'fitur'         => FeatureAccess::forLevel(1),
@@ -39,9 +40,11 @@ class UmkmLevelSeeder extends Seeder
         // ================================================================
         // LEVEL 2 — Menengah / Pro
         // ================================================================
-        UmkmLevel::create([
-            'kode'          => 'L2',
-            'nama_level'    => 'Level 2 - Menengah',
+        UmkmLevel::updateOrCreate(['kode' => 'L2'], [
+            'nama_level'    => 'Level 2 - Berkembang',
+            'urutan'        => 2,
+            'skor_min'      => 7,
+            'skor_max'      => 9,
             'deskripsi'     => 'Semua fitur Level 1, ditambah: kartu stok, buku besar, '
                              . 'laba rugi, dan manajemen piutang pelanggan.',
             'fitur'         => FeatureAccess::forLevel(2),
@@ -51,9 +54,11 @@ class UmkmLevelSeeder extends Seeder
         // ================================================================
         // LEVEL 3 — Lanjut / Expert
         // ================================================================
-        UmkmLevel::create([
-            'kode'          => 'L3',
+        UmkmLevel::updateOrCreate(['kode' => 'L3'], [
             'nama_level'    => 'Level 3 - Lanjut',
+            'urutan'        => 3,
+            'skor_min'      => 10,
+            'skor_max'      => 12,
             'deskripsi'     => 'Akses penuh semua fitur termasuk COA, produksi, '
                              . 'perubahan modal, dan arus kas.',
             'fitur'         => FeatureAccess::forLevel(3),

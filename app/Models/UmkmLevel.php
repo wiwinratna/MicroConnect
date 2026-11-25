@@ -13,6 +13,9 @@ class UmkmLevel extends Model
     protected $fillable = [
         'kode',
         'nama_level',
+        'urutan',
+        'skor_min',
+        'skor_max',
         'deskripsi',
         'fitur',
         'iuran_bulanan',

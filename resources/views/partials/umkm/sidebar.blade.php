@@ -169,6 +169,30 @@
 				</li>
 			@endif
 
+			{{-- PENILAIAN ULANG (v1.1) --}}
+			@php
+				$layananUlang = app(\App\Services\PenilaianUlangService::class);
+				$periodeAktif = $layananUlang->periodeBerlaku();
+				$perluIsi = $periodeAktif && auth()->user()->umkm && !$layananUlang->sudahMengisi(auth()->user()->umkm, $periodeAktif);
+			@endphp
+			<li class="sidebar-item {{ request()->routeIs('umkm.penilaian-ulang*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.penilaian-ulang.index') }}">
+					<i class="align-middle" data-feather="refresh-cw"></i>
+					<span class="align-middle">Penilaian Ulang</span>
+					@if($perluIsi)
+						<span class="sidebar-badge badge bg-warning text-dark">Baru</span>
+					@endif
+				</a>
+			</li>
+
+			{{-- NOTIFIKASI (v1.1) --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.notifikasi*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.notifikasi.index') }}">
+					<i class="align-middle" data-feather="bell"></i>
+					<span class="align-middle">Notifikasi</span>
+				</a>
+			</li>
+
 			{{-- HASIL PENILAIAN (v1.1) --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.penilaian*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.penilaian.index') }}">

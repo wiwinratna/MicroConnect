@@ -7,6 +7,7 @@ use App\Models\Indikator;
 use App\Models\JenisUsaha;
 use App\Models\PengajuanPendaftaran;
 use App\Models\PenilaianLevel;
+use App\Services\NotificationService;
 use App\Services\PenilaianService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,7 @@ class PendaftaranController extends Controller
         ]);
     }
 
-    public function store(PendaftaranRequest $request, PenilaianService $penilaian)
+    public function store(PendaftaranRequest $request, PenilaianService $penilaian, NotificationService $notifikasi)
     {
         try {
             $hasil = $penilaian->hitung((array) $request->input('jawaban', []));
@@ -40,7 +41,7 @@ class PendaftaranController extends Controller
 
         try {
             // Satu transaksi: pengajuan + penilaian + detail jawaban, semua atau tidak sama sekali.
-            DB::transaction(function () use ($request, $hasil, $memilikiPersediaan, $melakukanProduksi) {
+            $pengajuan = DB::transaction(function () use ($request, $hasil, $memilikiPersediaan, $melakukanProduksi) {
                 $pengajuan = PengajuanPendaftaran::create([
                     'nama_pemilik'             => $request->input('nama_pemilik'),
                     'email'                    => $request->input('email'),
@@ -70,6 +71,8 @@ class PendaftaranController extends Controller
                 ]);
 
                 $penilaianLevel->detail()->createMany($hasil['detail']);
+
+                return $pengajuan;
             });
         } catch (QueryException $e) {
             // Klik ganda / pengiriman bersamaan: indeks unik menolak pengajuan kedua.
@@ -80,6 +83,14 @@ class PendaftaranController extends Controller
             }
 
             throw $e;
+        }
+
+        // FR-06: notifikasi registrasi diterima. Kegagalan di sini tidak boleh menggagalkan
+        // pendaftaran yang sudah tersimpan, dan pengirimannya berjalan setelah respons.
+        try {
+            $notifikasi->kirimTertunda($notifikasi->catatRegistrasiDiterima($pengajuan));
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->route('register.selesai')->with('pendaftaran_selesai', true);

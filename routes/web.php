@@ -81,6 +81,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
         Route::post('/{id}/tolak', [\App\Http\Controllers\Admin\PengajuanController::class, 'tolak'])->name('tolak');
     });
 
+    // ==================== PENILAIAN ULANG (v1.1) ====================
+    Route::get('/periode', [\App\Http\Controllers\Admin\PeriodeController::class, 'index'])->name('periode.index');
+    Route::post('/periode', [\App\Http\Controllers\Admin\PeriodeController::class, 'store'])->name('periode.store');
+    Route::post('/periode/{id}/tutup', [\App\Http\Controllers\Admin\PeriodeController::class, 'tutup'])->name('periode.tutup');
+    Route::get('/penilaian-ulang', [\App\Http\Controllers\Admin\PenilaianUlangController::class, 'index'])->name('penilaian-ulang.index');
+    Route::get('/penilaian-ulang/{id}', [\App\Http\Controllers\Admin\PenilaianUlangController::class, 'show'])->name('penilaian-ulang.show');
+    Route::post('/penilaian-ulang/{id}/tetapkan', [\App\Http\Controllers\Admin\PenilaianUlangController::class, 'tetapkan'])->name('penilaian-ulang.tetapkan');
+
+    // ==================== KOTAK NOTIFIKASI (v1.1) ====================
+    Route::get('/notifikasi', [\App\Http\Controllers\Admin\NotifikasiController::class, 'index'])->name('notifikasi.index');
+
     // ==================== KONFIGURASI MODUL & LAPORAN (v1.1) ====================
     Route::get('/aturan-modul', [\App\Http\Controllers\Admin\AturanModulController::class, 'index'])->name('aturan-modul.index');
     Route::put('/aturan-modul', [\App\Http\Controllers\Admin\AturanModulController::class, 'update'])->name('aturan-modul.update');
@@ -108,6 +119,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
 Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_change_password'])->group(function () {
 
     // Pilih Level ditutup di v1.1: level hanya ditetapkan Admin (BR-01).
+
+    // Kotak Notifikasi (v1.1): salinan aplikasi milik UMKM sendiri
+    Route::get('/notifikasi', [\App\Http\Controllers\Umkm\NotifikasiController::class, 'index'])->name('notifikasi.index');
+
+    // Penilaian Ulang (FR-22): hanya saat periode berlaku, satu kali per periode
+    Route::get('/penilaian-ulang', [\App\Http\Controllers\Umkm\PenilaianUlangController::class, 'index'])->name('penilaian-ulang.index');
+    Route::post('/penilaian-ulang', [\App\Http\Controllers\Umkm\PenilaianUlangController::class, 'store'])->name('penilaian-ulang.store');
 
     // Hasil Penilaian (FR-14)
     Route::get('/penilaian', [\App\Http\Controllers\Umkm\PenilaianController::class, 'index'])->name('penilaian.index');

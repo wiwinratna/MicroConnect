@@ -43,6 +43,10 @@
 
 				<p class="mb-1">Level rekomendasi sistem: <strong>{{ $n->levelRekomendasi?->nama_level }}</strong></p>
 
+				@if($n->jenis === 'ulang')
+					<p class="mb-1">Arah rekomendasi dibanding level Anda saat itu: <strong>{{ ucfirst($n->arah_rekomendasi) }}</strong></p>
+				@endif
+
 				@if($n->levelAkhir)
 					<p class="mb-1">Level yang ditetapkan Admin: <strong>{{ $n->levelAkhir->nama_level }}</strong></p>
 				@else

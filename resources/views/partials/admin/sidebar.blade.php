@@ -25,6 +25,31 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('admin.periode.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.periode.index') }}">
+                    <i class="align-middle" data-feather="calendar"></i>
+                    <span class="align-middle">Periode Penilaian</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item {{ request()->routeIs('admin.penilaian-ulang.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.penilaian-ulang.index') }}">
+                    <i class="align-middle" data-feather="clipboard"></i>
+                    <span class="align-middle">Tinjau Penilaian</span>
+                    @php $jumlahTinjau = \App\Models\PenilaianLevel::where('jenis', 'ulang')->where('status_peninjauan', 'menunggu')->count(); @endphp
+                    @if($jumlahTinjau > 0)
+                        <span class="sidebar-badge badge bg-warning text-dark">{{ $jumlahTinjau }}</span>
+                    @endif
+                </a>
+            </li>
+
+            <li class="sidebar-item {{ request()->routeIs('admin.notifikasi.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.notifikasi.index') }}">
+                    <i class="align-middle" data-feather="bell"></i>
+                    <span class="align-middle">Kotak Notifikasi</span>
+                </a>
+            </li>
+
             <li class="sidebar-item {{ request()->routeIs('admin.umkm.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.umkm.index') }}">
                     <i class="align-middle" data-feather="users"></i>

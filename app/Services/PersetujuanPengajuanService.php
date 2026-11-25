@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Hash;
  */
 class PersetujuanPengajuanService
 {
+    public function __construct(private NotificationService $notif) {}
+
     /**
      * Setujui pengajuan: buat akun, isi level akhir, catat keputusan.
      *
@@ -31,7 +33,9 @@ class PersetujuanPengajuanService
             throw new DomainException('Kata sandi awal (INITIAL_PASSWORD) belum diatur. Hubungi pengelola sistem.');
         }
 
-        return DB::transaction(function () use ($pengajuanId, $levelAkhirId, $alasan, $admin, $sandiAwal) {
+        $baris = [];
+
+        $umkm = DB::transaction(function () use ($pengajuanId, $levelAkhirId, $alasan, $admin, $sandiAwal, &$baris) {
             // Kunci baris agar klik ganda / dua Admin tidak membuat dua akun.
             $pengajuan = PengajuanPendaftaran::whereKey($pengajuanId)->lockForUpdate()->firstOrFail();
             $this->pastikanMenunggu($pengajuan);
@@ -113,8 +117,16 @@ class PersetujuanPengajuanService
                 'umkm_id' => $umkm->id,
             ]);
 
+            // FR-12 / BR-13: notifikasi akun aktif dicatat dalam transaksi yang sama.
+            $baris = $this->notif->catatAkunAktif($pengajuan, $umkm, $sandiAwal);
+
             return $umkm;
         });
+
+        // Pengiriman setelah transaksi selesai dan tidak memblokir proses utama.
+        $this->notif->kirimTertunda($baris);
+
+        return $umkm;
     }
 
     /**
@@ -130,7 +142,9 @@ class PersetujuanPengajuanService
             throw new DomainException('Alasan penolakan wajib diisi.');
         }
 
-        return DB::transaction(function () use ($pengajuanId, $alasan, $admin) {
+        $baris = [];
+
+        $pengajuan = DB::transaction(function () use ($pengajuanId, $alasan, $admin, &$baris) {
             $pengajuan = PengajuanPendaftaran::whereKey($pengajuanId)->lockForUpdate()->firstOrFail();
             $this->pastikanMenunggu($pengajuan);
 
@@ -146,8 +160,15 @@ class PersetujuanPengajuanService
                 ['status' => 'ditolak', 'alasan' => $alasan]
             );
 
+            // FR-12 / BR-13: notifikasi penolakan dicatat dalam transaksi yang sama.
+            $baris = $this->notif->catatPengajuanDitolak($pengajuan, $alasan);
+
             return $pengajuan;
         });
+
+        $this->notif->kirimTertunda($baris);
+
+        return $pengajuan;
     }
 
     private function pastikanMenunggu(PengajuanPendaftaran $pengajuan): void

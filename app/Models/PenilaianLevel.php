@@ -16,13 +16,24 @@ class PenilaianLevel extends Model
         'total_skor', 'level_rekomendasi_id', 'arah_rekomendasi',
         'level_akhir_id', 'alasan_penetapan', 'status_peninjauan',
         'catatan_peninjauan', 'ditinjau_oleh', 'tanggal_peninjauan',
-        'tindak_lanjut_pembinaan',
+        'tindak_lanjut_pembinaan', 'data_sistem',
     ];
 
     protected $casts = [
         'tanggal_penilaian'  => 'date',
         'tanggal_peninjauan' => 'datetime',
+        'data_sistem'        => 'array',
     ];
+
+    public function periode(): BelongsTo
+    {
+        return $this->belongsTo(PeriodePenilaian::class, 'periode_id');
+    }
+
+    public function umkm(): BelongsTo
+    {
+        return $this->belongsTo(Umkm::class, 'umkm_id');
+    }
 
     public function detail(): HasMany
     {

@@ -10,7 +10,6 @@ use App\Models\User;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * Keputusan Admin atas pengajuan pendaftaran (FR-10, FR-11).
@@ -65,7 +64,9 @@ class PersetujuanPengajuanService
                 'no_wa'                => $pengajuan->no_wa,
                 'password'             => Hash::make($sandiAwal),
                 'user_group'           => 'pelakuusaha',
-                'must_change_password' => true, // BR-08: wajib ganti saat login pertama
+                // BR-08: wajib ganti saat login pertama, bila FORCE_CHANGE_INITIAL_PASSWORD=true.
+                // Bawaan: tidak wajib; pemilik boleh mengganti sendiri lewat menu Profil.
+                'must_change_password' => (bool) config('minect.force_change_initial_password'),
             ]);
 
             $umkm = Umkm::create([
@@ -159,13 +160,7 @@ class PersetujuanPengajuanService
     /** Nama jenis usaha tanpa contoh dalam kurung, muat di kolom umkm.jenis_usaha (50 karakter). */
     private function namaPendekJenisUsaha(PengajuanPendaftaran $pengajuan): ?string
     {
-        $nama = $pengajuan->jenisUsaha?->nama;
-
-        if (!$nama) {
-            return null;
-        }
-
-        return Str::limit(trim(preg_replace('/\s*\(mis\..*$/u', '', $nama)), 50, '');
+        return $pengajuan->jenisUsaha?->namaPendek();
     }
 
     /** Log audit keputusan: siapa, apa, kapan, data lama dan baru (FR-26 sebagian). */

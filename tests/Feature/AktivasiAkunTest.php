@@ -36,7 +36,7 @@ class AktivasiAkunTest extends TestCase
         $this->assertSame('pelakuusaha', $user->user_group);
         $this->assertSame('budi_baru', $user->username);
         $this->assertSame('6281234567890', $user->no_wa);
-        $this->assertTrue((bool) $user->must_change_password);
+        $this->assertFalse((bool) $user->must_change_password); // bawaan: ganti kata sandi tidak wajib
 
         $umkm = Umkm::where('user_id', $user->id)->firstOrFail();
         $this->assertSame('aktif', $umkm->status);
@@ -138,8 +138,30 @@ class AktivasiAkunTest extends TestCase
         $this->assertSame(0, Umkm::count());
     }
 
+    public function test_by_default_new_account_can_use_system_without_changing_password(): void
+    {
+        $p = $this->ajukan();
+        $this->setujui($p, $this->level('L1'));
+        auth()->logout();
+
+        $this->post('/umkm/login', ['email' => $p->email, 'password' => self::SANDI_AWAL])
+            ->assertRedirect(route('umkm.dashboard'));
+
+        $this->get(route('umkm.penilaian.index'))->assertOk();
+    }
+
+    public function test_when_forced_new_account_must_change_password_first(): void
+    {
+        config(['minect.force_change_initial_password' => true]);
+        $p = $this->ajukan();
+        $this->setujui($p, $this->level('L1'));
+
+        $this->assertTrue((bool) User::where('email', $p->email)->value('must_change_password'));
+    }
+
     public function test_first_login_goes_to_change_password_and_locks_other_pages(): void
     {
+        config(['minect.force_change_initial_password' => true]); // aturan BR-08 dihidupkan
         $p = $this->ajukan();
         $this->setujui($p, $this->level('L1'));
         auth()->logout();

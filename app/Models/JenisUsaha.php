@@ -17,4 +17,10 @@ class JenisUsaha extends Model
     {
         return $query->where('aktif', true);
     }
+
+    /** Nama tanpa contoh dalam kurung, muat di kolom umkm.jenis_usaha (maks. 50 karakter). */
+    public function namaPendek(): string
+    {
+        return \Illuminate\Support\Str::limit(trim(preg_replace('/\s*\(mis\..*$/u', '', $this->nama)), 50, '');
+    }
 }

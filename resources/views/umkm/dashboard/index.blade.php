@@ -66,6 +66,7 @@
             </div>
         </div>
     </div>
+    @if(modul_boleh('bahan_baku'))
     <div class="col-md-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
@@ -75,10 +76,12 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 
 {{-- STOK MENIPIS + TRANSAKSI TERAKHIR (PINDAH KE ATAS) --}}
 <div class="row g-3 mb-3">
+    @if(modul_boleh('bahan_baku'))
     <div class="col-lg-6">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
@@ -146,6 +149,7 @@
         </div>
     </div>
 </div>
+    @endif
 
 {{-- GRAFIK (PINDAH KE BAWAH) --}}
 <div class="row g-3">

@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'adminonly'            => \App\Http\Middleware\AdminOnly::class,
             'must_change_password' => \App\Http\Middleware\MustChangePassword::class,
             'umkm.feature'         => \App\Http\Middleware\CheckUmkmFeature::class,
+            'umkm.modul'           => \App\Http\Middleware\CheckUmkmModul::class,
             'guest'                => \App\Http\Middleware\RedirectIfAuthenticated::class,
         ]);
 

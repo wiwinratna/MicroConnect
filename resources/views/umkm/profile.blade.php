@@ -245,6 +245,7 @@
                                     </option>
                                 </select>
                             </div>
+                            @if(modul_boleh('metode_persediaan'))
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Metode Penilaian Persediaan</label>
                                 <select name="inventory_method" class="form-select">
@@ -259,6 +260,7 @@
                                     </option>
                                 </select>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

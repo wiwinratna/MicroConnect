@@ -35,20 +35,24 @@
 			<li class="sidebar-header">Master Data</li>
 
 			{{-- BAHAN BAKU — Level 1+ --}}
+			@if(modul_boleh('bahan_baku'))
 			<li class="sidebar-item {{ request()->routeIs('umkm.bahan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.bahan.index') }}">
 					<i class="align-middle" data-feather="archive"></i>
 					<span class="align-middle">Bahan</span>
 				</a>
 			</li>
+			@endif
 
 			{{-- PRODUK JADI — Level 1+ --}}
+			@if(modul_boleh('produk'))
 			<li class="sidebar-item {{ request()->routeIs('umkm.produk*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.produk.index') }}">
 					<i class="align-middle" data-feather="shopping-bag"></i>
-					<span class="align-middle">Produk Jadi</span>
+					<span class="align-middle">{{ modul_label('produk', 'Produk Jadi') }}</span>
 				</a>
 			</li>
+			@endif
 
 			{{-- PELANGGAN — Level 1+ --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.etalase.pelanggan*') ? 'active' : '' }}">
@@ -75,22 +79,27 @@
 			<li class="sidebar-header">Transaksi Utama</li>
 
 			{{-- PEMBELIAN — Level 1+ --}}
+			@if(modul_boleh('pembelian'))
 			<li class="sidebar-item {{ request()->routeIs('umkm.pembelian*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.pembelian.index') }}">
 					<i class="align-middle" data-feather="shopping-cart"></i>
 					<span class="align-middle">Pembelian</span>
 				</a>
 			</li>
+			@endif
 
 			{{-- PENJUALAN — Level 1+ --}}
+			@if(modul_boleh('penjualan'))
 			<li class="sidebar-item {{ request()->routeIs('umkm.penjualan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.penjualan.index') }}">
 					<i class="align-middle" data-feather="dollar-sign"></i>
 					<span class="align-middle">Penjualan / Kas</span>
 				</a>
 			</li>
+			@endif
 
 			{{-- MODE KASIR — Level 1+ --}}
+			@if(modul_boleh('penjualan'))
 			<li
 				class="sidebar-item {{ request()->routeIs('umkm.etalase*') && !request()->routeIs('umkm.etalase.pelanggan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.etalase.index') }}">
@@ -98,6 +107,7 @@
 					<span class="align-middle">Kasir</span>
 				</a>
 			</li>
+			@endif
 
 			{{-- PIUTANG PELANGGAN — Level 2+ --}}
 			@if(feature_can('piutang'))
@@ -116,12 +126,14 @@
 			<li class="sidebar-header">Keuangan & Iuran</li>
 
 			{{-- BEBAN OPERASIONAL AKTUAL — Level 1+ --}}
+			@if(modul_boleh('beban'))
 			<li class="sidebar-item {{ request()->routeIs('umkm.beban*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.beban.index') }}">
 					<i class="align-middle" data-feather="trending-down"></i>
 					<span class="align-middle">Beban Operasional</span>
 				</a>
 			</li>
+			@endif
 
 			{{-- IURAN BULANAN — Level 1+ --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.iuran*') ? 'active' : '' }}">
@@ -148,7 +160,7 @@
 			@endif
 
 			{{-- KARTU STOK — Level 2+ --}}
-			@if(feature_can('kartu_stok'))
+			@if(modul_boleh('kartu_stok'))
 				<li class="sidebar-item {{ request()->routeIs('umkm.laporan.kartu_stok') ? 'active' : '' }}">
 					<a class="sidebar-link" href="{{ route('umkm.laporan.kartu_stok') }}">
 						<i class="align-middle" data-feather="layers"></i>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\JenisUsaha;
 use App\Models\Umkm;
 use App\Models\UmkmLevel;
 use App\Models\User;
@@ -13,7 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class UmkmController extends Controller
 {
@@ -164,9 +167,10 @@ class UmkmController extends Controller
             ->get();
 
         $levels = UmkmLevel::all();
+        $jenisUsaha = JenisUsaha::aktif()->orderBy('id')->get();
 
         return view('admin.umkm.show', compact(
-            'umkm', 'penjualanBulanIni', 'totalPiutangAktif', 'iuranList', 'levels'
+            'umkm', 'penjualanBulanIni', 'totalPiutangAktif', 'iuranList', 'levels', 'jenisUsaha'
         ));
     }
 
@@ -182,6 +186,62 @@ class UmkmController extends Controller
         $umkm->update(['level_id' => $request->level_id]);
 
         return back()->with('success', 'Level UMKM berhasil diperbarui.');
+    }
+
+    /**
+     * FR-27: Admin melengkapi jenis usaha, rumpun, persediaan, dan produksi UMKM
+     * (terutama UMKM lama). Setelah terisi, aturan modul berlaku untuk UMKM itu.
+     * Rumpun barang: persediaan otomatis ya, produksi diisi. Rumpun jasa: produksi tidak,
+     * persediaan diisi (Bagian 4A).
+     */
+    public function updateProfilUsaha(Request $request, $id)
+    {
+        $data = $request->validate([
+            'jenis_usaha_id'      => ['nullable', 'exists:jenis_usaha,id'],
+            'rumpun'              => ['required', Rule::in(['barang', 'jasa'])],
+            'melakukan_produksi'  => ['nullable', 'required_if:rumpun,barang', Rule::in(['0', '1'])],
+            'memiliki_persediaan' => ['nullable', 'required_if:rumpun,jasa', Rule::in(['0', '1'])],
+        ], [
+            'rumpun.required'              => 'Pilih rumpun usaha (barang atau jasa).',
+            'rumpun.in'                    => 'Rumpun usaha tidak valid.',
+            'jenis_usaha_id.exists'        => 'Jenis usaha yang dipilih tidak tersedia.',
+            'melakukan_produksi.required_if'  => 'Jawab apakah usaha ini mengolah bahan menjadi produk.',
+            'memiliki_persediaan.required_if' => 'Jawab apakah usaha ini memiliki persediaan barang.',
+        ]);
+
+        $umkm = Umkm::findOrFail($id);
+
+        $barang = $data['rumpun'] === 'barang';
+        $baru = [
+            'rumpun'              => $data['rumpun'],
+            'memiliki_persediaan' => $barang ? true : ($data['memiliki_persediaan'] === '1'),
+            'melakukan_produksi'  => $barang ? ($data['melakukan_produksi'] === '1') : false,
+        ];
+
+        if (!empty($data['jenis_usaha_id'])) {
+            $baru['jenis_usaha_id'] = (int) $data['jenis_usaha_id'];
+            $baru['jenis_usaha']    = JenisUsaha::find($data['jenis_usaha_id'])?->namaPendek();
+        }
+
+        $lama = $umkm->only(['jenis_usaha_id', 'rumpun', 'memiliki_persediaan', 'melakukan_produksi']);
+
+        DB::transaction(function () use ($umkm, $baru, $lama, $request) {
+            $umkm->update($baru);
+
+            DB::table('log_audit')->insert([
+                'pengguna_id' => $request->user()->id,
+                'aksi'        => 'umkm.profil_usaha',
+                'entitas'     => 'umkm',
+                'entitas_id'  => $umkm->id,
+                'data_lama'   => json_encode($lama),
+                'data_baru'   => json_encode(Arr::only($baru, array_keys($lama))),
+                'waktu'       => now(),
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+        });
+
+        return back()->with('success', 'Profil usaha UMKM diperbarui. Aturan modul kini berlaku untuk UMKM ini.');
     }
 
     public function konfirmasiIuran(Request $request, $id)

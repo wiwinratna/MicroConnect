@@ -98,3 +98,24 @@ if (!function_exists('feature_level')) {
         return \App\Helpers\FeatureAccess::getCurrentLevel();
     }
 }
+
+if (!function_exists('modul_boleh')) {
+    /**
+     * Apakah UMKM yang login boleh memakai modul operasional ini (rumpun + level).
+     * Blade: @if(modul_boleh('bahan_baku')) ... @endif
+     */
+    function modul_boleh(string $modul): bool
+    {
+        return \App\Helpers\ModulAccess::boleh($modul);
+    }
+}
+
+if (!function_exists('modul_label')) {
+    /**
+     * Label modul menurut rumpun UMKM (mis. "Produk" atau "Daftar Layanan Jasa").
+     */
+    function modul_label(string $modul, string $bawaan): string
+    {
+        return \App\Helpers\ModulAccess::label($modul, $bawaan);
+    }
+}

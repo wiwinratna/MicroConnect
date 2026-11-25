@@ -83,7 +83,16 @@ class AuthController extends Controller
                 ->with('warning', 'Anda harus mengganti password sementara terlebih dahulu.');
         }
 
-        return redirect()->route('umkm.dashboard');
+        $tujuan = redirect()->route('umkm.dashboard');
+
+        // Masih memakai kata sandi awal: tawarkan ganti lewat pop up (boleh dilewati).
+        // Dicek sekali saat login supaya tidak ada pemeriksaan hash di setiap halaman.
+        $sandiAwal = config('minect.initial_password');
+        if (filled($sandiAwal) && Hash::check($sandiAwal, auth()->user()->password)) {
+            $tujuan->with('saran_ganti_sandi', true);
+        }
+
+        return $tujuan;
     }
 
     // =========================

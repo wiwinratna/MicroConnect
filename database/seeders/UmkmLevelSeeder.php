@@ -33,7 +33,6 @@ class UmkmLevelSeeder extends Seeder
             'skor_max'      => 6,
             'deskripsi'     => 'Fitur dasar: transaksi harian, bahan baku, produk, kasir, iuran, '
                              . 'jurnal umum, laporan penjualan & pembelian.',
-            'fitur'         => FeatureAccess::forLevel(1),
             'iuran_bulanan' => 0,
         ]);
 
@@ -47,7 +46,6 @@ class UmkmLevelSeeder extends Seeder
             'skor_max'      => 9,
             'deskripsi'     => 'Semua fitur Level 1, ditambah: kartu stok, buku besar, '
                              . 'laba rugi, dan manajemen piutang pelanggan.',
-            'fitur'         => FeatureAccess::forLevel(2),
             'iuran_bulanan' => 20000,
         ]);
 
@@ -61,8 +59,17 @@ class UmkmLevelSeeder extends Seeder
             'skor_max'      => 12,
             'deskripsi'     => 'Akses penuh semua fitur termasuk COA, produksi, '
                              . 'perubahan modal, dan arus kas.',
-            'fitur'         => FeatureAccess::forLevel(3),
             'iuran_bulanan' => 30000,
         ]);
+
+        // v1.1 (FR-18): `fitur` diisi dari FEATURES_MAP hanya jika masih kosong, supaya
+        // pengaturan laporan per level oleh Admin tidak tertimpa saat seeder dijalankan ulang.
+        foreach ([1, 2, 3] as $nomor) {
+            $level = UmkmLevel::where('kode', "L{$nomor}")->first();
+
+            if ($level && empty($level->fitur)) {
+                $level->update(['fitur' => FeatureAccess::forLevel($nomor)]);
+            }
+        }
     }
 }

@@ -159,6 +159,68 @@
         </div>
       </div>
 
+      {{-- Profil usaha: rumpun, persediaan, produksi (FR-27) --}}
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title mb-0 fw-bold text-dark">Profil Usaha (menentukan fitur yang tampil)</h5>
+        </div>
+        <div class="card-body p-4">
+          @if(!$umkm->rumpun)
+            <div class="alert alert-info small">
+              Rumpun belum dilengkapi, jadi semua fitur masih tampil. Setelah disimpan, aturan modul berlaku untuk UMKM ini.
+            </div>
+          @endif
+
+          @if($errors->any())
+            <div class="alert alert-danger small">
+              <ul class="mb-0 ps-3">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+            </div>
+          @endif
+
+          <form method="POST" action="{{ route('admin.umkm.updateProfilUsaha', $umkm->id) }}" id="formProfilUsaha">
+            @csrf @method('PUT')
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="jenis_usaha_id">Jenis usaha</label>
+                <select name="jenis_usaha_id" id="jenis_usaha_id" class="form-select">
+                  <option value="">-- Tidak diubah --</option>
+                  @foreach($jenisUsaha as $j)
+                    <option value="{{ $j->id }}" @selected((int) old('jenis_usaha_id', $umkm->jenis_usaha_id) === $j->id)>{{ $j->nama }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="rumpun">Rumpun</label>
+                <select name="rumpun" id="rumpun" class="form-select" required>
+                  <option value="">-- Pilih rumpun --</option>
+                  <option value="barang" @selected(old('rumpun', $umkm->rumpun) === 'barang')>Barang</option>
+                  <option value="jasa" @selected(old('rumpun', $umkm->rumpun) === 'jasa')>Jasa</option>
+                </select>
+              </div>
+              <div class="col-md-6" id="kotakProduksi">
+                <label class="form-label" for="melakukan_produksi">Mengolah bahan menjadi produk? (rumpun barang)</label>
+                <select name="melakukan_produksi" id="melakukan_produksi" class="form-select">
+                  <option value="">-- Pilih --</option>
+                  <option value="1" @selected((string) old('melakukan_produksi', is_null($umkm->melakukan_produksi) ? '' : (int) $umkm->melakukan_produksi) === '1')>Ya</option>
+                  <option value="0" @selected((string) old('melakukan_produksi', is_null($umkm->melakukan_produksi) ? '' : (int) $umkm->melakukan_produksi) === '0')>Tidak</option>
+                </select>
+              </div>
+              <div class="col-md-6" id="kotakPersediaan">
+                <label class="form-label" for="memiliki_persediaan">Memiliki persediaan barang? (rumpun jasa)</label>
+                <select name="memiliki_persediaan" id="memiliki_persediaan" class="form-select">
+                  <option value="">-- Pilih --</option>
+                  <option value="1" @selected((string) old('memiliki_persediaan', is_null($umkm->memiliki_persediaan) ? '' : (int) $umkm->memiliki_persediaan) === '1')>Ya, ada</option>
+                  <option value="0" @selected((string) old('memiliki_persediaan', is_null($umkm->memiliki_persediaan) ? '' : (int) $umkm->memiliki_persediaan) === '0')>Tidak ada</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-primary">Simpan profil usaha</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       {{-- Iuran Table --}}
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden border-top border-4 border-primary">
         <div class="card-header bg-white py-3 border-bottom">

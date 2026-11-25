@@ -112,6 +112,30 @@
 			});
 		@endif
 
+		@if(session('saran_ganti_sandi'))
+			// Saran ganti kata sandi awal: tidak wajib, boleh dilewati.
+			Swal.fire({
+				icon: 'info',
+				title: 'Ganti kata sandi?',
+				html: 'Akun Anda masih memakai kata sandi awal. Sebaiknya diganti agar lebih aman, tetapi Anda boleh melewatinya.',
+				showCancelButton: true,
+				confirmButtonText: 'Ganti sekarang',
+				cancelButtonText: 'Lewati',
+				reverseButtons: true
+			}).then((hasil) => {
+				if (hasil.isConfirmed) {
+					window.location.href = "{{ route('password.change') }}";
+				} else {
+					Swal.fire({
+						icon: 'info',
+						title: 'Tidak apa-apa',
+						html: 'Kalau nanti ingin mengganti kata sandi, buka menu <b>Profil UMKM</b> di sidebar kiri, lalu isi bagian <b>Ubah password</b>.',
+						confirmButtonText: 'Mengerti'
+					});
+				}
+			});
+		@endif
+
 		// Konfirmasi hapus global
 		document.addEventListener('DOMContentLoaded', function() {
 			const deleteButtons = document.querySelectorAll('.btn-delete, form[method="POST"] button.text-danger');

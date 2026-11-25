@@ -100,6 +100,18 @@ class FeatureAccess
      */
     public static function can(string $feature): bool
     {
+        // v1.1 (FR-18): fitur per level dibaca dari umkm_level.fitur di DB agar Admin
+        // bisa mengaturnya. Jika kolom kosong, pakai konstanta FEATURES_MAP (v1.0).
+        $user = auth()->user();
+
+        if ($user && $user->user_group !== 'admin') {
+            $fitur = $user->umkm?->level?->fitur;
+
+            if (is_array($fitur) && $fitur !== []) {
+                return in_array($feature, $fitur, true);
+            }
+        }
+
         $level = static::getCurrentLevel();
         return static::canLevel($level, $feature);
     }

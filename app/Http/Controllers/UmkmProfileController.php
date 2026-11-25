@@ -82,7 +82,11 @@ class UmkmProfileController extends Controller
             'jenis_usaha'      => $request->jenis_usaha,
             'no_whatsapp'      => $request->no_whatsapp,
             'recording_method' => $request->recording_method ?? $umkm->recording_method,
-            'inventory_method' => $request->inventory_method ?? $umkm->inventory_method,
+            // v1.1: metode persediaan hanya berlaku bila modulnya tampil untuk UMKM ini (FR-19);
+            // jika tidak, masukan diabaikan di server dan nilai lama dipertahankan.
+            'inventory_method' => \App\Helpers\ModulAccess::boleh('metode_persediaan', $umkm)
+                ? ($request->inventory_method ?? $umkm->inventory_method)
+                : $umkm->inventory_method,
             'warna_tema'       => $request->warna_tema ?? $umkm->warna_tema,
         ], $logoData));
 

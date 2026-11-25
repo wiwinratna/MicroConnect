@@ -32,6 +32,20 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('admin.aturan-modul.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.aturan-modul.index') }}">
+                    <i class="align-middle" data-feather="sliders"></i>
+                    <span class="align-middle">Aturan Modul</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item {{ request()->routeIs('admin.laporan-level.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.laporan-level.index') }}">
+                    <i class="align-middle" data-feather="file-text"></i>
+                    <span class="align-middle">Laporan per Level</span>
+                </a>
+            </li>
+
             <li class="sidebar-item {{ request()->routeIs('admin.iuran-periode.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.iuran-periode.index') }}">
                     <i class="align-middle" data-feather="credit-card"></i>

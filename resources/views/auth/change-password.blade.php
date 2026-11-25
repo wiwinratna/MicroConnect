@@ -148,14 +148,25 @@
     <div class="change-pw-card">
         <div class="card-header">
             <h1>🔐 Ganti Password</h1>
-            <p>Password Anda bersifat sementara dan harus diganti</p>
+            @if(auth()->user()->must_change_password)
+                <p>Password Anda bersifat sementara dan harus diganti</p>
+            @else
+                <p>Anda boleh mengganti password sekarang atau nanti</p>
+            @endif
         </div>
 
         <div class="card-body">
-            <div class="alert-warning">
-                ⚠️ Akun Anda dibuat oleh Admin KADIN dengan password sementara.
-                Demi keamanan, Anda <strong>wajib mengganti password</strong> sebelum menggunakan sistem.
-            </div>
+            @if(auth()->user()->must_change_password)
+                <div class="alert-warning">
+                    ⚠️ Akun Anda dibuat oleh Admin KADIN dengan password sementara.
+                    Demi keamanan, Anda <strong>wajib mengganti password</strong> sebelum menggunakan sistem.
+                </div>
+            @else
+                <div class="alert-warning">
+                    Akun Anda masih memakai password awal. Sebaiknya diganti, tetapi tidak wajib.
+                    Kalau dilewati, Anda bisa mengganti kapan saja lewat menu <strong>Profil UMKM</strong>.
+                </div>
+            @endif
 
             @if($errors->any())
                 <div class="alert-error">
@@ -190,6 +201,12 @@
                     Ganti Password & Lanjutkan
                 </button>
             </form>
+
+            @unless(auth()->user()->must_change_password)
+                <div class="footer-text" style="margin-top: 12px;">
+                    <a href="{{ auth()->user()->user_group === 'admin' ? route('admin.dashboard') : route('umkm.dashboard') }}">Nanti saja</a>
+                </div>
+            @endunless
 
             <div class="footer-text">
                 © {{ date('Y') }} Sistem UMKM KADIN · MicroConnect

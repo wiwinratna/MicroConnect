@@ -1,11 +1,12 @@
 @extends('layouts.umkm')
 
-@section('title', 'Produk Jadi')
+@php $labelProduk = modul_label('produk', 'Produk Jadi'); @endphp
+@section('title', $labelProduk)
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h1 class="h3 mb-1"><strong>Produk</strong> Jadi</h1>
+            <h1 class="h3 mb-1"><strong>{{ $labelProduk }}</strong></h1>
             <p class="text-muted mb-0">
                 Daftar produk yang dijual oleh usaha kamu.
             </p>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /** Data calon UMKM sebelum akun ada (BR-06, BR-13). Tanpa kata sandi. */
@@ -32,5 +33,10 @@ class PengajuanPendaftaran extends Model
     public function penilaian(): HasOne
     {
         return $this->hasOne(PenilaianLevel::class, 'pengajuan_id');
+    }
+
+    public function jenisUsaha(): BelongsTo
+    {
+        return $this->belongsTo(JenisUsaha::class, 'jenis_usaha_id');
     }
 }

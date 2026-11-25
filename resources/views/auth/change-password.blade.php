@@ -169,9 +169,15 @@
                 @csrf
 
                 <div class="form-group">
+                    <label class="form-label">Password Lama</label>
+                    <input class="form-input" type="password" name="current_password" required
+                           placeholder="Password yang Anda pakai untuk masuk" autofocus>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Password Baru</label>
                     <input class="form-input" type="password" name="password" required
-                           placeholder="Minimal 6 karakter" minlength="6" autofocus>
+                           placeholder="Minimal 6 karakter" minlength="6">
                 </div>
 
                 <div class="form-group">

@@ -157,6 +157,14 @@
 				</li>
 			@endif
 
+			{{-- HASIL PENILAIAN (v1.1) --}}
+			<li class="sidebar-item {{ request()->routeIs('umkm.penilaian*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ route('umkm.penilaian.index') }}">
+					<i class="align-middle" data-feather="award"></i>
+					<span class="align-middle">Hasil Penilaian</span>
+				</a>
+			</li>
+
 			{{-- LAPORAN KEUANGAN — Level 1+ --}}
 			<li class="sidebar-item {{ request()->routeIs('umkm.laporan.index') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ route('umkm.laporan.index') }}">

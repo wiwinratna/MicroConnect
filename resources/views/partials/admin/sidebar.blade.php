@@ -14,6 +14,17 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('admin.pengajuan.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.pengajuan.index') }}">
+                    <i class="align-middle" data-feather="user-plus"></i>
+                    <span class="align-middle">Pengajuan</span>
+                    @php $jumlahMenunggu = \App\Models\PengajuanPendaftaran::where('status', 'menunggu')->count(); @endphp
+                    @if($jumlahMenunggu > 0)
+                        <span class="sidebar-badge badge bg-warning text-dark">{{ $jumlahMenunggu }}</span>
+                    @endif
+                </a>
+            </li>
+
             <li class="sidebar-item {{ request()->routeIs('admin.umkm.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.umkm.index') }}">
                     <i class="align-middle" data-feather="users"></i>

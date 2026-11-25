@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UmkmProfileController;
-use App\Http\Controllers\UmkmLevelController;
 use App\Http\Controllers\BahanBakuController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PembelianController;
@@ -73,6 +72,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
         Route::patch('/{id}/toggle-status', [UmkmController::class, 'toggleStatus'])->name('toggleStatus');
     });
 
+    // ==================== PENGAJUAN PENDAFTARAN (v1.1) ====================
+    Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PengajuanController::class, 'index'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\Admin\PengajuanController::class, 'show'])->name('show');
+        Route::post('/{id}/setujui', [\App\Http\Controllers\Admin\PengajuanController::class, 'setujui'])->name('setujui');
+        Route::post('/{id}/tolak', [\App\Http\Controllers\Admin\PengajuanController::class, 'tolak'])->name('tolak');
+    });
+
     // ==================== IURAN PERIODE ====================
     Route::prefix('iuran-periode')->name('iuran-periode.')->group(function () {
         Route::get('/', [IuranPeriodeController::class, 'index'])->name('index');
@@ -93,9 +100,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
 // ================== UMKM AREA ==================
 Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_change_password'])->group(function () {
 
-    // Pilih Level
-    Route::get('/pilih-level', [UmkmLevelController::class, 'index'])->name('level.choose');
-    Route::post('/pilih-level', [UmkmLevelController::class, 'store'])->name('level.store');
+    // Pilih Level ditutup di v1.1: level hanya ditetapkan Admin (BR-01).
+
+    // Hasil Penilaian (FR-14)
+    Route::get('/penilaian', [\App\Http\Controllers\Umkm\PenilaianController::class, 'index'])->name('penilaian.index');
 
     // Dashboard
     Route::get('/dashboard', [UmkmDashboardController::class, 'index'])->name('dashboard');

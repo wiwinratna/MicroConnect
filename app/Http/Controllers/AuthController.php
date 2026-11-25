@@ -160,11 +160,17 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request)
     {
+        // FR-13: password lama wajib benar, konfirmasi harus cocok, dan password baru harus berbeda.
         $request->validate([
-            'password' => 'required|string|min:6|confirmed',
+            'current_password' => 'required|current_password',
+            'password'         => 'required|string|min:6|confirmed|different:current_password',
         ], [
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'password.min'       => 'Password minimal 6 karakter.',
+            'current_password.required'         => 'Password lama wajib diisi.',
+            'current_password.current_password' => 'Password lama salah.',
+            'password.required'                 => 'Password baru wajib diisi.',
+            'password.confirmed'                => 'Konfirmasi password tidak cocok.',
+            'password.min'                      => 'Password minimal 6 karakter.',
+            'password.different'                => 'Password baru harus berbeda dari password lama.',
         ]);
 
         $user = auth()->user();
@@ -173,7 +179,9 @@ class AuthController extends Controller
             'must_change_password' => false,
         ]);
 
-        return redirect()->route('umkm.dashboard')
+        $tujuan = $user->user_group === 'admin' ? 'admin.dashboard' : 'umkm.dashboard';
+
+        return redirect()->route($tujuan)
             ->with('success', 'Password berhasil diubah. Selamat menggunakan sistem!');
     }
 }

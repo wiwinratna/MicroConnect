@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Umkm;
+use App\Models\PengajuanPendaftaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -39,8 +40,15 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            // Calon UMKM belum punya akun: beri tahu bahwa pendaftarannya masih menunggu.
+            $menunggu = PengajuanPendaftaran::where('status', 'menunggu')
+                ->where('email', strtolower(trim((string) $request->email)))
+                ->exists();
+
             return back()->withErrors([
-                'email' => 'Email atau password salah.',
+                'email' => $menunggu
+                    ? 'Pendaftaran Anda masih menunggu verifikasi Admin.'
+                    : 'Email atau password salah.',
             ])->onlyInput('email');
         }
 
@@ -54,6 +62,18 @@ class AuthController extends Controller
 
             return back()->withErrors([
                 'email' => 'Akun ini bukan akun UMKM.',
+            ])->onlyInput('email');
+        }
+
+        // FR-07 / BR-07: hanya akun UMKM berstatus aktif yang boleh login.
+        $umkm = auth()->user()->umkm;
+        if ($umkm && $umkm->status !== 'aktif') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'Akun Anda sedang nonaktif. Hubungi Admin KADIN.',
             ])->onlyInput('email');
         }
 
@@ -99,47 +119,8 @@ class AuthController extends Controller
     }
 
     // =========================
-    // REGISTER UMKM
+    // REGISTER UMKM -> lihat PendaftaranController (v1.1: pengajuan, bukan akun langsung)
     // =========================
-    public function showRegisterForm()
-    {
-        return view('auth.register'); // register UMKM
-    }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        // Buat user UMKM (dipaksa)
-        $user = User::create([
-            'name'       => $request->name,
-            'email'      => $request->email,
-            'password'   => Hash::make($request->password),
-            'user_group' => 'pelakuusaha', // ✅ jangan diganti dulu
-        ]);
-
-        // Buat data UMKM default
-        $kodeUmkm = Umkm::getKodeUmkm();
-
-        $umkm = Umkm::create([
-            'kode_umkm' => $kodeUmkm,
-            'user_id'   => $user->id,
-            'level_id'  => null,
-        ]);
-
-        // Seed COA default untuk UMKM baru
-        $umkm->seedDefaultCoa();
-
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->route('umkm.level.choose')
-            ->with('success', 'Akun berhasil dibuat, silakan pilih level UMKM.');
-    }
 
     // =========================
     // LOGOUT

@@ -33,8 +33,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
     Route::post('/admin/login', [AuthController::class, 'loginAdmin'])->name('admin.login.process');
 
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.process');
+    // Pendaftaran mandiri calon UMKM (v1.1): tanpa akun, dibatasi 10 kiriman/menit
+    Route::get('/register', [\App\Http\Controllers\PendaftaranController::class, 'create'])->name('register');
+    Route::post('/register', [\App\Http\Controllers\PendaftaranController::class, 'store'])
+        ->middleware('throttle:10,1')->name('register.process');
+    Route::get('/register/selesai', [\App\Http\Controllers\PendaftaranController::class, 'selesai'])->name('register.selesai');
 
     Route::get('/login', fn () => redirect()->route('umkm.login'))->name('login');
 });

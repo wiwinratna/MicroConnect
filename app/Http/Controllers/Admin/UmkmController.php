@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminUmkmRequest;
+use App\Models\Indikator;
 use App\Models\JenisUsaha;
+use App\Services\BuatUmkmAdminService;
+use App\Services\UbahLevelService;
 use App\Models\Umkm;
 use App\Models\UmkmLevel;
 use App\Models\User;
@@ -12,10 +16,8 @@ use App\Services\IuranService;
 use App\Mail\UmkmAccountCreatedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -67,80 +69,36 @@ class UmkmController extends Controller
 
     public function create()
     {
-        $levels = UmkmLevel::all();
-        return view('admin.umkm.create', compact('levels'));
+        return view('admin.umkm.create', [
+            'levels'     => UmkmLevel::orderBy('urutan')->get(),
+            'jenisUsaha' => JenisUsaha::aktif()->orderBy('id')->get(),
+            'indikator'  => Indikator::aktif()->with('pilihan')->orderBy('urutan')->get(),
+        ]);
     }
 
-    /**
-     * Simpan UMKM baru + kirim email akun sementara.
-     * Password di-generate otomatis, user WAJIB ganti saat login pertama.
-     */
-    public function store(Request $request)
+    /** Simpan UMKM baru dari formulir Admin, lalu kirim email informasi akun. */
+    public function store(AdminUmkmRequest $request, BuatUmkmAdminService $layanan)
     {
-        $request->validate([
-            'name'             => 'required|string|max:100',
-            'email'            => 'required|email|unique:users,email',
-            'nama_usaha'       => 'nullable|string|max:255',
-            'nib'              => 'nullable|string|max:100',
-            'alamat'           => 'nullable|string|max:500',
-            'no_telepon'       => 'nullable|string|max:50',
-            'jenis_usaha'      => 'nullable|string|max:50',
-            'no_whatsapp'      => 'nullable|string|max:20',
-            'level_id'         => 'nullable|exists:umkm_level,id',
-            'recording_method' => 'nullable|in:periodik,perpetual',
-            'inventory_method' => 'nullable|in:FIFO,LIFO,Average',
-        ]);
-
-        // Generate password sementara (8 karakter random)
-        $tempPassword = Str::random(8);
-
-        $user = null;
-        $umkm = null;
-
-        DB::transaction(function () use ($request, $tempPassword, &$user, &$umkm) {
-            $user = User::create([
-                'name'                 => $request->name,
-                'email'                => $request->email,
-                'password'             => Hash::make($tempPassword),
-                'user_group'           => 'pelakuusaha',
-                'must_change_password' => true, // ← wajib ganti saat login pertama
-            ]);
-
-            $umkm = Umkm::create([
-                'kode_umkm'        => Umkm::getKodeUmkm(),
-                'user_id'          => $user->id,
-                'level_id'         => $request->level_id,
-                'nama_usaha'       => $request->nama_usaha,
-                'nib'              => $request->nib,
-                'alamat'           => $request->alamat,
-                'no_telepon'       => $request->no_telepon,
-                'jenis_usaha'      => $request->jenis_usaha,
-                'no_whatsapp'      => $request->no_whatsapp,
-                'recording_method' => $request->recording_method ?? 'periodik',
-                'inventory_method' => $request->inventory_method ?? 'Average',
-                'status'           => 'aktif',
-            ]);
-
-            // Seed COA default untuk UMKM baru
-            $umkm->seedDefaultCoa();
-        });
+        [$user, $umkm, $sandiAwal] = $layanan->buat($request->validated(), $request->flagUsaha(), $request->user());
+        $pesan = "UMKM berhasil didaftarkan dengan level {$umkm->level->nama_level}.";
 
         // Kirim email informasi akun ke UMKM
         try {
             Mail::to($user->email)->send(new UmkmAccountCreatedMail(
                 user: $user,
                 umkm: $umkm,
-                tempPassword: $tempPassword,
+                tempPassword: $sandiAwal,
             ));
         } catch (\Exception $e) {
             // Jangan gagalkan pembuatan akun jika email gagal kirim
+            report($e);
+
             return redirect()->route('admin.umkm.index')
-                ->with('success', 'UMKM berhasil didaftarkan.')
-                ->with('warning', 'Email gagal dikirim: ' . $e->getMessage());
+                ->with('success', $pesan . ' Email informasi akun gagal dikirim.');
         }
 
         return redirect()->route('admin.umkm.index')
-                         ->with('success', 'UMKM berhasil didaftarkan. Email informasi akun telah dikirim.');
+            ->with('success', $pesan . ' Email informasi akun telah dikirim.');
     }
 
     // ===================== DETAIL UMKM =====================
@@ -177,16 +135,18 @@ class UmkmController extends Controller
 
     // ===================== UPDATE LEVEL & KONFIRMASI IURAN =====================
 
-    public function updateLevel(Request $request, $id)
+    public function updateLevel(Request $request, $id, UbahLevelService $layanan)
     {
-        $request->validate([
+        $data = $request->validate([
             'level_id' => 'required|exists:umkm_level,id',
+            'alasan'   => 'required|string|max:1000',
+        ], [
+            'alasan.required' => 'Alasan perubahan level wajib diisi.',
         ]);
 
-        $umkm = Umkm::findOrFail($id);
-        $umkm->update(['level_id' => $request->level_id]);
+        $layanan->ubah((int) $id, (int) $data['level_id'], trim($data['alasan']), $request->user());
 
-        return back()->with('success', 'Level UMKM berhasil diperbarui.');
+        return back()->with('success', 'Level UMKM diperbarui dan UMKM diberi tahu.');
     }
 
     /**

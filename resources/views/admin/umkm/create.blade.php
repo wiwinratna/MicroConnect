@@ -45,7 +45,7 @@
                             <div class="p-3 bg-primary-subtle rounded-3 mt-4 border border-primary border-opacity-10">
                                 <div class="d-flex small text-primary">
                                     <i data-feather="key" class="me-2" style="width: 14px; flex-shrink: 0;"></i>
-                                    <div>Password akan dikirimkan otomatis melalui sistem ke email di atas.</div>
+                                    <div>Akun memakai kata sandi awal yang sama dengan akun dari pendaftaran, dan dikirim ke email di atas.</div>
                                 </div>
                             </div>
                         </div>
@@ -63,14 +63,10 @@
                         <div class="card-body p-4">
                             <div class="row g-3">
                                 <div class="col-md-12">
-                                    <label class="form-label small fw-bold text-dark">Nama Brand / Usaha</label>
-                                    <input type="text" name="nama_usaha" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('nama_usaha') }}" placeholder="Contoh: Kedai Kopi Makmur">
+                                    <label class="form-label small fw-bold text-dark">Nama Brand / Usaha <span class="text-danger">*</span></label>
+                                    <input type="text" name="nama_usaha" required class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('nama_usaha') }}" placeholder="Contoh: Kedai Kopi Makmur">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-dark">Kategori Usaha</label>
-                                    <input type="text" name="jenis_usaha" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('jenis_usaha') }}" placeholder="Contoh: Kuliner, Bengkel">
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label class="form-label small fw-bold text-dark">Kontak WhatsApp</label>
                                     <input type="text" name="no_whatsapp" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('no_whatsapp') }}" placeholder="08XXXXXXXXXX">
                                 </div>
@@ -87,34 +83,25 @@
                     </div>
                 </div>
 
+                @include('admin.umkm.partials.profil-kuesioner')
+
                 {{-- Konfigurasi --}}
                 <div class="col-12">
                     <div class="card border-0 shadow-sm rounded-4 overflow-hidden border-top border-primary border-4">
                         <div class="card-body p-4">
                             <div class="row align-items-center g-4">
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <h5 class="fw-bold mb-1 text-dark">Konfigurasi</h5>
                                     <p class="text-muted small mb-0">Pengaturan akuntansi & inventori</p>
                                 </div>
-                                <div class="col-lg-3">
-                                    <label class="form-label small fw-bold text-muted text-uppercase mb-1">Level UMKM</label>
-                                    <select name="level_id" class="form-select border-0 bg-light rounded-3 shadow-none custom-input">
-                                        <option value="">— Pilih Level —</option>
-                                        @foreach($levels as $lv)
-                                            <option value="{{ $lv->id }}" {{ old('level_id') == $lv->id ? 'selected' : '' }}>
-                                                {{ $lv->kode }} — {{ $lv->nama_level }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <label class="form-label small fw-bold text-muted text-uppercase mb-1">Pencatatan Stok</label>
                                     <select name="recording_method" class="form-select border-0 bg-light rounded-3 shadow-none custom-input">
                                         <option value="periodik" {{ old('recording_method', 'periodik') === 'periodik' ? 'selected' : '' }}>Periodik</option>
                                         <option value="perpetual" {{ old('recording_method') === 'perpetual' ? 'selected' : '' }}>Perpetual</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <label class="form-label small fw-bold text-muted text-uppercase mb-1">Penilaian Persediaan</label>
                                     <select name="inventory_method" class="form-select border-0 bg-light rounded-3 shadow-none custom-input">
                                         <option value="Average" {{ old('inventory_method', 'Average') === 'Average' ? 'selected' : '' }}>Average</option>

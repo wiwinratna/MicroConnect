@@ -83,15 +83,21 @@
 
                     {{-- Peringatan password sementara --}}
                     <div class="warning-box">
+                        @if($user->must_change_password)
                         <p>⚠️ <strong>Password di atas bersifat SEMENTARA.</strong> Anda <strong>wajib mengganti password</strong> saat pertama kali login demi keamanan akun Anda.</p>
+                        @else
+                        <p>Password di atas adalah kata sandi awal. Sebaiknya diganti lewat menu Profil UMKM agar akun lebih aman.</p>
+                        @endif
                     </div>
 
                     {{-- Instruksi Login --}}
                     <p><strong>Cara Login:</strong></p>
                     <ol class="steps">
                         <li>Buka halaman login: <a href="{{ $loginUrl }}">{{ $loginUrl }}</a></li>
-                        <li>Masukkan email dan password sementara di atas</li>
+                        <li>Masukkan email dan password di atas</li>
+                        @if($user->must_change_password)
                         <li>Anda akan diminta mengganti password</li>
+                        @endif
                         <li>Setelah itu, Anda bisa mengakses seluruh fitur MicroConnect</li>
                     </ol>
 

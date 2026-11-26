@@ -151,6 +151,10 @@
                             </option>
                           @endforeach
                         </select>
+                        <textarea name="alasan" class="form-control border-0 bg-light rounded-3 shadow-none" rows="2" maxlength="1000"
+                                  placeholder="Alasan perubahan level (wajib)" aria-label="Alasan perubahan level" required>{{ old('alasan') }}</textarea>
+                        @error('alasan')<div class="text-danger small">{{ $message }}</div>@enderror
+                        @error('level_id')<div class="text-danger small">{{ $message }}</div>@enderror
                         <button type="submit" class="btn btn-primary px-3 fw-bold rounded-end-3" style="font-size: 12px;">SIMPAN PERUBAHAN</button>
                     </div>
                 </div>

@@ -8,7 +8,7 @@
     $namaBulan = Carbon::createFromFormat('Y-m', $bulan)->translatedFormat('F Y');
 @endphp
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
     <div>
         <h1 class="h3 mb-1"><strong>Laporan</strong> Keuangan</h1>
         <p class="text-muted mb-0">Ringkasan pencatatan & laporan keuangan UMKM periode {{ $namaBulan }}.</p>

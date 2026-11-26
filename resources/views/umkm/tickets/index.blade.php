@@ -80,11 +80,11 @@
                         </td>
                         <td>
                             @if($t->status === 'Open')
-                                <span class="status-badge badge-open"><i class="fas fa-circle"></i> Open</span>
+                                <span class="status-badge badge-open"><i class="fas fa-circle"></i> Menunggu</span>
                             @elseif($t->status === 'In Progress')
-                                <span class="status-badge badge-progress"><i class="fas fa-circle"></i> In Progress</span>
+                                <span class="status-badge badge-progress"><i class="fas fa-circle"></i> Diproses</span>
                             @else
-                                <span class="status-badge badge-resolved"><i class="fas fa-circle"></i> Resolved</span>
+                                <span class="status-badge badge-resolved"><i class="fas fa-circle"></i> Selesai</span>
                             @endif
                         </td>
                         <td class="text-center pe-4">

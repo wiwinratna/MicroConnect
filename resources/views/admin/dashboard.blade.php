@@ -9,11 +9,11 @@
       <div><span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-medium"><i data-feather="calendar" class="me-1" style="width: 12px; height: 12px;"></i> Periode: {{ $periodeString }}</span></div>
     </div>
     <div class="col-md-7 col-12 d-flex justify-content-md-end">
-        <form method="GET" action="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 bg-white p-2 border rounded shadow-sm">
-            <div class="d-flex align-items-center gap-2">
-                <input type="month" name="start_month" class="form-control form-control-sm border-0 bg-light" value="{{ $startMonth }}" required style="width: 130px;">
+        <form method="GET" action="{{ route('admin.dashboard') }}" class="d-flex flex-wrap align-items-center gap-2 bg-white p-2 border rounded shadow-sm">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <input type="month" name="start_month" class="form-control form-control-sm border-0 bg-light" value="{{ $startMonth }}" required style="width: 175px; max-width: 100%;">
                 <span class="text-muted small px-1"><i data-feather="arrow-right" style="width: 14px;"></i></span>
-                <input type="month" name="end_month" class="form-control form-control-sm border-0 bg-light" value="{{ $endMonth }}" required style="width: 130px;">
+                <input type="month" name="end_month" class="form-control form-control-sm border-0 bg-light" value="{{ $endMonth }}" required style="width: 175px; max-width: 100%;">
             </div>
             <div class="ms-2 d-flex gap-1">
                 <button type="submit" class="btn btn-sm btn-primary px-3 rounded-pill">Terapkan</button>
@@ -76,7 +76,7 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
-                        <p class="text-muted text-uppercase fw-bold x-small mb-1">Tiket Support Open</p>
+                        <p class="text-muted text-uppercase fw-bold x-small mb-1">Tiket Pengaduan Terbuka</p>
                         <h2 class="fw-bold mb-1 text-danger">{{ $openTickets }}</h2>
                         <small class="text-muted">Butuh pantauan/tindak lanjut segera</small>
                     </div>
@@ -105,14 +105,14 @@
           <div class="list-group list-group-flush">
             @forelse($warningUmkm as $u)
               <div class="list-group-item border-0 py-3 px-4 bg-transparent border-bottom-faint">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                   <div>
                     <div class="fw-bold text-dark mb-1">
                       {{ $u->nama_usaha }} 
                       <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal">{{ $u->kode_level }}</span>
                     </div>
                     <div class="mt-1">
-                      <span class="badge bg-danger-subtle text-danger fw-normal px-2 py-1" style="font-size: 11px;">
+                      <span class="badge bg-danger-subtle text-danger fw-normal px-2 py-1 text-wrap text-start" style="font-size: 11px;">
                          <i data-feather="info" class="me-1" style="width: 10px;"></i>{{ $u->alasan_prioritas }}
                       </span>
                     </div>
@@ -150,7 +150,7 @@
           <div class="list-group list-group-flush">
             @forelse($topUmkm as $i => $u)
               <div class="list-group-item border-0 py-3 px-4 bg-transparent border-bottom-faint">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                   <div class="d-flex align-items-center">
                     <div class="rank-number me-3 text-muted fw-bold">#{{ $i+1 }}</div>
                     <div>

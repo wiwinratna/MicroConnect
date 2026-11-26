@@ -95,8 +95,8 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group-custom">
-                                <label class="label-custom">Pembeli (Ketik Data Pelanggan/Baru)</label>
-                                <select id="pembeli_tomselect" name="pembeli" class="input-custom" placeholder="Ketik nama / no. telp / instansi...">
+                                <label class="label-custom">Pembeli</label>
+                                <select id="pembeli_tomselect" name="pembeli" class="input-custom" placeholder="Ketik nama pembeli">
                                     <option value="">Ketik nama / no. telp / instansi...</option>
                                     @if(old('pembeli') && !collect($pelanggan)->contains('nama_pelanggan', old('pembeli')))
                                         <option value="{{ old('pembeli') }}" selected>{{ old('pembeli') }}</option>

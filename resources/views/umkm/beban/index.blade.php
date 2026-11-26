@@ -61,7 +61,7 @@
                     <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light border-end-0 text-muted" style="font-size: 0.75rem;"><i data-feather="calendar" style="width:12px; height:12px;"></i></span>
                         <input type="month" name="bulan" class="form-control form-control-sm border-start-0 ps-0 shadow-none" 
-                               style="width:140px; border-radius: 0 8px 8px 0; font-size:0.8rem;" 
+                               style="width:175px; border-radius: 0 8px 8px 0; font-size:0.8rem;" 
                                value="{{ $bulan }}" onchange="this.form.submit()">
                     </div>
                 </form>

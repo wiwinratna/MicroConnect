@@ -51,11 +51,11 @@
         </div>
         <div class="text-end">
             @if($ticket->status === 'Open')
-                <span class="badge bg-warning text-dark px-3 py-2" style="border-radius:30px; font-size:0.75rem;">Status: Open</span>
+                <span class="badge bg-warning text-dark px-3 py-2" style="border-radius:30px; font-size:0.75rem;">Status: Menunggu</span>
             @elseif($ticket->status === 'In Progress')
-                <span class="badge bg-info text-dark px-3 py-2" style="border-radius:30px; font-size:0.75rem;">Status: In Progress</span>
+                <span class="badge bg-info text-dark px-3 py-2" style="border-radius:30px; font-size:0.75rem;">Status: Diproses</span>
             @else
-                <span class="badge bg-success px-3 py-2" style="border-radius:30px; font-size:0.75rem;">Status: Resolved</span>
+                <span class="badge bg-success px-3 py-2" style="border-radius:30px; font-size:0.75rem;">Status: Selesai</span>
             @endif
         </div>
     </div>
@@ -120,7 +120,7 @@
                 @else
                     <div class="reply-footer bg-light text-center py-4">
                         <div class="d-inline-flex align-items-center gap-2 text-success fw-bold p-2 bg-success bg-opacity-10 rounded-pill px-4">
-                            <i data-feather="check-circle" style="width:16px; height:16px;"></i> Tiket ini telah diselesaikan (Resolved)
+                            <i data-feather="check-circle" style="width:16px; height:16px;"></i> Tiket ini sudah selesai
                         </div>
                         <p class="text-muted mt-2 mb-0 x-small">Riwayat percakapan tetap tersimpan untuk referensi di masa depan.</p>
                     </div>

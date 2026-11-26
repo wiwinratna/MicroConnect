@@ -143,8 +143,8 @@
                     <p class="text-muted small mb-0">Kode Akses: <code>{{ $umkm->level->kode ?? '-' }}</code> &bull; Penyesuaian ini berdampak pada fitur & iuran bulanan.</p>
                 </div>
                 <div class="col-md-5">
-                    <div class="input-group">
-                        <select name="level_id" class="form-select border-0 bg-light rounded-start-3 shadow-none py-2 h-100">
+                    <div class="d-flex flex-column gap-2">
+                        <select name="level_id" class="form-select border-0 bg-light rounded-3 shadow-none py-2">
                           @foreach($levels as $lv)
                             <option value="{{ $lv->id }}" {{ $umkm->level_id == $lv->id ? 'selected' : '' }}>
                               {{ $lv->nama_level }}

@@ -17,9 +17,9 @@
                         {{-- Status Tabs --}}
                         <div class="btn-group bg-light p-1 rounded-4" style="border: 1px solid #edf2f7;">
                             <button type="submit" name="status" value="" class="btn btn-sm rounded-3 px-3 {{ request('status') == '' ? 'bg-white shadow-sm fw-bold border text-primary' : 'border-0 text-muted' }}">Semua</button>
-                            <button type="submit" name="status" value="Open" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'Open' ? 'bg-white shadow-sm fw-bold border text-warning' : 'border-0 text-muted' }}">Open</button>
-                            <button type="submit" name="status" value="In Progress" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'In Progress' ? 'bg-white shadow-sm fw-bold border text-info' : 'border-0 text-muted' }}">In Progress</button>
-                            <button type="submit" name="status" value="Resolved" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'Resolved' ? 'bg-white shadow-sm fw-bold border text-success' : 'border-0 text-muted' }}">Resolved</button>
+                            <button type="submit" name="status" value="Open" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'Open' ? 'bg-white shadow-sm fw-bold border text-warning' : 'border-0 text-muted' }}">Menunggu</button>
+                            <button type="submit" name="status" value="In Progress" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'In Progress' ? 'bg-white shadow-sm fw-bold border text-info' : 'border-0 text-muted' }}">Diproses</button>
+                            <button type="submit" name="status" value="Resolved" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'Resolved' ? 'bg-white shadow-sm fw-bold border text-success' : 'border-0 text-muted' }}">Selesai</button>
                         </div>
 
                         <div class="d-flex align-items-center gap-2 flex-grow-1 justify-content-end">
@@ -52,8 +52,8 @@
                     <table class="table table-hover mb-0 table-borderless align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4">Ticket Reference</th>
-                                <th>Incident / UMKM</th>
+                                <th class="ps-4">Nomor Tiket</th>
+                                <th>Kendala / UMKM</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-end pe-4">Aksi</th>
                             </tr>
@@ -74,11 +74,11 @@
                                 </td>
                                 <td class="text-center">
                                     @if($t->status === 'Open')
-                                        <span class="badge bg-warning-subtle text-warning rounded-pill px-2" style="font-size: 10px;">Open</span>
+                                        <span class="badge bg-warning-subtle text-warning rounded-pill px-2" style="font-size: 10px;">Menunggu</span>
                                     @elseif($t->status === 'In Progress')
-                                        <span class="badge bg-info-subtle text-info rounded-pill px-2" style="font-size: 10px;">On Progress</span>
+                                        <span class="badge bg-info-subtle text-info rounded-pill px-2" style="font-size: 10px;">Diproses</span>
                                     @else
-                                        <span class="badge bg-success-subtle text-success rounded-pill px-2" style="font-size: 10px;">Success</span>
+                                        <span class="badge bg-success-subtle text-success rounded-pill px-2" style="font-size: 10px;">Selesai</span>
                                     @endif
                                 </td>
                                 <td class="text-end pe-4">

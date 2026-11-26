@@ -155,11 +155,11 @@
                                 <div class="small fw-semibold {{ $isLewat ? 'text-danger' : 'text-dark' }}">
                                     {{ $p->jatuh_tempo->format('d M Y') }}
                                 </div>
-                                @if($isLewat) <span class="badge bg-danger p-1" style="font-size: 0.6rem;">OVERDUE</span> @endif
+                                @if($isLewat) <span class="badge bg-danger p-1" style="font-size: 0.6rem;">Lewat Tempo</span> @endif
                             </td>
                             <td class="text-center">
                                 <span class="badge bg-{{ $variant }} {{ $variant === 'warning' ? 'text-dark' : '' }} border-0 shadow-none" style="font-size: 0.7rem; border-radius: 6px; padding: 0.4rem 0.6rem;">
-                                    {{ strtoupper($p->status) }}
+                                    {{ \Illuminate\Support\Str::title(str_replace('_', ' ', $p->status)) }}
                                 </span>
                             </td>
                             <td class="text-center">

@@ -15,7 +15,8 @@
 <div class="card border-0 shadow-sm">
   <div class="card-header bg-transparent fw-semibold">Riwayat Iuran</div>
   <div class="card-body p-0">
-    <table class="table table-hover mb-0 table-borderless align-middle">
+    <div class="table-responsive">
+    <table class="table table-hover mb-0 table-borderless align-middle text-nowrap">
       <thead class="table-light">
         <tr>
           <th>Periode</th>
@@ -58,6 +59,7 @@
         @endforelse
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 

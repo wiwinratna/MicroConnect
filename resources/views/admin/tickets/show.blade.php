@@ -20,9 +20,9 @@
                             @method('PATCH')
                             <label class="fw-bold me-2 mb-0">Ubah Status:</label>
                             <select name="status" class="form-select form-select-sm me-2" style="width: 140px;">
-                                <option value="Open" {{ $ticket->status === 'Open' ? 'selected' : '' }}>Open</option>
-                                <option value="In Progress" {{ $ticket->status === 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="Resolved" {{ $ticket->status === 'Resolved' ? 'selected' : '' }}>Resolved</option>
+                                <option value="Open" {{ $ticket->status === 'Open' ? 'selected' : '' }}>Menunggu</option>
+                                <option value="In Progress" {{ $ticket->status === 'In Progress' ? 'selected' : '' }}>Diproses</option>
+                                <option value="Resolved" {{ $ticket->status === 'Resolved' ? 'selected' : '' }}>Selesai</option>
                             </select>
                             <button type="submit" class="btn btn-sm btn-warning">Update</button>
                         </form>
@@ -90,13 +90,13 @@
                                 <textarea name="message" class="form-control bg-light" rows="4" placeholder="Ketik panduan atau jawaban untuk UMKM di sini..." required></textarea>
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary"><i class="align-middle" data-feather="send"></i> Balas & Pindahkan status ke In Progress</button>
+                                <button type="submit" class="btn btn-primary"><i class="align-middle" data-feather="send"></i> Balas & tandai Diproses</button>
                             </div>
                         </form>
                     </div>
                     @else
                     <div class="card-footer bg-light text-center py-4 border-top">
-                        <span class="text-muted fw-bold"><i class="align-middle text-success" data-feather="check-circle"></i> Tiket ini telah ditutup (Resolved).</span>
+                        <span class="text-muted fw-bold"><i class="align-middle text-success" data-feather="check-circle"></i> Tiket ini sudah selesai.</span>
                         <br>
                         <small class="text-muted">Balasan dinonaktifkan. Anda dapat mengubah status di bagian atas jika tiket perlu dibuka kembali.</small>
                     </div>

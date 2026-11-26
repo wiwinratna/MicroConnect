@@ -54,7 +54,7 @@ class AturanModulController extends Controller
                 abort_unless(in_array((int) $modulId, $moduls, true), 422, 'Modul tidak dikenal.');
 
                 foreach ($perRumpun as $rumpun => $isi) {
-                    abort_unless(in_array($rumpun, ['barang', 'jasa'], true), 422, 'Rumpun tidak dikenal.');
+                    abort_unless(in_array($rumpun, ['barang', 'jasa'], true), 422, 'Jenis usaha tidak dikenal.');
 
                     $lama  = DB::table('aturan_modul')->where('modul_id', $modulId)->where('rumpun', $rumpun)->first();
                     $label = filled($isi['label_tampil'] ?? null) ? trim($isi['label_tampil']) : null;

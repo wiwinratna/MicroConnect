@@ -93,6 +93,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
     Route::get('/notifikasi', [\App\Http\Controllers\Admin\NotifikasiController::class, 'index'])->name('notifikasi.index');
 
     // ==================== KONFIGURASI MODUL & LAPORAN (v1.1) ====================
+    Route::get('/kategori-usaha', [\App\Http\Controllers\Admin\KategoriUsahaController::class, 'index'])->name('kategori-usaha.index');
+    Route::post('/kategori-usaha', [\App\Http\Controllers\Admin\KategoriUsahaController::class, 'store'])->name('kategori-usaha.store');
+    Route::put('/kategori-usaha/{id}', [\App\Http\Controllers\Admin\KategoriUsahaController::class, 'update'])->name('kategori-usaha.update');
+    Route::patch('/kategori-usaha/{id}/status', [\App\Http\Controllers\Admin\KategoriUsahaController::class, 'ubahStatus'])->name('kategori-usaha.status');
     Route::get('/aturan-modul', [\App\Http\Controllers\Admin\AturanModulController::class, 'index'])->name('aturan-modul.index');
     Route::put('/aturan-modul', [\App\Http\Controllers\Admin\AturanModulController::class, 'update'])->name('aturan-modul.update');
     Route::get('/laporan-level', [\App\Http\Controllers\Admin\LaporanLevelController::class, 'index'])->name('laporan-level.index');
@@ -202,13 +206,13 @@ Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_c
 
         // Level 2: buku besar, laba rugi, kartu stok, rekap stok, piutang
         Route::get('/buku-besar', [\App\Http\Controllers\Umkm\ExportController::class, 'bukuBesar'])->name('buku_besar')->middleware('umkm.feature:export_buku_besar');
-        Route::get('/laba-rugi', [\App\Http\Controllers\Umkm\ExportController::class, 'labaRugi'])->name('laba_rugi')->middleware('umkm.feature:export_laba_rugi');
+        Route::get('/laba-rugi', [\App\Http\Controllers\Umkm\ExportLabaModalController::class, 'labaRugi'])->name('laba_rugi')->middleware('umkm.feature:export_laba_rugi');
         Route::get('/rekap-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'rekapStok'])->name('rekap_stok')->middleware(['umkm.feature:export_rekap_stok', 'umkm.modul:kartu_stok']);
         Route::get('/kartu-stok', [\App\Http\Controllers\Umkm\ExportController::class, 'kartuStokDetail'])->name('kartu_stok')->middleware(['umkm.feature:export_kartu_stok', 'umkm.modul:kartu_stok']);
         Route::get('/laporan-piutang', [\App\Http\Controllers\Umkm\ExportController::class, 'laporanPiutang'])->name('laporan_piutang')->middleware('umkm.feature:export_laporan_piutang');
 
         // Level 3: perubahan modal, arus kas
-        Route::get('/perubahan-modal', [\App\Http\Controllers\Umkm\ExportController::class, 'perubahanModal'])->name('perubahan_modal')->middleware('umkm.feature:export_perubahan_modal');
+        Route::get('/perubahan-modal', [\App\Http\Controllers\Umkm\ExportLabaModalController::class, 'perubahanModal'])->name('perubahan_modal')->middleware('umkm.feature:export_perubahan_modal');
         Route::get('/arus-kas', [\App\Http\Controllers\Umkm\ExportController::class, 'arusKas'])->name('arus_kas')->middleware('umkm.feature:export_arus_kas');
     });
 

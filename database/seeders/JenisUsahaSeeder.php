@@ -6,8 +6,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Jenis usaha dan rumpun bawaan — Tabel 3.7 (Juknis TKM Pemula).
- * Aman dijalankan ulang (updateOrInsert per nama).
+ * Data awal kategori usaha dan jenisnya — Tabel 3.7 (Juknis TKM Pemula).
+ * Aman dijalankan ulang (nama yang sudah ada dilewati).
  *
  * Jalankan: php artisan db:seed --class=JenisUsahaSeeder
  */
@@ -27,11 +27,16 @@ class JenisUsahaSeeder extends Seeder
 
         $now = now();
 
+        // Hanya menambah yang belum ada, agar perubahan Admin tidak tertimpa.
         foreach ($data as [$nama, $rumpun]) {
-            DB::table('jenis_usaha')->updateOrInsert(
-                ['nama' => $nama],
-                ['rumpun_bawaan' => $rumpun, 'aktif' => true, 'created_at' => $now, 'updated_at' => $now]
-            );
+            if (DB::table('jenis_usaha')->where('nama', $nama)->exists()) {
+                continue;
+            }
+
+            DB::table('jenis_usaha')->insert([
+                'nama' => $nama, 'rumpun_bawaan' => $rumpun, 'aktif' => true,
+                'created_at' => $now, 'updated_at' => $now,
+            ]);
         }
     }
 }

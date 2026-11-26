@@ -22,7 +22,7 @@
                         <tbody>
                             @forelse($jurnal as $j)
                             <tr>
-                                <td>{{ Carbon::parse($j->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($j->tanggal)->format('d/m/Y') }}</td>
                                 <td><span class="badge bg-secondary">{{ $j->kode_akun }}</span></td>
                                 <td>{{ $j->nama_akun }}</td>
                                 <td class="small text-muted">{{ $j->keterangan }}</td>

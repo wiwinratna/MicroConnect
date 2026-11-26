@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UmkmController extends Controller
 {
@@ -189,9 +190,9 @@ class UmkmController extends Controller
     }
 
     /**
-     * FR-27: Admin melengkapi jenis usaha, rumpun, persediaan, dan produksi UMKM
+     * FR-27: Admin melengkapi jenis usaha, kategori, persediaan, dan produksi UMKM
      * (terutama UMKM lama). Setelah terisi, aturan modul berlaku untuk UMKM itu.
-     * Rumpun barang: persediaan otomatis ya, produksi diisi. Rumpun jasa: produksi tidak,
+     * Jenis barang: persediaan otomatis ya, produksi diisi. Jenis jasa: produksi tidak,
      * persediaan diisi (Bagian 4A).
      */
     public function updateProfilUsaha(Request $request, $id)
@@ -202,14 +203,22 @@ class UmkmController extends Controller
             'melakukan_produksi'  => ['nullable', 'required_if:rumpun,barang', Rule::in(['0', '1'])],
             'memiliki_persediaan' => ['nullable', 'required_if:rumpun,jasa', Rule::in(['0', '1'])],
         ], [
-            'rumpun.required'              => 'Pilih rumpun usaha (barang atau jasa).',
-            'rumpun.in'                    => 'Rumpun usaha tidak valid.',
-            'jenis_usaha_id.exists'        => 'Jenis usaha yang dipilih tidak tersedia.',
+            'rumpun.required'              => 'Pilih jenis usaha (barang atau jasa).',
+            'rumpun.in'                    => 'Jenis usaha tidak valid.',
+            'jenis_usaha_id.exists'        => 'Kategori usaha yang dipilih tidak tersedia.',
             'melakukan_produksi.required_if'  => 'Jawab apakah usaha ini mengolah bahan menjadi produk.',
             'memiliki_persediaan.required_if' => 'Jawab apakah usaha ini memiliki persediaan barang.',
         ]);
 
         $umkm = Umkm::findOrFail($id);
+
+        // Kategori baru, atau kategori lama bila tidak diubah, harus sesuai jenis usaha.
+        $kategori = JenisUsaha::find($data['jenis_usaha_id'] ?? $umkm->jenis_usaha_id);
+        if ($kategori && !$kategori->cocokDengan($data['rumpun'])) {
+            throw ValidationException::withMessages([
+                'jenis_usaha_id' => 'Pilih kategori usaha yang sesuai dengan jenis usaha.',
+            ]);
+        }
 
         $barang = $data['rumpun'] === 'barang';
         $baru = [
@@ -220,7 +229,7 @@ class UmkmController extends Controller
 
         if (!empty($data['jenis_usaha_id'])) {
             $baru['jenis_usaha_id'] = (int) $data['jenis_usaha_id'];
-            $baru['jenis_usaha']    = JenisUsaha::find($data['jenis_usaha_id'])?->namaPendek();
+            $baru['jenis_usaha']    = $kategori->namaPendek();
         }
 
         $lama = $umkm->only(['jenis_usaha_id', 'rumpun', 'memiliki_persediaan', 'melakukan_produksi']);

@@ -25,7 +25,7 @@
                                     <tbody>
                                         @foreach($data['items'] as $item)
                                         <tr>
-                                            <td>{{ Carbon::parse($item->tanggal)->format('d/m') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m') }}</td>
                                             <td class="text-truncate" style="max-width:150px;" title="{{ $item->keterangan }}">{{ $item->keterangan }}</td>
                                             <td class="text-end">{{ $item->debit > 0 ? format_angka($item->debit) : '-' }}</td>
                                             <td class="text-end">{{ $item->kredit > 0 ? format_angka($item->kredit) : '-' }}</td>

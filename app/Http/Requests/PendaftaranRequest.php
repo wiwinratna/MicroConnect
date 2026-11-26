@@ -62,8 +62,8 @@ class PendaftaranRequest extends FormRequest
             'alamat'       => ['required', 'string', 'max:500'],
             'no_telepon'   => ['nullable', 'regex:/^[0-9+\-\s]{6,20}$/'],
 
+            'rumpun'         => ['required', Rule::in(['barang', 'jasa'])],
             'jenis_usaha_id' => ['required', Rule::exists('jenis_usaha', 'id')->where('aktif', true)],
-            'rumpun'         => ['nullable', Rule::in(['barang', 'jasa'])],
             'mengolah_bahan' => ['nullable', Rule::in(['0', '1'])],
             'punya_persediaan' => ['nullable', Rule::in(['0', '1'])],
 
@@ -85,7 +85,8 @@ class PendaftaranRequest extends FormRequest
             'no_wa.regex'      => 'Nomor WhatsApp tidak benar. Contoh: 081234567890.',
             'no_wa.unique'     => 'Nomor WhatsApp ini sudah dipakai akun yang ada atau pendaftaran yang sedang menunggu.',
             'no_telepon.regex' => 'Nomor telepon usaha tidak benar.',
-            'jenis_usaha_id.exists' => 'Jenis usaha yang dipilih tidak tersedia.',
+            'rumpun.in'             => 'Jenis usaha harus Barang atau Jasa.',
+            'jenis_usaha_id.exists' => 'Kategori usaha yang dipilih tidak tersedia.',
             'jawaban.required' => 'Kuesioner belum diisi.',
         ];
     }
@@ -99,37 +100,38 @@ class PendaftaranRequest extends FormRequest
             'no_wa'          => 'Nomor WhatsApp',
             'nama_usaha'     => 'Nama usaha',
             'alamat'         => 'Alamat',
-            'jenis_usaha_id' => 'Jenis usaha',
+            'rumpun'         => 'Jenis usaha',
+            'jenis_usaha_id' => 'Kategori usaha',
         ];
     }
 
-    /** Pemeriksaan lintas kolom: rumpun, pertanyaan lanjutan, dan kuesioner. */
+    /** Pemeriksaan lintas kolom: kategori, pertanyaan lanjutan, dan kuesioner. */
     public function after(): array
     {
         return [function (Validator $validator) {
-            if ($validator->errors()->has('jenis_usaha_id')) {
+            if ($validator->errors()->hasAny(['rumpun', 'jenis_usaha_id'])) {
                 return;
             }
 
-            $this->periksaRumpun($validator);
+            $this->periksaJenisUsaha($validator);
             $this->periksaKuesioner($validator);
         }];
     }
 
-    private function periksaRumpun(Validator $validator): void
+    private function periksaJenisUsaha(Validator $validator): void
     {
-        $rumpun = $this->rumpunEfektif();
+        $jenis = $this->input('rumpun');
 
-        if ($rumpun === null) {
-            $validator->errors()->add('rumpun', 'Pilih apakah usaha kreatif Anda termasuk barang atau jasa.');
+        if (!JenisUsaha::find($this->input('jenis_usaha_id'))?->cocokDengan($jenis)) {
+            $validator->errors()->add('jenis_usaha_id', 'Kategori usaha tidak sesuai dengan jenis usaha yang dipilih.');
             return;
         }
 
-        if ($rumpun === 'barang' && !in_array($this->input('mengolah_bahan'), ['0', '1'], true)) {
+        if ($jenis === 'barang' && !in_array($this->input('mengolah_bahan'), ['0', '1'], true)) {
             $validator->errors()->add('mengolah_bahan', 'Jawab apakah usaha Anda mengolah bahan menjadi produk.');
         }
 
-        if ($rumpun === 'jasa' && !in_array($this->input('punya_persediaan'), ['0', '1'], true)) {
+        if ($jenis === 'jasa' && !in_array($this->input('punya_persediaan'), ['0', '1'], true)) {
             $validator->errors()->add('punya_persediaan', 'Jawab apakah usaha Anda memiliki persediaan barang.');
         }
     }
@@ -153,22 +155,6 @@ class PendaftaranRequest extends FormRequest
         }
     }
 
-    /** Rumpun dari jenis usaha; untuk usaha kreatif dari pilihan calon. */
-    public function rumpunEfektif(): ?string
-    {
-        $jenis = JenisUsaha::find($this->input('jenis_usaha_id'));
-
-        if (!$jenis) {
-            return null;
-        }
-
-        if (in_array($jenis->rumpun_bawaan, ['barang', 'jasa'], true)) {
-            return $jenis->rumpun_bawaan;
-        }
-
-        return in_array($this->input('rumpun'), ['barang', 'jasa'], true) ? $this->input('rumpun') : null;
-    }
-
     /**
      * [memiliki_persediaan, melakukan_produksi] (Bagian 4A):
      * barang: persediaan otomatis true, produksi dari jawaban;
@@ -178,7 +164,7 @@ class PendaftaranRequest extends FormRequest
      */
     public function flagUsaha(): array
     {
-        if ($this->rumpunEfektif() === 'barang') {
+        if ($this->input('rumpun') === 'barang') {
             return [true, $this->input('mengolah_bahan') === '1'];
         }
 

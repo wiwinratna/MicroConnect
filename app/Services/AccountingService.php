@@ -31,10 +31,10 @@ class AccountingService
     {
         // 1. Dapatkan COA
         $akunKas = $this->getAkun($umkm->id, '111', 'Kas');
-        $akunPiutang = $this->getAkun($umkm->id, '112', 'Piutang Usaha');
+        $akunPiutang = $this->getAkun($umkm->id, '113', 'Piutang Usaha');
         $akunPendapatan = $this->getAkun($umkm->id, '400', 'Pendapatan Penjualan');
-        $akunHpp = $this->getAkun($umkm->id, '500', 'Harga Pokok Penjualan');
-        $akunPersediaan = $this->getAkun($umkm->id, '113', 'Persediaan Produk');
+        $akunHpp = $this->getAkun($umkm->id, '501', 'Harga Pokok Penjualan');
+        $akunPersediaan = $this->getAkun($umkm->id, '114', 'Persediaan Bahan Baku');
 
         $ketPenjualan = 'Penjualan ' . $penjualan->kode_penjualan . ($penjualan->pembeli ? ' - ' . $penjualan->pembeli : '');
 
@@ -66,7 +66,7 @@ class AccountingService
             $ketHpp = 'HPP atas ' . $penjualan->kode_penjualan;
             // Dr. HPP
             $this->catat($base, $akunHpp, $totalHpp, 0, $ketHpp);
-            // Cr. Persediaan Produk
+            // Cr. Persediaan Bahan Baku (HPP dihitung dari bahan yang terpakai)
             $this->catat($base, $akunPersediaan, 0, $totalHpp, $ketHpp);
         }
     }
@@ -138,7 +138,7 @@ class AccountingService
     public function jurnalPembayaranPiutang(Umkm $umkm, \App\Models\PiutangPembayaran $pembayaran)
     {
         $akunKas = $this->getAkun($umkm->id, '111', 'Kas');
-        $akunPiutang = $this->getAkun($umkm->id, '112', 'Piutang Usaha');
+        $akunPiutang = $this->getAkun($umkm->id, '113', 'Piutang Usaha');
 
         $base = [
             'umkm_id'    => $umkm->id,
@@ -217,7 +217,7 @@ class AccountingService
         }
 
         $akunPersediaan = $this->getAkun($umkm->id, '114', 'Persediaan Bahan');
-        $akunModalAwal  = $this->getAkun($umkm->id, '300', 'Modal Awal');
+        $akunModalAwal  = $this->getAkun($umkm->id, '311', 'Modal Pemilik');
 
         $bahan = \App\Models\BahanBaku::find($bahanId);
         $ket = 'Saldo Awal Bahan: ' . ($bahan ? $bahan->nama_bahan : "ID#{$bahanId}");
@@ -231,7 +231,7 @@ class AccountingService
 
         // Dr. Persediaan Bahan
         $this->catat($base, $akunPersediaan, $nilaiTotal, 0, $ket);
-        // Cr. Modal Awal
+        // Cr. Modal Pemilik
         $this->catat($base, $akunModalAwal, 0, $nilaiTotal, $ket);
     }
 }

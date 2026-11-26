@@ -42,7 +42,7 @@
                 <span class="position-absolute bottom-0 end-0 badge bg-{{ $umkm->status === 'aktif' ? 'success' : 'secondary' }} rounded-circle p-2 border border-white" style="width: 12px; height: 12px;"></span>
              </div>
              <h4 class="fw-bold text-dark mb-1">{{ $umkm->nama_usaha ?? '—' }}</h4>
-             <div class="badge bg-secondary-subtle text-secondary rounded-pill px-3 fw-normal small">{{ $umkm->jenis_usaha ?? 'Sektor Belum Diisi' }}</div>
+             <div class="badge bg-secondary-subtle text-secondary rounded-pill px-3 fw-normal small">{{ $umkm->jenis_usaha ?? 'Kategori Belum Diisi' }}</div>
           </div>
 
           <div class="p-3 bg-light rounded-4 mb-4">
@@ -159,7 +159,7 @@
         </div>
       </div>
 
-      {{-- Profil usaha: rumpun, persediaan, produksi (FR-27) --}}
+      {{-- Profil usaha: jenis, kategori, persediaan, produksi (FR-27) --}}
       <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-header bg-white py-3 border-bottom">
             <h5 class="card-title mb-0 fw-bold text-dark">Profil Usaha (menentukan fitur yang tampil)</h5>
@@ -167,7 +167,7 @@
         <div class="card-body p-4">
           @if(!$umkm->rumpun)
             <div class="alert alert-info small">
-              Rumpun belum dilengkapi, jadi semua fitur masih tampil. Setelah disimpan, aturan modul berlaku untuk UMKM ini.
+              Jenis usaha belum dilengkapi, jadi semua fitur masih tampil. Setelah disimpan, aturan modul berlaku untuk UMKM ini.
             </div>
           @endif
 
@@ -181,24 +181,24 @@
             @csrf @method('PUT')
             <div class="row g-3">
               <div class="col-md-6">
-                <label class="form-label" for="jenis_usaha_id">Jenis usaha</label>
-                <select name="jenis_usaha_id" id="jenis_usaha_id" class="form-select">
-                  <option value="">-- Tidak diubah --</option>
-                  @foreach($jenisUsaha as $j)
-                    <option value="{{ $j->id }}" @selected((int) old('jenis_usaha_id', $umkm->jenis_usaha_id) === $j->id)>{{ $j->nama }}</option>
-                  @endforeach
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="rumpun">Rumpun</label>
+                <label class="form-label" for="rumpun">Jenis usaha</label>
                 <select name="rumpun" id="rumpun" class="form-select" required>
-                  <option value="">-- Pilih rumpun --</option>
+                  <option value="">-- Pilih jenis usaha --</option>
                   <option value="barang" @selected(old('rumpun', $umkm->rumpun) === 'barang')>Barang</option>
                   <option value="jasa" @selected(old('rumpun', $umkm->rumpun) === 'jasa')>Jasa</option>
                 </select>
               </div>
+              <div class="col-md-6">
+                <label class="form-label" for="jenis_usaha_id">Kategori usaha</label>
+                <select name="jenis_usaha_id" id="jenis_usaha_id" class="form-select">
+                  <option value="">-- Tidak diubah --</option>
+                  @foreach($jenisUsaha as $j)
+                    <option value="{{ $j->id }}" data-untuk="{{ $j->rumpun_bawaan }}" @selected((int) old('jenis_usaha_id', $umkm->jenis_usaha_id) === $j->id)>{{ $j->nama }}</option>
+                  @endforeach
+                </select>
+              </div>
               <div class="col-md-6" id="kotakProduksi">
-                <label class="form-label" for="melakukan_produksi">Mengolah bahan menjadi produk? (rumpun barang)</label>
+                <label class="form-label" for="melakukan_produksi">Mengolah bahan menjadi produk? (jenis barang)</label>
                 <select name="melakukan_produksi" id="melakukan_produksi" class="form-select">
                   <option value="">-- Pilih --</option>
                   <option value="1" @selected((string) old('melakukan_produksi', is_null($umkm->melakukan_produksi) ? '' : (int) $umkm->melakukan_produksi) === '1')>Ya</option>
@@ -206,7 +206,7 @@
                 </select>
               </div>
               <div class="col-md-6" id="kotakPersediaan">
-                <label class="form-label" for="memiliki_persediaan">Memiliki persediaan barang? (rumpun jasa)</label>
+                <label class="form-label" for="memiliki_persediaan">Memiliki persediaan barang? (jenis jasa)</label>
                 <select name="memiliki_persediaan" id="memiliki_persediaan" class="form-select">
                   <option value="">-- Pilih --</option>
                   <option value="1" @selected((string) old('memiliki_persediaan', is_null($umkm->memiliki_persediaan) ? '' : (int) $umkm->memiliki_persediaan) === '1')>Ya, ada</option>
@@ -292,3 +292,16 @@
     .italic { font-style: italic; }
 </style>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/filter-kategori.js') }}"></script>
+<script>
+(function () {
+    const jenis = document.getElementById('rumpun');
+    const saringKategori = buatSaringKategori(document.getElementById('jenis_usaha_id'));
+
+    jenis.addEventListener('change', function () { saringKategori(jenis.value); });
+    saringKategori(jenis.value);
+})();
+</script>
+@endpush

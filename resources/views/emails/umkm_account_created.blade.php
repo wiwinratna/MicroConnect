@@ -56,7 +56,7 @@
                                 <td>{{ $umkm->nama_usaha ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <td>Jenis Usaha</td>
+                                <td>Kategori Usaha</td>
                                 <td>{{ $umkm->jenis_usaha ?? '-' }}</td>
                             </tr>
                             <tr>

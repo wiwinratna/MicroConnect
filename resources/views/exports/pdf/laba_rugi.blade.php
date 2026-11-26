@@ -29,6 +29,18 @@
                 <td style="padding-left: 20px;">Pembelian Bahan Baku (Bulan Ini)</td>
                 <td  class="text-right text-end fw-medium">{{ format_angka($totalPembelianBulanIni) }}</td>
             </tr>
+            @if($saldoAwalBahan != 0)
+                <tr>
+                    <td style="padding-left: 20px;">Saldo Awal Bahan (dicatat periode ini)</td>
+                    <td class="text-right text-end fw-medium">{{ format_angka($saldoAwalBahan) }}</td>
+                </tr>
+            @endif
+            @if($bahanLangsung != 0)
+                <tr>
+                    <td style="padding-left: 20px;">Beban Bahan Baku</td>
+                    <td class="text-right text-end fw-medium">{{ format_angka($bahanLangsung) }}</td>
+                </tr>
+            @endif
             <tr>
                 <td style="padding-left: 20px;">(-) Persediaan Akhir Bahan Baku</td>
                 <td class="text-right">({{ format_angka($persediaanAkhir) }})</td>

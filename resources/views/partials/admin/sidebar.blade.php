@@ -57,6 +57,13 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('admin.kategori-usaha.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.kategori-usaha.index') }}">
+                    <i class="align-middle" data-feather="tag"></i>
+                    <span class="align-middle">Kategori Usaha</span>
+                </a>
+            </li>
+
             <li class="sidebar-item {{ request()->routeIs('admin.aturan-modul.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.aturan-modul.index') }}">
                     <i class="align-middle" data-feather="sliders"></i>

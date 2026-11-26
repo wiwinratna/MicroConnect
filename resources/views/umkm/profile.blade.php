@@ -140,12 +140,12 @@
                                 <textarea name="alamat" class="form-control" rows="2">{{ old('alamat', $umkm->alamat) }}</textarea>
                             </div>
 
-                            {{-- JENIS USAHA --}}
+                            {{-- KATEGORI USAHA --}}
                             <div class="mb-3">
-                                <label class="form-label">Jenis Usaha</label>
+                                <label class="form-label">Kategori Usaha</label>
                                 <input type="text" name="jenis_usaha" class="form-control"
                                        value="{{ old('jenis_usaha', $umkm->jenis_usaha) }}"
-                                       placeholder="Contoh: Kuliner, Jasa, Perdagangan...">
+                                       placeholder="Contoh: Kuliner, Bengkel, Perdagangan...">
                             </div>
 
                             {{-- NO WHATSAPP --}}

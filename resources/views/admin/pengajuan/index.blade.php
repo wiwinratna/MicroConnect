@@ -17,8 +17,8 @@
             <th>Tanggal</th>
             <th>Pemilik</th>
             <th>Usaha</th>
+            <th>Kategori usaha</th>
             <th>Jenis usaha</th>
-            <th>Rumpun</th>
             <th>Rekomendasi</th>
             <th class="text-end">Aksi</th>
           </tr>

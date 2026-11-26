@@ -139,47 +139,48 @@ class PendaftaranTest extends TestCase
 
     // ---------- FR-02 ----------
 
-    public static function pemetaanRumpun(): array
+    public static function kategoriSesuaiJenis(): array
     {
         return [
             'Pertanian'          => ['Pertanian', 'barang'],
-            'Peternakan'         => ['Peternakan', 'barang'],
-            'Perikanan'          => ['Perikanan', 'barang'],
             'Jasa boga'          => ['Jasa boga', 'barang'],
             'Perdagangan barang' => ['Perdagangan barang', 'barang'],
             'Jasa perorangan'    => ['Jasa perorangan', 'jasa'],
+            'Kreatif barang'     => ['Usaha kreatif', 'barang'],
+            'Kreatif jasa'       => ['Usaha kreatif', 'jasa'],
         ];
     }
 
-    #[DataProvider('pemetaanRumpun')]
-    public function test_rumpun_follows_business_type(string $awalan, string $rumpun): void
+    #[DataProvider('kategoriSesuaiJenis')]
+    public function test_chosen_business_type_and_category_are_saved(string $awalan, string $jenis): void
     {
-        $ubah = ['jenis_usaha_id' => $this->jenisId($awalan), 'mengolah_bahan' => '1', 'punya_persediaan' => '1'];
+        $id = $this->jenisId($awalan);
 
-        $this->kirim($ubah)->assertRedirect(route('register.selesai'));
+        $this->kirim([
+            'rumpun' => $jenis, 'jenis_usaha_id' => $id, 'mengolah_bahan' => '1', 'punya_persediaan' => '1',
+        ])->assertRedirect(route('register.selesai'));
 
-        $this->assertSame($rumpun, PengajuanPendaftaran::first()->rumpun);
+        $p = PengajuanPendaftaran::first();
+        $this->assertSame($jenis, $p->rumpun);
+        $this->assertSame($id, $p->jenis_usaha_id);
     }
 
-    public function test_creative_business_requires_rumpun_choice(): void
+    public function test_business_type_is_required_and_limited_to_goods_or_service(): void
     {
-        $this->kirim(['jenis_usaha_id' => $this->jenisId('Usaha kreatif')])
-            ->assertSessionHasErrors('rumpun');
+        $this->kirim(['rumpun' => null])->assertSessionHasErrors('rumpun');
+        $this->kirim(['rumpun' => 'lainnya'])->assertSessionHasErrors('rumpun');
 
         $this->assertSame(0, PengajuanPendaftaran::count());
     }
 
-    public function test_creative_business_uses_chosen_rumpun(): void
+    public function test_category_of_other_business_type_is_rejected(): void
     {
-        $this->kirim([
-            'jenis_usaha_id' => $this->jenisId('Usaha kreatif'),
-            'rumpun' => 'jasa', 'punya_persediaan' => '0',
-        ])->assertRedirect(route('register.selesai'));
+        $this->kirim(['rumpun' => 'barang', 'jenis_usaha_id' => $this->jenisId('Jasa perorangan')])
+            ->assertSessionHasErrors('jenis_usaha_id');
+        $this->kirim(['rumpun' => 'jasa', 'jenis_usaha_id' => $this->jenisId('Pertanian'), 'punya_persediaan' => '0'])
+            ->assertSessionHasErrors('jenis_usaha_id');
 
-        $p = PengajuanPendaftaran::first();
-        $this->assertSame('jasa', $p->rumpun);
-        $this->assertFalse($p->memiliki_persediaan);
-        $this->assertFalse($p->melakukan_produksi);
+        $this->assertSame(0, PengajuanPendaftaran::count());
     }
 
     public function test_goods_business_always_has_stock_and_production_from_answer(): void
@@ -197,6 +198,7 @@ class PendaftaranTest extends TestCase
             PengajuanPendaftaran::query()->delete();
 
             $this->kirim([
+                'rumpun' => 'jasa',
                 'jenis_usaha_id' => $this->jenisId('Jasa perorangan'),
                 'punya_persediaan' => $jawab,
             ])->assertRedirect(route('register.selesai'));
@@ -210,7 +212,7 @@ class PendaftaranTest extends TestCase
         $this->kirim(['mengolah_bahan' => null])->assertSessionHasErrors('mengolah_bahan');
 
         $this->kirim([
-            'jenis_usaha_id' => $this->jenisId('Jasa perorangan'), 'punya_persediaan' => null,
+            'rumpun' => 'jasa', 'jenis_usaha_id' => $this->jenisId('Jasa perorangan'), 'punya_persediaan' => null,
         ])->assertSessionHasErrors('punya_persediaan');
     }
 

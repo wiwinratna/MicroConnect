@@ -8,7 +8,7 @@ use Tests\Concerns\SiapkanModul;
 use Tests\TestCase;
 
 /**
- * FR-27: Admin melengkapi rumpun, persediaan, dan produksi UMKM lama.
+ * FR-27: Admin melengkapi jenis usaha, kategori, persediaan, dan produksi UMKM lama.
  */
 class ProfilUsahaAdminTest extends TestCase
 {
@@ -32,7 +32,7 @@ class ProfilUsahaAdminTest extends TestCase
         $this->sebagai($this->buatAdminK3())->get(route('admin.umkm.show', $u->umkm->id))
             ->assertOk()
             ->assertSee('Profil Usaha')
-            ->assertSee('Rumpun belum dilengkapi')
+            ->assertSee('Jenis usaha belum dilengkapi')
             ->assertSee('Jasa boga');
     }
 
@@ -97,6 +97,24 @@ class ProfilUsahaAdminTest extends TestCase
         $this->simpan($id, ['rumpun' => 'jasa'])->assertSessionHasErrors('memiliki_persediaan');
         $this->simpan($id, ['rumpun' => 'lainnya'])->assertSessionHasErrors('rumpun');
         $this->simpan($id, ['rumpun' => 'jasa', 'memiliki_persediaan' => '1', 'jenis_usaha_id' => 99999])->assertSessionHasErrors('jenis_usaha_id');
+
+        $this->assertNull($u->umkm->fresh()->rumpun);
+    }
+
+    public function test_category_must_match_business_type(): void
+    {
+        $u = $this->buatUmkm();
+        $id = $u->umkm->id;
+
+        $this->simpan($id, [
+            'rumpun' => 'barang', 'melakukan_produksi' => '0', 'jenis_usaha_id' => $this->jenisId('Jasa perorangan'),
+        ])->assertSessionHasErrors('jenis_usaha_id');
+
+        $u->umkm->update(['jenis_usaha_id' => $this->jenisId('Jasa perorangan')]);
+
+        // Kategori lama tidak cocok dengan jenis baru dan tidak diganti.
+        $this->simpan($id, ['rumpun' => 'barang', 'melakukan_produksi' => '0'])
+            ->assertSessionHasErrors('jenis_usaha_id');
 
         $this->assertNull($u->umkm->fresh()->rumpun);
     }

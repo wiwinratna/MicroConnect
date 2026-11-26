@@ -20,7 +20,7 @@
                         <tbody>
                             @forelse($pembelianList as $p)
                             <tr>
-                                <td>{{ Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
                                 <td class="small text-muted">
                                     @foreach($p->details as $d) {{ $d->bahan->nama_bahan ?? '?' }} ({{ $d->qty }}), @endforeach
                                 </td>

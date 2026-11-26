@@ -99,7 +99,7 @@
             <th class="ps-4">Kode</th>
             <th>Nama Usaha</th>
             <th>Level</th>
-            <th>Jenis Usaha</th>
+            <th>Kategori Usaha</th>
             <th>Aktivitas</th>
             <th>Metode Inv</th>
             <th>Status</th>

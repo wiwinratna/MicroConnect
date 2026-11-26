@@ -7,8 +7,8 @@
   <div class="mb-4">
     <h1 class="h3 mb-1">Aturan <strong>Modul</strong></h1>
     <p class="text-muted small mb-0">
-      Menentukan modul yang tampil untuk UMKM menurut rumpun usaha. Perubahan langsung memengaruhi menu dan akses UMKM.
-      UMKM lama yang rumpun atau datanya belum dilengkapi tidak disembunyikan fitur apa pun.
+      Menentukan modul yang tampil untuk UMKM menurut jenis usaha. Perubahan langsung memengaruhi menu dan akses UMKM.
+      UMKM lama yang jenis usaha atau datanya belum dilengkapi tidak disembunyikan fitur apa pun.
     </p>
   </div>
 
@@ -28,8 +28,8 @@
           <thead class="table-light">
             <tr>
               <th style="width:18%">Modul</th>
-              <th>Rumpun barang</th>
-              <th>Rumpun jasa</th>
+              <th>Jenis barang</th>
+              <th>Jenis jasa</th>
             </tr>
           </thead>
           <tbody>

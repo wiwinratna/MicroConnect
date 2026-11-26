@@ -91,30 +91,30 @@
 								</div>
 
 								<div class="mb-3">
-									<label class="form-label" for="jenis_usaha_id">Jenis usaha</label>
-									<select id="jenis_usaha_id" name="jenis_usaha_id" class="form-select form-select-lg" required>
-										<option value="">-- Pilih jenis usaha --</option>
-										@foreach($jenisUsaha as $j)
-											<option value="{{ $j->id }}" data-bawaan="{{ $j->rumpun_bawaan }}"
-												@selected(old('jenis_usaha_id') == $j->id)>{{ $j->nama }}</option>
-										@endforeach
-									</select>
-								</div>
-
-								{{-- Usaha kreatif: calon memilih barang atau jasa --}}
-								<div id="kotakRumpun" class="mb-3" hidden>
-									<label class="form-label d-block">Hasil usaha Anda berupa apa?</label>
+									<label class="form-label d-block">Jenis usaha</label>
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="rumpun" id="rumpunBarang" value="barang" @checked(old('rumpun') === 'barang')>
-										<label class="form-check-label" for="rumpunBarang">Barang (produk)</label>
+										<input class="form-check-input" type="radio" name="rumpun" id="rumpunBarang" value="barang" @checked(old('rumpun') === 'barang') required>
+										<label class="form-check-label" for="rumpunBarang">Barang (menjual produk)</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="radio" name="rumpun" id="rumpunJasa" value="jasa" @checked(old('rumpun') === 'jasa')>
-										<label class="form-check-label" for="rumpunJasa">Jasa (layanan)</label>
+										<label class="form-check-label" for="rumpunJasa">Jasa (memberi layanan)</label>
 									</div>
 								</div>
 
-								{{-- Rumpun barang: tanya produksi --}}
+								<div class="mb-3">
+									<label class="form-label" for="jenis_usaha_id">Kategori usaha</label>
+									<select id="jenis_usaha_id" name="jenis_usaha_id" class="form-select form-select-lg" required>
+										<option value="">-- Pilih kategori usaha --</option>
+										@foreach($jenisUsaha as $j)
+											<option value="{{ $j->id }}" data-untuk="{{ $j->rumpun_bawaan }}"
+												@selected(old('jenis_usaha_id') == $j->id)>{{ $j->nama }}</option>
+										@endforeach
+									</select>
+									<div class="form-text">Pilih jenis usaha lebih dulu.</div>
+								</div>
+
+								{{-- Jenis barang: tanya produksi --}}
 								<div id="kotakBarang" class="mb-3" hidden>
 									<label class="form-label d-block">Apakah usaha Anda mengolah bahan menjadi produk?</label>
 									<div class="form-check">
@@ -127,7 +127,7 @@
 									</div>
 								</div>
 
-								{{-- Rumpun jasa: tanya persediaan --}}
+								{{-- Jenis jasa: tanya persediaan --}}
 								<div id="kotakJasa" class="mb-3" hidden>
 									<label class="form-label d-block">Apakah usaha Anda memiliki persediaan barang?</label>
 									<div class="form-check">
@@ -197,13 +197,13 @@
 	</main>
 
 	<script src="{{ asset('js/app.js') }}"></script>
+	<script src="{{ asset('js/filter-kategori.js') }}"></script>
 	<script>
 	(function () {
 		const form = document.getElementById('formDaftar');
 		const l1 = document.getElementById('langkah1'), l2 = document.getElementById('langkah2');
-		const jenis = document.getElementById('jenis_usaha_id');
+		const saringKategori = buatSaringKategori(document.getElementById('jenis_usaha_id'));
 		const kotak = {
-			rumpun: document.getElementById('kotakRumpun'),
 			barang: document.getElementById('kotakBarang'),
 			jasa: document.getElementById('kotakJasa'),
 		};
@@ -218,21 +218,14 @@
 		}
 
 		function segarkan() {
-			const opsi = jenis.options[jenis.selectedIndex];
-			const bawaan = opsi ? opsi.dataset.bawaan : '';
-			let rumpun = (bawaan === 'barang' || bawaan === 'jasa') ? bawaan : '';
+			const dipilih = form.querySelector('input[name="rumpun"]:checked');
+			const jenis = dipilih ? dipilih.value : '';
 
-			if (bawaan === 'ditentukan_umkm') {
-				const dipilih = form.querySelector('input[name="rumpun"]:checked');
-				rumpun = dipilih ? dipilih.value : '';
-			}
-
-			atur(kotak.rumpun, bawaan === 'ditentukan_umkm');
-			atur(kotak.barang, rumpun === 'barang');
-			atur(kotak.jasa, rumpun === 'jasa');
+			saringKategori(jenis);
+			atur(kotak.barang, jenis === 'barang');
+			atur(kotak.jasa, jenis === 'jasa');
 		}
 
-		jenis.addEventListener('change', segarkan);
 		form.querySelectorAll('input[name="rumpun"]').forEach(function (r) { r.addEventListener('change', segarkan); });
 		segarkan();
 

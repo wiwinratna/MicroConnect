@@ -42,19 +42,10 @@ class DataSistemService
             ->whereBetween('tanggal', [$mulai, $sampai])
             ->sum(DB::raw('kredit - debit'));
 
-        $sampaiHariIni = fn (string $awalanAkun) => $jurnal()
-            ->where('kode_akun', 'like', $awalanAkun . '%')
-            ->where('tanggal', '<=', $sampai);
-
-        $saldoModal = (float) $sampaiHariIni('3')->sum(DB::raw('kredit - debit'));
-        $pendapatan = (float) $sampaiHariIni('4')->sum(DB::raw('kredit - debit'));
-        $hpp        = (float) $sampaiHariIni('5')->sum(DB::raw('debit - kredit'));
-        $beban      = (float) $sampaiHariIni('6')->sum(DB::raw('debit - kredit'));
-
         return [
             'hari_data' => $hariData,
             'omzet'     => $omzet,
-            'modal'     => $saldoModal + $pendapatan - $hpp - $beban,
+            'modal'     => app(LabaModalService::class)->modalPer($umkm, $sampai),
             'sampai'    => $sampai,
         ];
     }

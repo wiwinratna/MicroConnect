@@ -44,8 +44,8 @@
             <dt class="col-sm-5">Nama usaha</dt><dd class="col-sm-7">{{ $pengajuan->nama_usaha }}</dd>
             <dt class="col-sm-5">Alamat</dt><dd class="col-sm-7">{{ $pengajuan->alamat }}</dd>
             <dt class="col-sm-5">Telepon usaha</dt><dd class="col-sm-7">{{ $pengajuan->no_telepon ?: '-' }}</dd>
-            <dt class="col-sm-5">Jenis usaha</dt><dd class="col-sm-7">{{ $pengajuan->jenisUsaha?->nama }}</dd>
-            <dt class="col-sm-5">Rumpun</dt><dd class="col-sm-7 text-capitalize">{{ $pengajuan->rumpun }}</dd>
+            <dt class="col-sm-5">Kategori usaha</dt><dd class="col-sm-7">{{ $pengajuan->jenisUsaha?->nama }}</dd>
+            <dt class="col-sm-5">Jenis usaha</dt><dd class="col-sm-7 text-capitalize">{{ $pengajuan->rumpun }}</dd>
             <dt class="col-sm-5">Memiliki persediaan</dt><dd class="col-sm-7">{{ $ya($pengajuan->memiliki_persediaan) }}</dd>
             <dt class="col-sm-5">Melakukan produksi</dt><dd class="col-sm-7">{{ $ya($pengajuan->melakukan_produksi) }}</dd>
             <dt class="col-sm-5">Setuju data pribadi</dt><dd class="col-sm-7">{{ $ya($pengajuan->persetujuan_data_pribadi) }}</dd>

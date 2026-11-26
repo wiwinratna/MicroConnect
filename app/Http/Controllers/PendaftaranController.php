@@ -51,7 +51,7 @@ class PendaftaranController extends Controller
                     'alamat'                   => $request->input('alamat'),
                     'no_telepon'               => $request->input('no_telepon'),
                     'jenis_usaha_id'           => $request->input('jenis_usaha_id'),
-                    'rumpun'                   => $request->rumpunEfektif(),
+                    'rumpun'                   => $request->input('rumpun'),
                     'memiliki_persediaan'      => $memilikiPersediaan,
                     'melakukan_produksi'       => $melakukanProduksi,
                     'persetujuan_data_pribadi' => true,

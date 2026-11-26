@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Umkm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Umkm\Concerns\MembacaPeriode;
 use App\Models\JurnalUmum;
 use App\Models\Pembelian;
 use App\Models\Penjualan;
@@ -18,20 +19,13 @@ use Carbon\Carbon;
 
 class ExportController extends Controller
 {
+    use MembacaPeriode;
+
     protected $exportService;
 
     public function __construct(ExportService $exportService)
     {
         $this->exportService = $exportService;
-    }
-
-    private function getPeriode(Request $request)
-    {
-        $bulan = $request->get('bulan', now()->format('Y-m'));
-        [$year, $month] = explode('-', $bulan);
-        $awal  = "$year-$month-01";
-        $akhir = date('Y-m-t', strtotime($awal));
-        return [$awal, $akhir, $bulan];
     }
 
     // ==========================================
@@ -109,113 +103,7 @@ class ExportController extends Controller
         return $this->exportService->toPdf('exports.pdf.buku_besar', compact('umkm', 'bukuBesar', 'awal', 'akhir', 'title'), $filename);
     }
 
-    // ==========================================
-    // 3. LABA RUGI (PDF Only)
-    // ==========================================
-    public function labaRugi(Request $request)
-    {
-        $umkm = Auth::user()->umkm;
-        [$awal, $akhir, $bulan] = $this->getPeriode($request);
-
-        $jurnal = JurnalUmum::where('umkm_id', $umkm->id)
-            ->whereBetween('tanggal', [$awal, $akhir])
-            ->get();
-
-        $pendapatan = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '4'));
-        $totalPendapatan = $pendapatan->sum('kredit') - $pendapatan->sum('debit');
-
-        $hpp = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '5'));
-        $totalHpp = $hpp->sum('debit') - $hpp->sum('kredit');
-
-        $isPeriodik = strtoupper($umkm->recording_method ?? 'PERIODIK') === 'PERIODIK';
-        $persediaanAwal = 0;
-        $persediaanAkhir = 0;
-        $totalPembelianBulanIni = 0;
-
-        if ($isPeriodik) {
-            $invService = new \App\Services\InventoryService();
-            $bahanList = \App\Models\BahanBaku::where('umkm_id', $umkm->id)->get();
-            $dateAwalMinus1 = date('Y-m-d', strtotime($awal . ' -1 day'));
-            foreach ($bahanList as $b) {
-                $awalResult = $invService->buildLedger($umkm, 'bahan', $b->id, $dateAwalMinus1);
-                $persediaanAwal += $awalResult['totalSaldoNilai'];
-                $akhirResult = $invService->buildLedger($umkm, 'bahan', $b->id, $akhir);
-                $persediaanAkhir += $akhirResult['totalSaldoNilai'];
-            }
-            $totalPembelianBulanIni = $hpp->filter(fn($j) => $j->kode_akun === '510')->sum(fn($j) => $j->debit - $j->kredit);
-            $totalHpp = $persediaanAwal + $totalPembelianBulanIni - $persediaanAkhir;
-        }
-
-        $labaKotor = $totalPendapatan - $totalHpp;
-
-        $beban = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '6'));
-        $totalBeban = $beban->sum('debit') - $beban->sum('kredit');
-        $bebanDetail= $beban->groupBy('kode_akun')->map(fn($g) => [
-            'nama'  => $g->first()->nama_akun,
-            'total' => $g->sum('debit') - $g->sum('kredit'),
-        ]);
-
-        $labaBersih = $labaKotor - $totalBeban;
-
-        $title = "Laporan Laba Rugi - " . Carbon::parse($awal)->translatedFormat('F Y');
-        $filename = "Laba_Rugi_" . $umkm->nama_usaha . "_" . $bulan;
-
-        return $this->exportService->toPdf('exports.pdf.laba_rugi', compact(
-            'umkm', 'pendapatan', 'totalPendapatan', 'hpp', 'totalHpp', 'labaKotor',
-            'bebanDetail', 'totalBeban', 'labaBersih', 'isPeriodik', 'persediaanAwal', 'persediaanAkhir', 'totalPembelianBulanIni',
-            'awal', 'akhir', 'title'
-        ), $filename);
-    }
-
-    // ==========================================
-    // 4. PERUBAHAN MODAL (PDF Only)
-    // ==========================================
-    public function perubahanModal(Request $request)
-    {
-        $umkm = Auth::user()->umkm;
-        [$awal, $akhir, $bulan] = $this->getPeriode($request);
-
-        $jurnal = JurnalUmum::where('umkm_id', $umkm->id)
-            ->whereBetween('tanggal', [$awal, $akhir])
-            ->get();
-
-        $modalAwal = JurnalUmum::where('umkm_id', $umkm->id)
-            ->where('kode_akun', 'like', '3%')
-            ->where('tanggal', '<', $awal)
-            ->sum(DB::raw('kredit - debit')) ?: 0;
-
-        $pendapatan = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '4'))->sum(fn($j) => $j->kredit - $j->debit);
-        $hpp = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '5'))->sum(fn($j) => $j->debit - $j->kredit);
-        
-        $isPeriodik = strtoupper($umkm->recording_method ?? 'PERIODIK') === 'PERIODIK';
-        if ($isPeriodik) {
-            $invService = new \App\Services\InventoryService();
-            $bahanList = \App\Models\BahanBaku::where('umkm_id', $umkm->id)->get();
-            $persediaanAwal = 0; $persediaanAkhir = 0;
-            $dateAwalMinus1 = date('Y-m-d', strtotime($awal . ' -1 day'));
-            foreach ($bahanList as $b) {
-                $awalResult = $invService->buildLedger($umkm, 'bahan', $b->id, $dateAwalMinus1);
-                $persediaanAwal += $awalResult['totalSaldoNilai'];
-                $akhirResult = $invService->buildLedger($umkm, 'bahan', $b->id, $akhir);
-                $persediaanAkhir += $akhirResult['totalSaldoNilai'];
-            }
-            $totalPembelianBulanIni = $jurnal->filter(fn($j) => $j->kode_akun === '510')->sum(fn($j) => $j->debit - $j->kredit);
-            $hpp = $persediaanAwal + $totalPembelianBulanIni - $persediaanAkhir;
-        }
-
-        $beban = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '6'))->sum(fn($j) => $j->debit - $j->kredit);
-        $labaBersih = $pendapatan - $hpp - $beban;
-
-        $prive = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '32'))->sum(fn($j) => $j->debit - $j->kredit);
-        $modalAkhir = $modalAwal + $labaBersih - $prive;
-
-        $title = "Laporan Perubahan Modal - " . Carbon::parse($awal)->translatedFormat('F Y');
-        $filename = "Perubahan_Modal_" . $umkm->nama_usaha . "_" . $bulan;
-
-        return $this->exportService->toPdf('exports.pdf.perubahan_modal', compact(
-            'umkm', 'modalAwal', 'labaBersih', 'prive', 'modalAkhir', 'awal', 'akhir', 'title'
-        ), $filename);
-    }
+    // 3 & 4. Laba Rugi dan Perubahan Modal: lihat ExportLabaModalController.
 
     // ==========================================
     // 5. ARUS KAS (PDF Only)

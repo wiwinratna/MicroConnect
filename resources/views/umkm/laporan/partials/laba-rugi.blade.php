@@ -20,6 +20,12 @@
                             @if($isPeriodik)
                                 <tr><td class="ps-4">Persediaan Awal Bahan Baku</td><td  class="text-end fw-medium">{{ rupiah($persediaanAwal) }}</td></tr>
                                 <tr><td class="ps-4">Pembelian Bahan</td><td  class="text-end fw-medium">{{ rupiah($totalPembelianBulanIni) }}</td></tr>
+                                @if($saldoAwalBahan != 0)
+                                    <tr><td class="ps-4">Saldo Awal Bahan (dicatat periode ini)</td><td class="text-end fw-medium">{{ rupiah($saldoAwalBahan) }}</td></tr>
+                                @endif
+                                @if($bahanLangsung != 0)
+                                    <tr><td class="ps-4">Beban Bahan Baku</td><td class="text-end fw-medium">{{ rupiah($bahanLangsung) }}</td></tr>
+                                @endif
                                 <tr><td class="ps-4">Persediaan Akhir Bahan Baku</td><td class="text-end text-danger">({{ rupiah($persediaanAkhir) }})</td></tr>
                             @else
                                 @foreach($hpp->groupBy('nama_akun') as $nama => $items)

@@ -46,8 +46,8 @@ class Umkm extends Model
 
     public static function getKodeUmkm(): string
     {
-        $last = self::orderByDesc('created_at')->first();
-        $lastNumber = $last ? (int) substr($last->kode_umkm, -5) : 0;
+        // Nomor terbesar, bukan data terbaru: created_at bisa sama untuk beberapa UMKM.
+        $lastNumber = (int) self::pluck('kode_umkm')->map(fn ($kode) => (int) substr((string) $kode, -5))->max();
         return 'UM' . str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
     }
 

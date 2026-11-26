@@ -8,6 +8,10 @@
             <td  class="text-right text-bold text-end fw-medium">{{ format_angka($modalAwal) }}</td>
         </tr>
         <tr>
+            <td>Setoran Modal Bulan Ini</td>
+            <td class="text-right">{{ $setoranModal < 0 ? '(' . format_angka(abs($setoranModal)) . ')' : format_angka($setoranModal) }}</td>
+        </tr>
+        <tr>
             <td>Laba Bersih Bulan Ini</td>
             <td class="text-right text-bold" style="{{ $labaBersih < 0 ? 'color:#d32f2f;' : 'color:#2e7d32;' }}">
                 {{ $labaBersih < 0 ? '(' . format_angka(abs($labaBersih)) . ')' : format_angka($labaBersih) }}

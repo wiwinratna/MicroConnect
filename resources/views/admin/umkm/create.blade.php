@@ -67,8 +67,8 @@
                                     <input type="text" name="nama_usaha" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('nama_usaha') }}" placeholder="Contoh: Kedai Kopi Makmur">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-dark">Sektor / Jenis Usaha</label>
-                                    <input type="text" name="jenis_usaha" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('jenis_usaha') }}" placeholder="Kuliner, Jasa, dll">
+                                    <label class="form-label small fw-bold text-dark">Kategori Usaha</label>
+                                    <input type="text" name="jenis_usaha" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" value="{{ old('jenis_usaha') }}" placeholder="Contoh: Kuliner, Bengkel">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold text-dark">Kontak WhatsApp</label>

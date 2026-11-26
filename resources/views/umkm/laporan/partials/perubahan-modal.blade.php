@@ -8,6 +8,7 @@
                     <table class="table table-borderless table-sm table-hover align-middle">
                         <tbody>
                             <tr><td>Modal Awal Periode</td><td  class="text-end fw-bold fw-medium">{{ rupiah($modalAwal) }}</td></tr>
+                            <tr><td>Setoran Modal</td><td class="text-end {{ $setoranModal >= 0 ? 'text-success' : 'text-danger' }}">{{ $setoranModal >= 0 ? '+ ' : '- ' }} {{ rupiah(abs($setoranModal)) }}</td></tr>
                             <tr>
                                 <td>{{ $labaBersih >= 0 ? 'Laba Bersih' : 'Rugi Bersih' }}</td>
                                 <td class="text-end {{ $labaBersih>= 0 ? 'text-success' : 'text-danger' }}">{{ $labaBersih >= 0 ? '+ ' : '- ' }} {{ rupiah(abs($labaBersih)) }}</td>

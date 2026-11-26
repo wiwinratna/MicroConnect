@@ -27,7 +27,7 @@
                         <tbody>
                             @forelse($piutangList as $p)
                             <tr>
-                                <td>{{ Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
                                 <td>{{ $p->pelanggan->nama_pelanggan ?? '-' }}</td>
                                 <td  class="text-end fw-medium">{{ rupiah($p->nominal_awal) }}</td>
                                 <td  class="text-end text-success fw-medium">{{ rupiah($p->sudah_dibayar) }}</td>

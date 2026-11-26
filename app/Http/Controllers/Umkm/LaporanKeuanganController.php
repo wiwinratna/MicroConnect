@@ -72,62 +72,24 @@ class LaporanKeuanganController extends Controller
         });
 
         // ================================================================
-        // LABA RUGI
+        // LABA RUGI & PERUBAHAN MODAL
         // ================================================================
-        // Pendapatan (4xx)
-        $pendapatan     = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '4'));
-        $totalPendapatan= $pendapatan->sum('kredit') - $pendapatan->sum('debit');
+        $hitung = app(\App\Services\LabaModalService::class);
 
-        // HPP (5xx)
-        $hpp     = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '5'));
-        $totalHpp= $hpp->sum('debit') - $hpp->sum('kredit');
+        [
+            'pendapatan' => $pendapatan, 'totalPendapatan' => $totalPendapatan,
+            'hpp' => $hpp, 'totalHpp' => $totalHpp, 'labaKotor' => $labaKotor,
+            'isPeriodik' => $isPeriodik, 'persediaanAwal' => $persediaanAwal,
+            'persediaanAkhir' => $persediaanAkhir, 'totalPembelianBulanIni' => $totalPembelianBulanIni,
+            'saldoAwalBahan' => $saldoAwalBahan, 'bahanLangsung' => $bahanLangsung,
+            'beban' => $beban, 'bebanDetail' => $bebanDetail, 'totalBeban' => $totalBeban,
+            'labaBersih' => $labaBersih,
+        ] = $hitung->labaRugi($umkm, $awal, $akhir);
 
-        $isPeriodik = strtoupper($umkm->recording_method ?? 'PERIODIK') === 'PERIODIK';
-        $persediaanAwal = 0;
-        $persediaanAkhir = 0;
-        $totalPembelianBulanIni = 0;
-
-        if ($isPeriodik) {
-            $invService = new \App\Services\InventoryService();
-            $bahanList = \App\Models\BahanBaku::where('umkm_id', $umkm->id)->get();
-            
-            $dateAwalMinus1 = date('Y-m-d', strtotime($awal . ' -1 day'));
-            
-            foreach ($bahanList as $b) {
-                $awalResult = $invService->buildLedger($umkm, 'bahan', $b->id, $dateAwalMinus1);
-                $persediaanAwal += $awalResult['totalSaldoNilai'];
-                
-                $akhirResult = $invService->buildLedger($umkm, 'bahan', $b->id, $akhir);
-                $persediaanAkhir += $akhirResult['totalSaldoNilai'];
-            }
-            
-            $totalPembelianBulanIni = $hpp->filter(fn($j) => $j->kode_akun === '510')->sum(fn($j) => $j->debit - $j->kredit);
-            $totalHpp = $persediaanAwal + $totalPembelianBulanIni - $persediaanAkhir;
-        }
-
-        $labaKotor = $totalPendapatan - $totalHpp;
-
-        // Beban Operasional (6xx)
-        $beban      = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '6'));
-        $totalBeban = $beban->sum('debit') - $beban->sum('kredit');
-        // Breakdown beban per kategori
-        $bebanDetail= $beban->groupBy('kode_akun')->map(fn($g) => [
-            'nama'  => $g->first()->nama_akun,
-            'total' => $g->sum('debit') - $g->sum('kredit'),
-        ]);
-        $labaBersih = $labaKotor - $totalBeban;
-
-        // ================================================================
-        // PERUBAHAN MODAL
-        // ================================================================
-        $modalAwal = JurnalUmum::where('umkm_id', $umkm->id)
-            ->where('kode_akun', 'like', '3%')
-            ->where('tanggal', '<', $awal)
-            ->sum(DB::raw('kredit - debit')) ?: 0;
-
-        $prive      = $jurnal->filter(fn($j) => str_starts_with($j->kode_akun, '32'))
-            ->sum(fn($j) => $j->debit - $j->kredit);
-        $modalAkhir = $modalAwal + $labaBersih - $prive;
+        [
+            'modalAwal' => $modalAwal, 'setoranModal' => $setoranModal,
+            'prive' => $prive, 'modalAkhir' => $modalAkhir,
+        ] = $hitung->perubahanModal($umkm, $awal, $akhir);
 
         // ================================================================
         // LAPORAN ARUS KAS (dari jurnal akun 111)
@@ -269,7 +231,7 @@ class LaporanKeuanganController extends Controller
         // MUTASI KAS (shortcut dari buku besar)
         // ================================================================
         $mutasiKas    = $bukuBesar->get('111');
-        $mutasiPiutang= $bukuBesar->get('112');
+        $mutasiPiutang= $bukuBesar->get('113');
 
         return view('umkm.laporan.index', compact(
             // meta
@@ -280,10 +242,11 @@ class LaporanKeuanganController extends Controller
             'pendapatan', 'totalPendapatan',
             'hpp', 'totalHpp', 'labaKotor',
             'isPeriodik', 'persediaanAwal', 'persediaanAkhir', 'totalPembelianBulanIni',
+            'saldoAwalBahan', 'bahanLangsung',
             'beban', 'bebanDetail', 'totalBeban',
             'labaBersih',
             // modal
-            'modalAwal', 'prive', 'modalAkhir',
+            'modalAwal', 'setoranModal', 'prive', 'modalAkhir',
             // kas
             'kasIn', 'kasOut', 'netKas', 'kasAwalPeriode', 'kasAkhirPeriode', 'mutasiKas',
             'arusKasGrup',

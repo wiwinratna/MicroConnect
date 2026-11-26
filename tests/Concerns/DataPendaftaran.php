@@ -49,6 +49,7 @@ trait DataPendaftaran
             'nama_usaha'               => 'Warung Budi',
             'alamat'                   => 'Jl. Merdeka No. 1, Bengkalis',
             'no_telepon'               => '',
+            'rumpun'                   => 'barang',
             'jenis_usaha_id'           => $this->jenisId('Pertanian'),
             'mengolah_bahan'           => '1',
             'jawaban'                  => $this->jawab($huruf),

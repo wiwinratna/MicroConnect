@@ -20,7 +20,7 @@
                         <tbody>
                             @forelse($penjualanList as $p)
                             <tr>
-                                <td>{{ Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($p->tanggal)->format('d/m/Y') }}</td>
                                 <td>{{ $p->pelanggan->nama_pelanggan ?? 'Umum/Kas' }}</td>
                                 <td class="small text-muted">
                                     @foreach($p->details as $d) {{ $d->produk->nama_produk ?? '?' }} ({{ $d->qty }}), @endforeach

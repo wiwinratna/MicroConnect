@@ -87,8 +87,8 @@
 </div>
 
 <style>
-    .bg-primary-subtle { background-color: rgba(59, 125, 221, 0.08) !important; }
+    .bg-primary-subtle { background-color: rgba(23, 107, 101, 0.08) !important; }
     .custom-input { transition: all 0.2s ease-in-out; }
-    .custom-input:focus { background-color: #f1f5f9 !important; transform: translateY(-1px); }
+    .custom-input:focus { background-color: var(--mn-bg-soft) !important; transform: translateY(-1px); }
 </style>
 @endsection

@@ -3,7 +3,7 @@
 @section('title', 'Daftar Tiket Pengaduan UMKM')
 
 @section('content')
-<main class="content">
+<div>
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3"><strong>Ticketing UMKM</strong> (Pengaduan & Konsultasi)</h1>
 
@@ -15,7 +15,7 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                         
                         {{-- Status Tabs --}}
-                        <div class="btn-group bg-light p-1 rounded-4" style="border: 1px solid #edf2f7;">
+                        <div class="btn-group bg-light p-1 rounded-4" style="border: 1px solid var(--mn-border-color);">
                             <button type="submit" name="status" value="" class="btn btn-sm rounded-3 px-3 {{ request('status') == '' ? 'bg-white shadow-sm fw-bold border text-primary' : 'border-0 text-muted' }}">Semua</button>
                             <button type="submit" name="status" value="Open" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'Open' ? 'bg-white shadow-sm fw-bold border text-warning' : 'border-0 text-muted' }}">Menunggu</button>
                             <button type="submit" name="status" value="In Progress" class="btn btn-sm rounded-3 px-3 {{ request('status') == 'In Progress' ? 'bg-white shadow-sm fw-bold border text-info' : 'border-0 text-muted' }}">Diproses</button>
@@ -96,20 +96,20 @@
             </div>
         </div>
     </div>
-</main>
+</div>
 
 <style>
     .x-small { font-size: 0.7rem; }
-    .bg-primary-subtle { background-color: rgba(59, 125, 221, 0.1) !important; }
-    .bg-success-subtle { background-color: rgba(28, 187, 140, 0.1) !important; }
-    .bg-warning-subtle { background-color: rgba(252, 185, 44, 0.1) !important; }
-    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1) !important; }
-    .bg-secondary-subtle { background-color: rgba(108, 117, 125, 0.1) !important; }
-    .bg-info-subtle { background-color: rgba(23, 162, 184, 0.1) !important; }
-    .text-primary { color: #3b7ddd !important; }
-    .text-success { color: #1cbb8c !important; }
-    .text-warning { color: #f59e0b !important; }
-    .text-info { color: #17a2b8 !important; }
+    .bg-primary-subtle { background-color: rgba(23, 107, 101, 0.1) !important; }
+    .bg-success-subtle { background-color: rgba(22, 107, 76, 0.1) !important; }
+    .bg-warning-subtle { background-color: rgba(133, 87, 0, 0.1) !important; }
+    .bg-danger-subtle { background-color: rgba(174, 42, 32, 0.1) !important; }
+    .bg-secondary-subtle { background-color: rgba(95, 112, 108, 0.1) !important; }
+    .bg-info-subtle { background-color: rgba(29, 100, 120, 0.1) !important; }
+    .text-primary { color: var(--mn-primary) !important; }
+    .text-success { color: var(--mn-success-text) !important; }
+    .text-warning { color: var(--mn-warning-text) !important; }
+    .text-info { color: var(--mn-info-text) !important; }
     .border-bottom-faint { border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important; }
 </style>
 @endsection

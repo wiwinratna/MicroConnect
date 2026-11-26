@@ -9,8 +9,8 @@
 {{-- Page Header --}}
 <div class="mb-4">
     <a href="{{ route('umkm.produk.index') }}"
-       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.775rem;font-weight:500;color:#64748b;text-decoration:none;margin-bottom:.7rem;transition:color .15s;"
-       onmouseover="this.style.color='#334155'" onmouseout="this.style.color='#64748b'">
+       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.775rem;font-weight:500;color:var(--mn-text-muted);text-decoration:none;margin-bottom:.7rem;transition:color .15s;"
+       onmouseover="this.style.color='var(--mn-text-main)'" onmouseout="this.style.color='var(--mn-text-muted)'">
         <i data-feather="arrow-left" style="width:13px;height:13px;"></i>
         Kembali ke Daftar Produk
     </a>
@@ -90,7 +90,7 @@
                     <div class="foto-zone" id="fotoZone" onclick="document.getElementById('fotoFile').click()">
                         <input type="file" name="foto" id="fotoFile" accept="image/*">
                         <div id="fotoPH" class="foto-placeholder">
-                            <i data-feather="image" style="width:24px;height:24px;color:#94a3b8;display:block;margin:0 auto 5px;"></i>
+                            <i data-feather="image" style="width:24px;height:24px;color:var(--mn-text-faint);display:block;margin:0 auto 5px;"></i>
                             <div class="foto-placeholder-text">
                                 <strong>Klik untuk unggah</strong>
                                 JPG, PNG, WebP
@@ -128,12 +128,12 @@
         <div class="card-body" style="padding:1.25rem 1.5rem;">
             <p class="section-label">
                 Komposisi / Resep
-                <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.7rem;color:#94a3b8;">per 1 unit produk</span>
+                <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.7rem;color:var(--mn-text-faint);">per 1 unit produk</span>
             </p>
 
             @if($komposisi->isEmpty())
                 <div class="d-flex align-items-center gap-2 mb-3 px-3 py-2 rounded-2"
-                     style="background:#fffbeb;border:1px solid #fde68a;font-size:.78rem;color:#92400e;">
+                     style="background:var(--mn-warning-bg);border:1px solid var(--mn-warning-border);font-size:.78rem;color:var(--mn-warning-text);">
                     <i data-feather="alert-triangle" style="width:14px;height:14px;flex-shrink:0;"></i>
                     Belum ada resep. Tambahkan bahan baku di bawah.
                 </div>
@@ -214,7 +214,7 @@
     <div class="sim-modal">
         <div class="sim-head">
             <span class="sim-title">
-                <i data-feather="bar-chart-2" style="width:14px;height:14px;color:#2563eb;vertical-align:-.15em;margin-right:5px;"></i>
+                <i data-feather="bar-chart-2" style="width:14px;height:14px;color:var(--mn-primary);vertical-align:-.15em;margin-right:5px;"></i>
                 Simulasi Harga Jual
             </span>
             <button class="sim-x" onclick="closeSim()">✕</button>
@@ -246,7 +246,7 @@
                     <div class="sc indigo">
                         <span class="sl">Margin Aktual</span>
                         <span class="sv" id="res_margin_aktual">—</span>
-                        <div style="font-size:.7rem;color:#64748b;margin-top:3px;">dari <span id="res_harga_now">—</span></div>
+                        <div style="font-size:.7rem;color:var(--mn-text-muted);margin-top:3px;">dari <span id="res_harga_now">—</span></div>
                     </div>
                 </div>
             </div>

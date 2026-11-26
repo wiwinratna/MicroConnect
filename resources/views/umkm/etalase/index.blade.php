@@ -187,7 +187,7 @@
     /* Cart Items Styling */
     .cart-item-row {
         background: #fff;
-        border: 1px solid #e9ecef;
+        border: 1px solid var(--mn-border-color);
         border-radius: 8px;
         padding: 10px;
         margin-bottom: 10px;
@@ -213,9 +213,9 @@
     .qty-control {
         display: flex;
         align-items: center;
-        background: #f8f9fa;
+        background: var(--mn-bg-body);
         border-radius: 6px;
-        border: 1px solid #e9ecef;
+        border: 1px solid var(--mn-border-color);
         overflow: hidden;
     }
     .qty-btn {
@@ -239,8 +239,8 @@
         text-align: center;
         font-weight: bold;
         font-size: 0.95rem;
-        background: #f8f9fa;
-        color: #333;
+        background: var(--mn-bg-body);
+        color: var(--mn-text-main);
     }
 
     /* Input Uang Hide arrows */

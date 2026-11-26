@@ -7,7 +7,7 @@
     .kategori-radio-hidden { display: none; }
     
     .kategori-card-modern {
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--mn-border-color);
         background: #fff;
         border-radius: 12px;
         padding: 1.25rem 0.75rem;
@@ -19,18 +19,18 @@
     }
 
     .kategori-card-modern:hover {
-        border-color: #cbd5e1;
+        border-color: var(--mn-border-strong);
         transform: translateY(-2px);
     }
 
     .kategori-radio-hidden:checked + .kategori-card-modern {
-        border-color: #2563eb;
-        background-color: #f8faff;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        border-color: var(--mn-primary);
+        background-color: var(--mn-bg-soft);
+        box-shadow: 0 4px 12px rgba(23, 107, 101, 0.1);
     }
 
     .kategori-radio-hidden:checked + .kategori-card-modern .icon-box {
-        background-color: #2563eb;
+        background-color: var(--mn-primary);
         color: #fff;
     }
 
@@ -41,9 +41,9 @@
     .icon-box {
         width: 48px;
         height: 48px;
-        background-color: #f8fafc;
-        border: 1px solid #f1f5f9;
-        color: #64748b;
+        background-color: var(--mn-bg-body);
+        border: 1px solid var(--mn-bg-soft);
+        color: var(--mn-text-muted);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -52,8 +52,8 @@
         transition: all 0.2s;
     }
 
-    .card-title-cat { font-size: 0.8125rem; font-weight: 700; color: #334155; margin-bottom: 2px; }
-    .card-subtitle-cat { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card-title-cat { font-size: 0.8125rem; font-weight: 700; color: var(--mn-text-main); margin-bottom: 2px; }
+    .card-subtitle-cat { font-size: 0.65rem; color: var(--mn-text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
 
     .check-mark {
         position: absolute;
@@ -61,7 +61,7 @@
         right: 8px;
         width: 18px;
         height: 18px;
-        background: #2563eb;
+        background: var(--mn-primary);
         color: #fff;
         border-radius: 50%;
         display: none;
@@ -72,9 +72,9 @@
 
     /* ── Form Styling ── */
     .form-group-modern { margin-bottom: 1.5rem; }
-    .form-label-premium { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem; display: block;}
-    .form-control-premium { border-radius: 10px; padding: 0.625rem 1rem; border: 1px solid #e2e8f0; font-size: 0.9rem; transition: border-color 0.2s; }
-    .form-control-premium:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); outline: none; }
+    .form-label-premium { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mn-text-muted); margin-bottom: 0.5rem; display: block;}
+    .form-control-premium { border-radius: 10px; padding: 0.625rem 1rem; border: 1px solid var(--mn-border-color); font-size: 0.9rem; transition: border-color 0.2s; }
+    .form-control-premium:focus { border-color: var(--mn-primary); box-shadow: 0 0 0 3px rgba(23, 107, 101, 0.1); outline: none; }
 </style>
 @endpush
 
@@ -162,7 +162,7 @@
     </div>
 
     {{-- Info Journal Integration --}}
-    <div class="card border-0 shadow-sm mb-4" id="info-jurnal-box" style="border-radius:12px; display:none; background: #fdfbfc; border: 1px dashed #e2e8f0 !important;">
+    <div class="card border-0 shadow-sm mb-4" id="info-jurnal-box" style="border-radius:12px; display:none; background: var(--mn-bg-body); border: 1px dashed var(--mn-border-color) !important;">
         <div class="card-body p-3 d-flex align-items-center gap-3">
             <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
                 <i data-feather="book-open" style="width:20px; height:20px;"></i>

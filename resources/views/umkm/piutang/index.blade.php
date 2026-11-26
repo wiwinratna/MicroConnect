@@ -4,27 +4,27 @@
 @push('styles')
 <style>
     /* ── Table Premium Styling ── */
-    .table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0 !important; padding: 1rem 1.25rem; background: #fafbfc; }
-    .table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mn-text-faint); border-bottom: 1px solid var(--mn-border-color) !important; padding: 1rem 1.25rem; background: var(--mn-bg-body); }
+    .table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--mn-bg-soft); vertical-align: middle; }
     .table-premium tr:last-child td { border-bottom: none; }
-    .table-premium tr:hover td { background: #f8fafc; }
+    .table-premium tr:hover td { background: var(--mn-bg-body); }
 
     /* ── Action Buttons ── */
-    .btn-action { width: 32px; height: 32px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
-    .btn-action:hover { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; }
-    .btn-action-view:hover { background: #fdf5ff; border-color: #f5d0fe; color: #c026d3; }
-    .btn-action-whatsapp:hover { background: #f0fdf4; border-color: #bbf7d0; color: #16a34a; }
-    .btn-action-pay:hover { background: #fffbeb; border-color: #fde68a; color: #d97706; }
+    .btn-action { width: 32px; height: 32px; border-radius: 8px; background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted); display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
+    .btn-action:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
+    .btn-action-view:hover { background: var(--mn-info-bg); border-color: var(--mn-info-border); color: var(--mn-info-text); }
+    .btn-action-whatsapp:hover { background: var(--mn-success-bg); border-color: var(--mn-success-border); color: var(--mn-success-text); }
+    .btn-action-pay:hover { background: var(--mn-warning-bg); border-color: var(--mn-warning-border); color: var(--mn-warning-text); }
 
     /* ── Summary Card ── */
     .summary-card { border-radius: 16px; transition: transform 0.2s; background: #fff; }
     .summary-card:hover { transform: translateY(-3px); }
 
     /* ── Dialog Design ── */
-    #dialogBayarPiutang { border: none; border-radius: 16px; padding: 0; margin: auto; max-width: 500px; width: 95%; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25); border: 1px solid #f1f5f9; }
+    #dialogBayarPiutang { border: none; border-radius: 16px; padding: 0; margin: auto; max-width: 500px; width: 95%; box-shadow: 0 25px 50px -12px rgba(38, 59, 56, 0.25); border: 1px solid var(--mn-bg-soft); }
     #dialogBayarPiutang[open] { display: flex; flex-direction: column; animation: dialogIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
     @keyframes dialogIn { from { opacity:0; transform: translateY(20px) scale(0.95); } to { opacity:1; transform: translateY(0) scale(1); } }
-    #dialogBayarPiutang::backdrop { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); }
+    #dialogBayarPiutang::backdrop { background: rgba(38, 59, 56, 0.4); backdrop-filter: blur(4px); }
 </style>
 @endpush
 
@@ -43,14 +43,14 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-1 fw-bold" style="font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;">Total Piutang Aktif</p>
-                        <h3 class="fw-bold mb-0" style="color: #1e293b; letter-spacing: -0.02em;">{{ rupiah($totalSisa) }}</h3>
+                        <h3 class="fw-bold mb-0" style="color: var(--mn-text-main); letter-spacing: -0.02em;">{{ rupiah($totalSisa) }}</h3>
                     </div>
                     <div class="p-3 bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i data-feather="dollar-sign" class="text-danger" style="width: 28px; height: 28px;"></i>
                     </div>
                 </div>
                 <div class="mt-3">
-                    <div class="progress" style="height: 4px; background-color: #f1f5f9;">
+                    <div class="progress" style="height: 4px; background-color: var(--mn-bg-soft);">
                         <div class="progress-bar bg-danger" role="progressbar" style="width: 100%; border-radius: 2px;"></div>
                     </div>
                     <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">Total tagihan yang harus ditagih</p>
@@ -69,30 +69,30 @@
                 <li class="nav-item">
                     <a class="nav-link px-0 pb-3 border-0 rounded-0 position-relative {{ request('status', 'aktif') === 'aktif' ? 'active' : '' }}" 
                        href="?status=aktif" 
-                       style="font-size: 0.82rem; font-weight: 600; color: {{ request('status', 'aktif') === 'aktif' ? '#2563eb' : '#64748b' }};">
+                       style="font-size: 0.82rem; font-weight: 600; color: {{ request('status', 'aktif') === 'aktif' ? 'var(--mn-primary)' : 'var(--mn-text-muted)' }};">
                         Belum Lunas
                         @if(request('status', 'aktif') === 'aktif')
-                            <div style="position:absolute; bottom:0; left:0; width:100%; height:3px; background:#2563eb; border-radius:3px 3px 0 0;"></div>
+                            <div style="position:absolute; bottom:0; left:0; width:100%; height:3px; background:var(--mn-primary); border-radius:3px 3px 0 0;"></div>
                         @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link px-0 pb-3 border-0 rounded-0 position-relative {{ request('status') === 'lunas' ? 'active' : '' }}" 
                        href="?status=lunas"
-                       style="font-size: 0.82rem; font-weight: 600; color: {{ request('status') === 'lunas' ? '#2563eb' : '#64748b' }};">
+                       style="font-size: 0.82rem; font-weight: 600; color: {{ request('status') === 'lunas' ? 'var(--mn-primary)' : 'var(--mn-text-muted)' }};">
                         Sudah Lunas
                         @if(request('status') === 'lunas')
-                            <div style="position:absolute; bottom:0; left:0; width:100%; height:3px; background:#2563eb; border-radius:3px 3px 0 0;"></div>
+                            <div style="position:absolute; bottom:0; left:0; width:100%; height:3px; background:var(--mn-primary); border-radius:3px 3px 0 0;"></div>
                         @endif
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link px-0 pb-3 border-0 rounded-0 position-relative {{ request('status') === 'semua' ? 'active' : '' }}" 
                        href="?status=semua"
-                       style="font-size: 0.82rem; font-weight: 600; color: {{ request('status') === 'semua' ? '#2563eb' : '#64748b' }};">
+                       style="font-size: 0.82rem; font-weight: 600; color: {{ request('status') === 'semua' ? 'var(--mn-primary)' : 'var(--mn-text-muted)' }};">
                         Semua Data
                         @if(request('status') === 'semua')
-                            <div style="position:absolute; bottom:0; left:0; width:100%; height:3px; background:#2563eb; border-radius:3px 3px 0 0;"></div>
+                            <div style="position:absolute; bottom:0; left:0; width:100%; height:3px; background:var(--mn-primary); border-radius:3px 3px 0 0;"></div>
                         @endif
                     </a>
                 </li>
@@ -195,7 +195,7 @@
 
 {{-- Native Dialog Catat Pembayaran --}}
 <dialog id="dialogBayarPiutang">
-    <div style="padding: 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: start;">
+    <div style="padding: 1.5rem; border-bottom: 1px solid var(--mn-bg-soft); display: flex; justify-content: space-between; align-items: start;">
         <div>
             <h5 class="fw-bold text-dark mb-1">Catat Pembayaran</h5>
             <div class="text-muted small" id="dialogMeta">Memuat info...</div>

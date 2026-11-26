@@ -47,7 +47,7 @@
               @endphp
               @foreach($sorted as $idx => $j)
                 <tr class="{{ $idx > 0 ? 'bg-light bg-opacity-50' : 'border-top border-2' }}"
-                  style="{{ $idx === 0 ? 'border-top-color: #dee2e6 !important;' : '' }}">
+                  style="{{ $idx === 0 ? 'border-top-color: var(--mn-border-color) !important;' : '' }}">
                   @if($idx === 0)
                     <td class="ps-3 text-muted fw-medium" rowspan="{{ $groupRows }}"
                       style="vertical-align: top; padding-top: 12px;">

@@ -1,99 +1,60 @@
-/* SOFT BADGES & CHIPS (Custom Class MINECT) */
+/* BADGES */
 .badge {
-  font-weight: 500 !important;
-  padding: 0.4em 0.8em !important;
-  border-radius: var(--mn-radius-sm) !important;
-}
-
-/* Reusable Soft Badges */
-.badge-soft-success {
-  background-color: var(--mn-success-bg) !important;
-  color: var(--mn-success-text) !important;
+  padding: 0.35em 0.7em !important;
+  font-weight: 600 !important;
+  font-size: 0.7rem !important;
   border-radius: var(--mn-radius-pill) !important;
-  border: 1px solid var(--mn-success-border) !important;
 }
+.bg-primary { background-color: var(--mn-primary) !important; }
+.bg-success { background-color: #1E7F5C !important; }
+.bg-danger  { background-color: #C0392B !important; }
+.bg-info    { background-color: #1D6478 !important; }
+.bg-warning { background-color: #F6C453 !important; color: #3D2E00 !important; }
 
-.badge-soft-warning {
-  background-color: var(--mn-warning-bg) !important;
-  color: var(--mn-warning-text) !important;
-  border-radius: var(--mn-radius-pill) !important;
-  border: 1px solid var(--mn-warning-border) !important;
-}
-
-.badge-soft-danger {
-  background-color: var(--mn-danger-bg) !important;
-  color: var(--mn-danger-text) !important;
-  border-radius: var(--mn-radius-pill) !important;
-  border: 1px solid var(--mn-danger-border) !important;
-}
-
-.badge-soft-info, .badge-soft-primary {
+.bg-primary-subtle, .badge-soft-info, .badge-soft-primary {
   background-color: var(--mn-primary-soft) !important;
-  color: var(--mn-primary) !important;
-  border-radius: var(--mn-radius-pill) !important;
-  border: 1px solid var(--mn-info-border) !important;
+  color: var(--mn-primary-hover) !important;
 }
+.bg-success-subtle, .badge-soft-success { background-color: var(--mn-success-bg) !important; color: var(--mn-success-text) !important; }
+.bg-danger-subtle, .badge-soft-danger { background-color: var(--mn-danger-bg) !important; color: var(--mn-danger-text) !important; }
+.bg-warning-subtle, .badge-soft-warning { background-color: var(--mn-warning-bg) !important; color: var(--mn-warning-text) !important; }
+.bg-info-subtle { background-color: var(--mn-info-bg) !important; color: var(--mn-info-text) !important; }
+.bg-secondary-subtle { background-color: var(--mn-bg-soft) !important; color: var(--mn-text-muted) !important; }
 
-/* ALERTS SYSTEM */
+/* ALERTS */
 .alert {
   border-radius: var(--mn-radius-md) !important;
-  border: 1px solid transparent !important;
-  padding: 1rem 1.25rem !important;
+  border: 1px solid transparent;
+  padding: 0.9rem 1.15rem !important;
   box-shadow: none !important;
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
 }
+.alert-success, .alert-soft-success { background-color: var(--mn-success-bg) !important; color: var(--mn-success-text) !important; border-color: var(--mn-success-border) !important; }
+.alert-warning, .alert-soft-warning { background-color: var(--mn-warning-bg) !important; color: var(--mn-warning-text) !important; border-color: var(--mn-warning-border) !important; }
+.alert-danger, .alert-soft-danger { background-color: var(--mn-danger-bg) !important; color: var(--mn-danger-text) !important; border-color: var(--mn-danger-border) !important; }
+.alert-info, .alert-soft-info { background-color: var(--mn-info-bg) !important; color: var(--mn-info-text) !important; border-color: var(--mn-info-border) !important; }
 
-.alert-soft-warning {
-  background-color: var(--mn-warning-bg) !important;
-  color: var(--mn-warning-text) !important;
-  border-color: var(--mn-warning-border) !important;
-}
-
-.alert-soft-success {
-  background-color: var(--mn-success-bg) !important;
-  color: var(--mn-success-text) !important;
-  border-color: var(--mn-success-border) !important;
-}
-
-.alert-soft-info {
-  background-color: var(--mn-info-bg) !important;
-  color: var(--mn-info-text) !important;
-  border-color: var(--mn-info-border) !important;
-}
-
-.alert-soft-danger {
-  background-color: var(--mn-danger-bg) !important;
-  color: var(--mn-danger-text) !important;
-  border-color: var(--mn-danger-border) !important;
-}
-
-/* MODAL SYSTEM (Bentuk lebih rounded) */
+/* MODALS AND DROPDOWNS */
 .modal-content {
   border-radius: var(--mn-radius-lg) !important;
   border: none !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: var(--mn-shadow-lg) !important;
 }
+.modal-header { border-bottom: 1px solid var(--mn-border-color) !important; padding: 1.15rem 1.35rem !important; }
+.modal-title { font-weight: 700; color: var(--mn-text-main); }
+.modal-body { padding: 1.35rem !important; }
+.modal-footer { border-top: 1px solid var(--mn-border-color) !important; padding: 0.9rem 1.35rem !important; }
 
-.modal-header {
-  border-bottom: 1px solid var(--mn-border-color) !important;
-  padding: 1.5rem 1.5rem 1rem !important;
+.dropdown-menu {
+  border: 1px solid var(--mn-border-color);
+  border-radius: var(--mn-radius-md);
+  box-shadow: var(--mn-shadow-lg);
+  font-size: 0.8125rem;
 }
+.dropdown-item { padding: 0.6rem 1rem; }
+.dropdown-item:hover, .dropdown-item:focus { background: var(--mn-bg-soft); color: var(--mn-text-main); }
+.dropdown-item.active, .dropdown-item:active { background: var(--mn-primary); color: #fff; }
 
-.modal-title {
-  font-weight: 600;
-  color: var(--mn-text-main);
-}
-
-.modal-body {
-  padding: 1.5rem !important;
-}
-
-.modal-footer {
-  border-top: 1px solid var(--mn-border-color) !important;
-  padding: 1rem 1.5rem !important;
-  background-color: var(--mn-bg-body) !important;
-  border-bottom-left-radius: var(--mn-radius-lg) !important;
-  border-bottom-right-radius: var(--mn-radius-lg) !important;
-}
+/* SWEETALERT: teal confirm button, delete confirmation keeps its danger style */
+.swal2-popup { border-radius: var(--mn-radius-lg) !important; font-family: var(--mn-font); }
+.swal2-styled.swal2-confirm:not(.btn-danger) { background-color: var(--mn-primary) !important; }
+.swal2-timer-progress-bar { background: var(--mn-secondary); }

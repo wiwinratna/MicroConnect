@@ -1,0 +1,23 @@
+/* PHONES AND SMALL TABLETS: shared fixes for data and management pages */
+@media (max-width: 767.98px) {
+  /* Title rows and list toolbars wrap instead of squeezing their buttons */
+  .mn-app .content .card-header.d-flex,
+  .mn-app .content .card-body > .d-flex.justify-content-between,
+  .mn-app .content .container-fluid > .d-flex.justify-content-between {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* Search boxes with a fixed inline width take the full row */
+  .mn-app .content .card-header.d-flex > form,
+  .mn-app .content .card-body > .d-flex.justify-content-between > form {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Tables that have no responsive wrapper scroll inside their card */
+  .mn-app .content .card:has(> table),
+  .mn-app .content .card-body:has(> table) {
+    overflow-x: auto;
+  }
+}

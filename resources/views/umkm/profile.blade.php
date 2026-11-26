@@ -177,7 +177,7 @@
             ========================== --}}
             <div class="mt-4">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header fw-semibold" style="background: linear-gradient(120deg, #fefce8, #f9fafb);">
+                    <div class="card-header fw-semibold" style="background: linear-gradient(120deg, var(--mn-warning-bg), var(--mn-bg-body));">
                         🎨 Logo & Tampilan Usaha
                     </div>
                     <div class="card-body">
@@ -189,11 +189,11 @@
                                     @if($umkm->logo_path)
                                         <img src="{{ asset('storage/' . $umkm->logo_path) }}"
                                              alt="Logo" class="rounded-circle shadow-sm"
-                                             style="width:64px; height:64px; object-fit:cover; border:2px solid #e5e7eb;"
+                                             style="width:64px; height:64px; object-fit:cover; border:2px solid var(--mn-border-color);"
                                              id="logoPreview">
                                     @else
                                         <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                                             style="width:64px; height:64px; background:#dbeafe; color:#1d4ed8; font-weight:700; font-size:1.5rem; border:2px solid #e5e7eb;"
+                                             style="width:64px; height:64px; background:var(--mn-primary-soft); color:var(--mn-primary-hover); font-weight:700; font-size:1.5rem; border:2px solid var(--mn-border-color);"
                                              id="logoPreview">
                                             {{ strtoupper(substr($umkm->nama_usaha ?? 'U', 0, 2)) }}
                                         </div>
@@ -211,12 +211,12 @@
                                 <div class="d-flex align-items-center gap-3">
                                     <input type="color" name="warna_tema" id="warnaTemaInput"
                                            class="form-control form-control-color shadow-sm"
-                                           value="{{ old('warna_tema', $umkm->warna_tema ?? '#0d6efd') }}"
+                                           value="{{ old('warna_tema', $umkm->warna_tema ?? '#176B65') }}"
                                            title="Pilih warna tema">
                                     <div>
                                         <span class="badge rounded-pill px-3 py-2" id="warnaTemaPreview"
-                                              style="background-color: {{ $umkm->warna_tema ?? '#0d6efd' }}; color: #fff; font-size: 0.85rem;">
-                                            {{ $umkm->warna_tema ?? '#0d6efd' }}
+                                              style="background-color: {{ $umkm->warna_tema ?? '#176B65' }}; color: #fff; font-size: 0.85rem;">
+                                            {{ $umkm->warna_tema ?? '#176B65' }}
                                         </span>
                                         <div class="form-text">Hanya untuk Mode Etalase & nota.</div>
                                     </div>
@@ -232,7 +232,7 @@
             ========================== --}}
             <div class="mt-4">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header fw-semibold" style="background: linear-gradient(120deg, #f0fdf4, #f9fafb);">
+                    <div class="card-header fw-semibold" style="background: linear-gradient(120deg, var(--mn-success-bg), var(--mn-bg-body));">
                         ⚙️ Konfigurasi Metode Pencatatan Persediaan
                     </div>
                     <div class="card-body">
@@ -325,15 +325,15 @@
     .profile-card {
         border-radius: 22px;
         background: #ffffff;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        border: 1px solid var(--mn-border-color);
+        box-shadow: 0 6px 18px rgba(38, 59, 56, 0.08);
     }
 
     /* HEADER CARD – dibikin mirip level-info-card */
     .profile-card-header {
         padding: 16px 20px;
-        border-bottom: 1px solid #e5e7eb;
-        background: linear-gradient(120deg, #eff6ff, #f9fafb);
+        border-bottom: 1px solid var(--mn-border-color);
+        background: linear-gradient(120deg, var(--mn-bg-soft), var(--mn-bg-body));
         border-radius: 22px 22px 0 0;
     }
 
@@ -347,7 +347,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #dbeafe;
+        background: var(--mn-primary-soft);
         border-radius: 999px;
     }
 
@@ -358,7 +358,7 @@
     }
 
     .kode-badge {
-        background: #1d4ed8;
+        background: var(--mn-primary-hover);
         color: #fff;
         padding: 6px 12px;
         border-radius: 999px;
@@ -369,8 +369,8 @@
     .level-info-card {
         border-radius: 18px;
         padding: 14px 18px;
-        border: 1px solid #dbeafe;
-        background: linear-gradient(120deg, #eff6ff, #f9fafb);
+        border: 1px solid var(--mn-primary-soft);
+        background: linear-gradient(120deg, var(--mn-bg-soft), var(--mn-bg-body));
     }
 
     .level-chip-icon {
@@ -379,13 +379,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #dbeafe;
+        background: var(--mn-primary-soft);
         border-radius: 50%;
         font-size: 16px;
     }
 
     .level-fee-badge {
-        background: #3b82f6;
+        background: var(--mn-primary);
         color: #fff;
         padding: 6px 14px;
         font-size: 11px;
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const img = document.createElement('img');
                         img.id = 'logoPreview';
                         img.className = 'rounded-circle shadow-sm';
-                        img.style.cssText = 'width:64px; height:64px; object-fit:cover; border:2px solid #e5e7eb;';
+                        img.style.cssText = 'width:64px; height:64px; object-fit:cover; border:2px solid var(--mn-border-color);';
                         img.src = e.target.result;
                         logoPreview.parentNode.replaceChild(img, logoPreview);
                     } else {

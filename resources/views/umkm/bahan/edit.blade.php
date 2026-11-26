@@ -7,40 +7,40 @@
 /* ── Section label divider ── */
 .form-section-label {
     font-size: 0.63rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 0.875rem;
+    letter-spacing: 0.1em; color: var(--mn-text-faint); margin-bottom: 0.875rem;
     display: flex; align-items: center; gap: 0.5rem;
 }
-.form-section-label::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+.form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--mn-border-color); }
 
 /* ── Kode badge ── */
 .kode-badge-input {
     display: inline-flex; align-items: center; gap: 0.45rem;
-    background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 7px;
+    background: var(--mn-bg-soft); border: 1px solid var(--mn-border-color); border-radius: 7px;
     padding: 0.32rem 0.8rem;
     font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
-    font-size: 0.78rem; color: #475569; letter-spacing: 0.04em;
+    font-size: 0.78rem; color: var(--mn-text-muted); letter-spacing: 0.04em;
 }
-.kode-badge-input .dot { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; flex-shrink: 0; }
+.kode-badge-input .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mn-text-faint); flex-shrink: 0; }
 
 /* ── Saldo section (editable) ── */
 .saldo-section {
-    background: linear-gradient(145deg, #eff6ff 0%, #f8fafc 100%);
-    border: 1px solid #bfdbfe; border-radius: 12px;
+    background: linear-gradient(145deg, var(--mn-bg-soft) 0%, var(--mn-bg-body) 100%);
+    border: 1px solid var(--mn-soft-teal); border-radius: 12px;
     padding: 1.25rem; margin-bottom: 1rem;
 }
 .saldo-section-head {
     display: flex; align-items: flex-start; gap: 0.875rem;
-    padding-bottom: 1rem; border-bottom: 1px solid rgba(191,219,254,0.6);
+    padding-bottom: 1rem; border-bottom: 1px solid rgba(169, 207, 197,0.6);
     margin-bottom: 1rem;
 }
 .saldo-icon-box {
-    width: 38px; height: 38px; background: #dbeafe; border-radius: 10px;
+    width: 38px; height: 38px; background: var(--mn-primary-soft); border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    color: #2563eb; flex-shrink: 0;
+    color: var(--mn-primary); flex-shrink: 0;
 }
 .saldo-icon-box svg { width: 17px; height: 17px; }
-.saldo-section-title { font-size: 0.875rem; font-weight: 700; color: #1e293b; margin: 0 0 3px; }
-.saldo-section-desc  { font-size: 0.73rem; color: #64748b; margin: 0; line-height: 1.55; }
+.saldo-section-title { font-size: 0.875rem; font-weight: 700; color: var(--mn-text-main); margin: 0 0 3px; }
+.saldo-section-desc  { font-size: 0.73rem; color: var(--mn-text-muted); margin: 0; line-height: 1.55; }
 
 /* ── Saldo fields CSS grid ── */
 .saldo-fields {
@@ -50,60 +50,60 @@
     align-items: start;
 }
 .field-group { display: flex; flex-direction: column; }
-.field-group .form-label { font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 0.3rem; }
-.field-group .field-hint { font-size: 0.67rem; color: #94a3b8; margin-top: 4px; }
+.field-group .form-label { font-size: 0.75rem; font-weight: 600; color: var(--mn-text-muted); margin-bottom: 0.3rem; }
+.field-group .field-hint { font-size: 0.67rem; color: var(--mn-text-faint); margin-top: 4px; }
 
 /* ── Saldo locked (read-only grid) ── */
 .saldo-locked-section {
-    background: #fafafa; border: 1px solid #e2e8f0;
+    background: var(--mn-bg-body); border: 1px solid var(--mn-border-color);
     border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;
 }
 .saldo-locked-head { display: flex; align-items: flex-start; gap: 0.875rem; margin-bottom: 1rem; }
 .saldo-icon-locked {
-    width: 38px; height: 38px; background: #f1f5f9; border-radius: 10px;
+    width: 38px; height: 38px; background: var(--mn-bg-soft); border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    color: #94a3b8; flex-shrink: 0;
+    color: var(--mn-text-faint); flex-shrink: 0;
 }
 .saldo-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
-    border: 1px solid #e2e8f0; border-radius: 10px;
+    border: 1px solid var(--mn-border-color); border-radius: 10px;
     overflow: hidden; background: #fff;
 }
-.saldo-grid-item { padding: 0.7rem 1rem; border-right: 1px solid #e2e8f0; }
+.saldo-grid-item { padding: 0.7rem 1rem; border-right: 1px solid var(--mn-border-color); }
 .saldo-grid-item:last-child { border-right: none; }
-.saldo-grid-label { font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; display: block; margin-bottom: 3px; }
-.saldo-grid-value { font-size: 0.88rem; font-weight: 700; color: #1e293b; }
-.saldo-grid-value.accent { color: #2563eb; }
+.saldo-grid-label { font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--mn-text-faint); display: block; margin-bottom: 3px; }
+.saldo-grid-value { font-size: 0.88rem; font-weight: 700; color: var(--mn-text-main); }
+.saldo-grid-value.accent { color: var(--mn-primary); }
 
 /* ── Lock notice ── */
 .saldo-lock-notice {
     display: flex; align-items: center; gap: 0.4rem; margin-top: 0.75rem;
-    font-size: 0.73rem; color: #92400e; background: #fef3c7;
-    border: 1px solid #fde68a; border-radius: 7px; padding: 0.45rem 0.75rem;
+    font-size: 0.73rem; color: var(--mn-warning-text); background: var(--mn-warning-bg);
+    border: 1px solid var(--mn-warning-border); border-radius: 7px; padding: 0.45rem 0.75rem;
 }
 
 /* ── Preview bar ── */
 .saldo-preview-bar {
     display: none; align-items: center; gap: 0.6rem;
     margin-top: 0.875rem; padding: 0.55rem 0.875rem;
-    background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.18);
+    background: rgba(23, 107, 101,0.06); border: 1px solid rgba(23, 107, 101,0.18);
     border-radius: 8px; font-size: 0.775rem;
 }
 .saldo-preview-bar.show { display: flex; }
-.saldo-preview-eq { color: #64748b; }
-.saldo-preview-val { font-weight: 700; color: #1d4ed8; }
+.saldo-preview-eq { color: var(--mn-text-muted); }
+.saldo-preview-val { font-weight: 700; color: var(--mn-primary-hover); }
 
 /* ── Input group ── */
 .input-group-text {
-    font-size: 0.78rem !important; color: #64748b !important;
-    background: #f8fafc !important; border-color: #cbd5e1 !important;
+    font-size: 0.78rem !important; color: var(--mn-text-muted) !important;
+    background: var(--mn-bg-body) !important; border-color: var(--mn-border-strong) !important;
     min-width: 36px; justify-content: center;
 }
 
 /* ── Actions ── */
 .form-footer {
     display: flex; align-items: center; gap: 0.75rem;
-    padding-top: 0.5rem; border-top: 1px solid #f1f5f9; margin-top: 0;
+    padding-top: 0.5rem; border-top: 1px solid var(--mn-bg-soft); margin-top: 0;
 }
 </style>
 @endpush
@@ -116,8 +116,8 @@
     {{-- Page Header --}}
     <div class="d-flex align-items-center gap-3 mb-4">
         <a href="{{ route('umkm.bahan.index') }}"
-           style="width:32px;height:32px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;text-decoration:none;flex-shrink:0;transition:background .15s;"
-           onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+           style="width:32px;height:32px;border-radius:8px;background:var(--mn-bg-soft);border:none;display:flex;align-items:center;justify-content:center;color:var(--mn-text-muted);text-decoration:none;flex-shrink:0;transition:background .15s;"
+           onmouseover="this.style.background='var(--mn-border-color)'" onmouseout="this.style.background='var(--mn-bg-soft)'">
             <i data-feather="arrow-left" style="width:15px;height:15px;"></i>
         </a>
         <div>
@@ -262,7 +262,7 @@
                 </div>
 
                 <div class="saldo-preview-bar" id="preview_nilai">
-                    <i data-feather="check-circle" style="width:13px;height:13px;color:#2563eb;flex-shrink:0;"></i>
+                    <i data-feather="check-circle" style="width:13px;height:13px;color:var(--mn-primary);flex-shrink:0;"></i>
                     <span class="saldo-preview-eq">Akan dicatat:</span>
                     <span class="saldo-preview-val" id="preview_text">—</span>
                 </div>

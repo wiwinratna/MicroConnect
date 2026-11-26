@@ -5,22 +5,22 @@
 @push('styles')
 <style>
 /* ── Premium Table & Actions ── */
-.btn-action-edit { width: 32px; height: 32px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; display: inline-flex; align-items: center; justify-content: center;  transition: all .2s; }
-.btn-action-edit:hover { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; }
-.btn-action-view { width: 32px; height: 32px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
-.btn-action-view:hover { background: #fdf5ff; border-color: #f5d0fe; color: #c026d3; }
+.btn-action-edit { width: 32px; height: 32px; border-radius: 8px; background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted); display: inline-flex; align-items: center; justify-content: center;  transition: all .2s; }
+.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
+.btn-action-view { width: 32px; height: 32px; border-radius: 8px; background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted); display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
+.btn-action-view:hover { background: var(--mn-info-bg); border-color: var(--mn-info-border); color: var(--mn-info-text); }
 
-.table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0 !important; padding: 1rem 1.25rem; background: #fafbfc; }
-.table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+.table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mn-text-faint); border-bottom: 1px solid var(--mn-border-color) !important; padding: 1rem 1.25rem; background: var(--mn-bg-body); }
+.table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--mn-bg-soft); vertical-align: middle; }
 .table-premium tr:last-child td { border-bottom: none; }
-.table-premium tr:hover td { background: #f8fafc; }
+.table-premium tr:hover td { background: var(--mn-bg-body); }
 
 /* ── Popup Overlay ── */
 #pb-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(10, 18, 36, 0.52);
+    background: rgba(38, 59, 56, 0.52);
     z-index: 9050;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -39,7 +39,7 @@
     max-height: calc(100vh - 3rem);
     background: #fff;
     border-radius: 16px;
-    box-shadow: 0 24px 80px rgba(15,23,42,.22), 0 4px 20px rgba(15,23,42,.1);
+    box-shadow: 0 24px 80px rgba(38, 59, 56,.22), 0 4px 20px rgba(38, 59, 56,.1);
     overflow: hidden;
     flex-direction: column;
 }
@@ -55,7 +55,7 @@
 /* ── Popup Header ── */
 .pb-header {
     padding: 1.25rem 1.5rem 1rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--mn-bg-soft);
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -67,13 +67,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #94a3b8;
+    color: var(--mn-text-faint);
     margin: 0 0 4px;
 }
 .pb-title {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--mn-text-main);
     margin: 0;
     line-height: 1.3;
 }
@@ -81,8 +81,8 @@
     width: 32px; height: 32px;
     border-radius: 50%;
     border: none;
-    background: #f1f5f9;
-    color: #64748b;
+    background: var(--mn-bg-soft);
+    color: var(--mn-text-muted);
     font-size: 1.1rem;
     line-height: 1;
     cursor: pointer;
@@ -90,27 +90,27 @@
     flex-shrink: 0;
     transition: background .15s, color .15s;
 }
-.pb-close:hover { background: #e2e8f0; color: #0f172a; }
+.pb-close:hover { background: var(--mn-border-color); color: var(--mn-text-main); }
 
 /* ── Meta Bar ── */
 .pb-meta {
     display: flex;
     align-items: center;
     gap: 0;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background: var(--mn-bg-body);
+    border-bottom: 1px solid var(--mn-border-color);
     flex-shrink: 0;
     overflow: hidden;
 }
 .pb-meta-item {
     padding: 0.6rem 1.25rem;
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid var(--mn-border-color);
     font-size: 0.77rem;
 }
 .pb-meta-item:last-child { border-right: none; margin-left: auto; }
-.pb-meta-label { color: #94a3b8; display: block; font-size: 0.68rem; margin-bottom: 1px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-.pb-meta-value { color: #1e293b; font-weight: 600; }
-.pb-meta-total .pb-meta-value { color: #2563eb; font-size: 1rem; font-weight: 800; }
+.pb-meta-label { color: var(--mn-text-faint); display: block; font-size: 0.68rem; margin-bottom: 1px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.pb-meta-value { color: var(--mn-text-main); font-weight: 600; }
+.pb-meta-total .pb-meta-value { color: var(--mn-primary); font-size: 1rem; font-weight: 800; }
 
 /* ── Table Body ── */
 .pb-table-wrap {
@@ -126,14 +126,14 @@
 .pb-table thead th {
     position: sticky;
     top: 0;
-    background: #f8fafc;
+    background: var(--mn-bg-body);
     padding: 0.6rem 1.25rem;
     font-size: 0.63rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: #94a3b8;
-    border-bottom: 1px solid #e2e8f0;
+    color: var(--mn-text-faint);
+    border-bottom: 1px solid var(--mn-border-color);
     white-space: nowrap;
 }
 .pb-table thead th:first-child { text-align: left; width: 36px; }
@@ -142,21 +142,21 @@
 .pb-table thead th.col-harga { text-align: right; width: 140px; }
 .pb-table thead th.col-sub { text-align: right; width: 140px; }
 
-.pb-table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .12s; }
+.pb-table tbody tr { border-bottom: 1px solid var(--mn-bg-soft); transition: background .12s; }
 .pb-table tbody tr:last-child { border-bottom: none; }
-.pb-table tbody tr:hover { background: #f8fafc; }
+.pb-table tbody tr:hover { background: var(--mn-bg-body); }
 .pb-table tbody td { padding: 0.65rem 1.25rem; vertical-align: middle; }
-.pb-table tbody td.td-no { color: #cbd5e1; font-size: 0.72rem; font-weight: 600; text-align: left; }
-.pb-table tbody td.td-nama { font-weight: 600; color: #1e293b; }
-.pb-table tbody td.td-qty { text-align: center; color: #475569; }
-.pb-table tbody td.td-satuan { font-size: 0.7rem; color: #94a3b8; }
-.pb-table tbody td.td-harga { text-align: right; color: #64748b; }
-.pb-table tbody td.td-sub { text-align: right; font-weight: 700; color: #0f172a; }
+.pb-table tbody td.td-no { color: var(--mn-border-strong); font-size: 0.72rem; font-weight: 600; text-align: left; }
+.pb-table tbody td.td-nama { font-weight: 600; color: var(--mn-text-main); }
+.pb-table tbody td.td-qty { text-align: center; color: var(--mn-text-muted); }
+.pb-table tbody td.td-satuan { font-size: 0.7rem; color: var(--mn-text-faint); }
+.pb-table tbody td.td-harga { text-align: right; color: var(--mn-text-muted); }
+.pb-table tbody td.td-sub { text-align: right; font-weight: 700; color: var(--mn-text-main); }
 
 /* ── Footer ── */
 .pb-footer {
     padding: 0.75rem 1.5rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--mn-bg-soft);
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -167,15 +167,15 @@
 .pb-btn-close {
     padding: 0.38rem 1.1rem;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--mn-border-color);
     background: #fff;
-    color: #475569;
+    color: var(--mn-text-muted);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     transition: background .15s, border-color .15s;
 }
-.pb-btn-close:hover { background: #f8fafc; border-color: #cbd5e1; }
+.pb-btn-close:hover { background: var(--mn-bg-body); border-color: var(--mn-border-strong); }
 </style>
 @endpush
 
@@ -190,8 +190,8 @@
 <div class="card border-0 shadow-sm" style="border-radius:12px; overflow:hidden;">
     <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
         <form action="{{ route('umkm.pembelian.index') }}" method="GET" class="d-flex align-items-center gap-2" style="position:relative; width: 300px;">
-            <i data-feather="search" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
-            <input type="text" name="search" class="form-control" placeholder="Cari nomor nota atau supplier..." value="{{ request('search') }}" style="padding-left:36px !important; border-radius:8px; border:1px solid #e2e8f0; border-radius: 8px;">
+            <i data-feather="search" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mn-text-faint);"></i>
+            <input type="text" name="search" class="form-control" placeholder="Cari nomor nota atau supplier..." value="{{ request('search') }}" style="padding-left:36px !important; border-radius:8px; border:1px solid var(--mn-border-color); border-radius: 8px;">
         </form>
         <a href="{{ route('umkm.pembelian.create') }}" class="btn btn-primary shadow-sm" style="border-radius:8px; padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight:500;">
             <i data-feather="plus" style="width:14px;height:14px; margin-right:6px; margin-bottom: 2px;"></i> Pembelian Baru
@@ -201,8 +201,8 @@
         @if($data->isEmpty())
             <div class="py-5 text-center">
                 <div class="mb-3">
-                    <div style="width: 64px; height: 64px; background: #f1f5f9; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
-                        <i data-feather="shopping-cart" style="width: 28px; height: 28px; color: #94a3b8;"></i>
+                    <div style="width: 64px; height: 64px; background: var(--mn-bg-soft); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                        <i data-feather="shopping-cart" style="width: 28px; height: 28px; color: var(--mn-text-faint);"></i>
                     </div>
                 </div>
                 <p class="text-muted mb-0">Belum ada transaksi pembelian. Klik <strong>+ Pembelian Baru</strong> untuk menambahkan.</p>
@@ -235,11 +235,11 @@
                             $detailsB64 = base64_encode(json_encode($detailsArr));
                         @endphp
                             <tr>
-                                <td class="text-nowrap" style="font-weight: 500; font-size: 0.85rem; color: #1e293b;">
+                                <td class="text-nowrap" style="font-weight: 500; font-size: 0.85rem; color: var(--mn-text-main);">
                                     {{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}
                                 </td>
                                 <td>
-                                    <span style="font-size: 0.9rem; font-weight: 600; color: #334155;">{{ $row->supplier ?: '-' }}</span>
+                                    <span style="font-size: 0.9rem; font-weight: 600; color: var(--mn-text-main);">{{ $row->supplier ?: '-' }}</span>
                                     @if($row->bukti_pembelian)
                                         <a href="{{ asset('storage/' . $row->bukti_pembelian) }}" target="_blank"
                                            class="ms-2 badge bg-primary text-white text-decoration-none shadow-sm"
@@ -256,11 +256,11 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">
+                                    <span style="background: var(--mn-primary-soft); color: var(--mn-primary); font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">
                                         {{ $row->details->count() }} item
                                     </span>
                                 </td>
-                                <td class="text-end text-nowrap" style="font-weight: 700; color: #0f172a;">
+                                <td class="text-end text-nowrap" style="font-weight: 700; color: var(--mn-text-main);">
                                     {{ rupiah($row->total) }}
                                 </td>
                                 <td class="text-end">
@@ -291,7 +291,7 @@
                                             <form action="{{ route('umkm.pembelian.destroy', $row->id) }}" method="POST" class="d-inline-block m-0 p-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Riwayat Pembelian ini? Stok bahan yang sudah masuk akan ditarik kembali.');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn-action-edit text-danger" title="Hapus Pembelian" style="background:#fff1f2; border-color:#ffe4e6;">
+                                                <button type="submit" class="btn-action-edit text-danger" title="Hapus Pembelian" style="background:var(--mn-danger-bg); border-color:var(--mn-danger-bg);">
                                                     <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
                                                 </button>
                                             </form>
@@ -352,7 +352,7 @@
                 </tr>
             </thead>
             <tbody id="pb-tbody">
-                <tr><td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8;">Memuat...</td></tr>
+                <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mn-text-faint);">Memuat...</td></tr>
             </tbody>
         </table>
     </div>
@@ -399,7 +399,7 @@
 
         // Render rows
         if (!details.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8;font-size:0.8rem;">Tidak ada detail item tercatat.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mn-text-faint);font-size:0.8rem;">Tidak ada detail item tercatat.</td></tr>';
         } else {
             tbody.innerHTML = details.map(function (d, i) {
                 return '<tr>' +

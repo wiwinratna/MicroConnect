@@ -4,10 +4,10 @@
 @push('styles')
 <style>
     /* ── Premium Table Integration ── */
-    .table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0 !important; padding: 1rem 1.25rem; background: #fafbfc; }
-    .table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mn-text-faint); border-bottom: 1px solid var(--mn-border-color) !important; padding: 1rem 1.25rem; background: var(--mn-bg-body); }
+    .table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--mn-bg-soft); vertical-align: middle; }
     .table-premium tr:last-child td { border-bottom: none; }
-    .table-premium tr:hover td { background: #f8fafc; }
+    .table-premium tr:hover td { background: var(--mn-bg-body); }
 
     /* ── High-Contrast Status Badges ── */
     .status-badge { 
@@ -23,9 +23,9 @@
     }
     .status-badge i { font-size: 8px; }
     
-    .badge-open { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-    .badge-progress { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
-    .badge-resolved { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .badge-open { background-color: var(--mn-warning-bg); color: var(--mn-warning-text); border: 1px solid var(--mn-warning-border); }
+    .badge-progress { background-color: var(--mn-primary-soft); color: var(--mn-primary-hover); border: 1px solid var(--mn-soft-teal); }
+    .badge-resolved { background-color: var(--mn-success-bg); color: var(--mn-success-text); border: 1px solid var(--mn-success-border); }
 </style>
 @endpush
 
@@ -97,8 +97,8 @@
                     <tr>
                         <td colspan="6" class="text-center py-5">
                             <div class="mb-3">
-                                <div style="width: 48px; height: 48px; background: #f1f5f9; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
-                                    <i data-feather="message-circle" style="width: 24px; height: 24px; color: #94a3b8;"></i>
+                                <div style="width: 48px; height: 48px; background: var(--mn-bg-soft); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                    <i data-feather="message-circle" style="width: 24px; height: 24px; color: var(--mn-text-faint);"></i>
                                 </div>
                             </div>
                             <h6 class="text-dark fw-bold mb-1">Daftar Tiket Kosong</h6>

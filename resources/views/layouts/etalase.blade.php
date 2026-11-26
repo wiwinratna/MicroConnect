@@ -7,22 +7,23 @@
     <title>@yield('title') - Mode Kasir</title>
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="{{ asset('css/custom-polish.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/minect-theme/main.css') }}" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
         :root {
-            --kasir-primary: {{ $umkm->warna_tema ?? '#0d6efd' }}; 
+            --kasir-primary: {{ $umkm->warna_tema ?? '#176B65' }}; 
             --kasir-primary-hover: color-mix(in srgb, var(--kasir-primary) 85%, black);
             --kasir-primary-light: color-mix(in srgb, var(--kasir-primary) 10%, white);
-            --kasir-bg: #f4f6f9;
+            --kasir-bg: var(--mn-bg-soft);
         }
 
         body {
             background-color: var(--kasir-bg);
-            font-family: 'Inter', sans-serif;
-            color: #333;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--mn-text-main);
             overflow-x: hidden;
             min-height: 100vh;
             display: flex;
@@ -47,7 +48,7 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
-            color: #1a1a1a;
+            color: var(--mn-text-main);
             font-weight: 700;
             font-size: 1.15rem;
             letter-spacing: -0.02em;
@@ -104,8 +105,8 @@
         /* Subtle scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        ::-webkit-scrollbar-thumb { background: var(--mn-border-strong); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--mn-text-faint); }
     </style>
     
     @stack('styles')

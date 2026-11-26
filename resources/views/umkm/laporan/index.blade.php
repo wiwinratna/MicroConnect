@@ -116,8 +116,8 @@
 
 @push('scripts')
 <style>
-.nav-tabs .nav-link { border-radius: 8px 8px 0 0; color: #495057; font-weight: 500; }
-.nav-tabs .nav-link.active { font-weight: 700; color: #0d6efd; border-bottom-color: transparent; }
+.nav-tabs .nav-link { border-radius: 8px 8px 0 0; color: var(--mn-text-muted); font-weight: 500; }
+.nav-tabs .nav-link.active { font-weight: 700; color: var(--mn-primary); border-bottom-color: transparent; }
 .table-sm td, .table-sm th { padding: 0.5rem; }
 
 @if(auth()->user()->user_group === 'admin')

@@ -62,7 +62,7 @@
     <div class="card-header bg-white py-3 border-bottom">
         <form method="GET" class="d-flex align-items-center gap-2">
             <div class="flex-grow-1">
-              <div class="input-group input-group-sm border rounded-3 overflow-hidden" style="border-color: #e2e8f0 !important;">
+              <div class="input-group input-group-sm border rounded-3 overflow-hidden" style="border-color: var(--mn-border-color) !important;">
                 <span class="input-group-text bg-light border-0"><i data-feather="search" style="width: 14px;"></i></span>
                 <input type="text" name="search" class="form-control border-0 bg-light" placeholder="Cari nama usaha / kode..." value="{{ request('search') }}" style="box-shadow: none;">
               </div>
@@ -164,14 +164,14 @@
 
 <style>
     .x-small { font-size: 0.7rem; }
-    .bg-primary-subtle { background-color: rgba(59, 125, 221, 0.1) !important; }
-    .bg-success-subtle { background-color: rgba(28, 187, 140, 0.1) !important; }
-    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1) !important; }
-    .bg-secondary-subtle { background-color: rgba(108, 117, 125, 0.1) !important; }
-    .text-primary { color: #3b7ddd !important; }
-    .text-success { color: #1cbb8c !important; }
-    .text-danger { color: #dc3545 !important; }
-    .text-secondary { color: #6c757d !important; }
+    .bg-primary-subtle { background-color: rgba(23, 107, 101, 0.1) !important; }
+    .bg-success-subtle { background-color: rgba(22, 107, 76, 0.1) !important; }
+    .bg-danger-subtle { background-color: rgba(174, 42, 32, 0.1) !important; }
+    .bg-secondary-subtle { background-color: rgba(95, 112, 108, 0.1) !important; }
+    .text-primary { color: var(--mn-primary) !important; }
+    .text-success { color: var(--mn-success-text) !important; }
+    .text-danger { color: var(--mn-danger-text) !important; }
+    .text-secondary { color: var(--mn-text-muted) !important; }
     .border-bottom-faint { border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important; }
 </style>
 @endsection

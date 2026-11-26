@@ -9,7 +9,7 @@
 /* ── Search bar ── */
 .bb-search-card {
     background: #fff;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--mn-border-color);
     border-radius: 10px;
     padding: 0.65rem 0.875rem;
     display: flex;
@@ -18,20 +18,20 @@
     box-shadow: 0 1px 3px rgba(0,0,0,.04);
     margin-bottom: 0.875rem;
 }
-.bb-search-icon { color: #94a3b8; flex-shrink: 0; width: 15px; height: 15px; }
+.bb-search-icon { color: var(--mn-text-faint); flex-shrink: 0; width: 15px; height: 15px; }
 .bb-search-input {
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
     flex: 1;
     font-size: 0.8125rem;
-    color: #334155;
+    color: var(--mn-text-main);
     padding: 0 !important;
     background: transparent !important;
 }
-.bb-search-input::placeholder { color: #94a3b8; }
+.bb-search-input::placeholder { color: var(--mn-text-faint); }
 .bb-search-clear {
-    color: #94a3b8;
+    color: var(--mn-text-faint);
     background: none;
     border: none;
     cursor: pointer;
@@ -40,27 +40,27 @@
     display: flex; align-items: center;
     transition: color .15s;
 }
-.bb-search-clear:hover { color: #475569; }
+.bb-search-clear:hover { color: var(--mn-text-muted); }
 .bb-search-btn {
     padding: 0.28rem 0.85rem;
     font-size: 0.775rem;
     border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    background: #f8fafc;
-    color: #475569;
+    border: 1px solid var(--mn-border-color);
+    background: var(--mn-bg-body);
+    color: var(--mn-text-muted);
     font-weight: 500;
     cursor: pointer;
     transition: background .15s, border-color .15s;
     white-space: nowrap;
 }
-.bb-search-btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+.bb-search-btn:hover { background: var(--mn-bg-soft); border-color: var(--mn-border-strong); }
 
 /* ── Table tweaks ── */
 .kode-chip {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.68rem;
-    color: #64748b;
-    background: #f1f5f9;
+    color: var(--mn-text-muted);
+    background: var(--mn-bg-soft);
     border-radius: 5px;
     padding: 1px 7px;
     letter-spacing: 0.03em;
@@ -119,9 +119,9 @@
                                 <td style="padding-left:1.25rem;">
                                     <span class="kode-chip">{{ $item->kode_bahan }}</span>
                                 </td>
-                                <td class="fw-medium" style="color:#1e293b;">{{ $item->nama_bahan }}</td>
+                                <td class="fw-medium" style="color:var(--mn-text-main);">{{ $item->nama_bahan }}</td>
                                 <td class="text-muted">{{ $item->satuan }}</td>
-                                <td class="text-end fw-semibold" style="color:#1e293b;">
+                                <td class="text-end fw-semibold" style="color:var(--mn-text-main);">
                                     {{ format_angka($item->current_stok) }}
                                 </td>
                                 <td class="text-muted" style="
@@ -154,7 +154,7 @@
                                         @else
                                             <form action="{{ route('umkm.bahan.destroy', $item->id) }}" method="POST" class="d-inline">
                                                 @csrf @method('DELETE')
-                                                <button class="btn btn-sm btn-action" style="color:#94a3b8;"
+                                                <button class="btn btn-sm btn-action" style="color:var(--mn-text-faint);"
                                                         onclick="return confirm('Hapus permanen bahan \'{{ addslashes($item->nama_bahan) }}\' dari sistem?')"
                                                         title="Hapus Permanen">
                                                     <i data-feather="trash-2" style="width:12px;height:12px;"></i>
@@ -205,13 +205,13 @@ function confirmDelete(id, nama) {
     Swal.fire({
         title: 'Hapus Bahan Baku?',
         html: `Anda yakin ingin menghapus <strong>${nama}</strong>?<br>
-               <span style="font-size:0.78rem;color:#64748b;margin-top:4px;display:block;">
+               <span style="font-size:0.78rem;color:var(--mn-text-muted);margin-top:4px;display:block;">
                Jika bahan sudah digunakan dalam transaksi, statusnya akan menjadi Nonaktif (tersimpan di histori).
                </span>`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
+        confirmButtonColor: 'var(--mn-danger-text)',
+        cancelButtonColor: 'var(--mn-text-muted)',
         confirmButtonText: 'Ya, Hapus',
         cancelButtonText: 'Batal',
         customClass: { popup: 'rounded-4' }

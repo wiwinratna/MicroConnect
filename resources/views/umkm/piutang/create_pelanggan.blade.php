@@ -7,22 +7,22 @@
 
 .section-label {
     font-size: .68rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .1em; color: #94a3b8; margin-bottom: 1.25rem;
+    letter-spacing: .1em; color: var(--mn-text-faint); margin-bottom: 1.25rem;
     display: flex; align-items: center; gap: .5rem;
 }
-.section-label::after { content:''; flex:1; height:1px; background:#e2e8f0; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--mn-border-color); }
 
-.form-label { font-size: .8rem; font-weight: 600; color: #475569; margin-bottom: .4rem; }
-.req { color: #ef4444; }
+.form-label { font-size: .8rem; font-weight: 600; color: var(--mn-text-muted); margin-bottom: .4rem; }
+.req { color: var(--mn-danger-text); }
 
-.action-footer { display: flex; align-items: center; justify-content: flex-start; gap: .75rem; padding-top: 1.25rem; border-top: 1px solid #f1f5f9; margin-top: 1rem; }
+.action-footer { display: flex; align-items: center; justify-content: flex-start; gap: .75rem; padding-top: 1.25rem; border-top: 1px solid var(--mn-bg-soft); margin-top: 1rem; }
 .input-icon-wrap { position: relative; }
 .input-icon-wrap .form-control { padding-left: 2.25rem !important; }
-.input-icon-wrap .icon { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; width: 14px; height: 14px; z-index: 5; }
+.input-icon-wrap .icon { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); color: var(--mn-text-faint); pointer-events: none; width: 14px; height: 14px; z-index: 5; }
 
 /* ── Upload Zone ── */
-.upload-zone { border: 2px dashed #cbd5e1; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all .2s; background: #f8fafc; position: relative; overflow: hidden; }
-.upload-zone:hover { border-color: #94a3b8; background: #f1f5f9; }
+.upload-zone { border: 2px dashed var(--mn-border-strong); border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all .2s; background: var(--mn-bg-body); position: relative; overflow: hidden; }
+.upload-zone:hover { border-color: var(--mn-text-faint); background: var(--mn-bg-soft); }
 .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .upload-zone .preview-img { max-height: 120px; object-fit: contain; display: none; }
 .upload-zone.has-file .placeholder-content { display: none; }
@@ -35,8 +35,8 @@
 {{-- Page Header --}}
 <div class="mb-4">
     <a href="{{ route('umkm.etalase.pelanggan.index') }}"
-       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.775rem;font-weight:500;color:#64748b;text-decoration:none;margin-bottom:.7rem;transition:color .15s;"
-       onmouseover="this.style.color='#334155'" onmouseout="this.style.color='#64748b'">
+       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.775rem;font-weight:500;color:var(--mn-text-muted);text-decoration:none;margin-bottom:.7rem;transition:color .15s;"
+       onmouseover="this.style.color='var(--mn-text-main)'" onmouseout="this.style.color='var(--mn-text-muted)'">
         <i data-feather="arrow-left" style="width:13px;height:13px;"></i>
         Kembali ke Daftar Pelanggan
     </a>
@@ -91,9 +91,9 @@
                             <div class="upload-zone" id="ktpZone">
                                 <input type="file" name="foto_ktp" id="foto_ktp" accept="image/*">
                                 <div class="placeholder-content">
-                                    <i data-feather="upload-cloud" style="width:24px;height:24px;color:#94a3b8;margin-bottom:.5rem;"></i>
-                                    <div style="font-size:.78rem;font-weight:600;color:#475569;">Klik / Seret foto KTP</div>
-                                    <div style="font-size:.7rem;color:#94a3b8;">Format: JPG, PNG (Max 2MB)</div>
+                                    <i data-feather="upload-cloud" style="width:24px;height:24px;color:var(--mn-text-faint);margin-bottom:.5rem;"></i>
+                                    <div style="font-size:.78rem;font-weight:600;color:var(--mn-text-muted);">Klik / Seret foto KTP</div>
+                                    <div style="font-size:.7rem;color:var(--mn-text-faint);">Format: JPG, PNG (Max 2MB)</div>
                                 </div>
                                 <img src="" class="preview-img" id="ktpPreview" alt="Preview KTP">
                             </div>

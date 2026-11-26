@@ -164,16 +164,16 @@
 
 <style>
     .x-small { font-size: 0.7rem; }
-    .bg-primary-subtle { background-color: rgba(59, 125, 221, 0.1) !important; }
-    .bg-success-subtle { background-color: rgba(28, 187, 140, 0.1) !important; }
-    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1) !important; }
-    .bg-secondary-subtle { background-color: rgba(108, 117, 125, 0.1) !important; }
-    .bg-warning-subtle { background-color: rgba(252, 185, 44, 0.1) !important; }
-    .text-primary { color: #3b7ddd !important; }
-    .text-success { color: #1cbb8c !important; }
-    .text-danger { color: #dc3545 !important; }
-    .text-secondary { color: #6c757d !important; }
-    .text-warning { color: #f59e0b !important; }
+    .bg-primary-subtle { background-color: rgba(23, 107, 101, 0.1) !important; }
+    .bg-success-subtle { background-color: rgba(22, 107, 76, 0.1) !important; }
+    .bg-danger-subtle { background-color: rgba(174, 42, 32, 0.1) !important; }
+    .bg-secondary-subtle { background-color: rgba(95, 112, 108, 0.1) !important; }
+    .bg-warning-subtle { background-color: rgba(133, 87, 0, 0.1) !important; }
+    .text-primary { color: var(--mn-primary) !important; }
+    .text-success { color: var(--mn-success-text) !important; }
+    .text-danger { color: var(--mn-danger-text) !important; }
+    .text-secondary { color: var(--mn-text-muted) !important; }
+    .text-warning { color: var(--mn-warning-text) !important; }
     .border-bottom-faint { border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important; }
     .italic { font-style: italic; }
 </style>

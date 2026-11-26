@@ -6,30 +6,30 @@
 /* ── Table & Actions ── */
 .btn-action-edit {
     width: 32px; height: 32px; border-radius: 8px;
-    background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b;
+    background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted);
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s;
 }
-.btn-action-edit:hover { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; }
+.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
 
 .btn-action-delete {
     width: 32px; height: 32px; border-radius: 8px;
-    background: #f8fafc; border: 1px solid #e2e8f0; color: #94a3b8;
+    background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-faint);
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s; border: none;
 }
-.btn-action-delete:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; border: 1px solid #fca5a5; }
+.btn-action-delete:hover { background: var(--mn-danger-bg); border-color: var(--mn-danger-border); color: var(--mn-danger-text); border: 1px solid var(--mn-danger-border); }
 
 .table-premium th {
     font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0 !important;
-    padding: 1rem 1.25rem; background: #fafbfc;
+    letter-spacing: 0.05em; color: var(--mn-text-faint); border-bottom: 1px solid var(--mn-border-color) !important;
+    padding: 1rem 1.25rem; background: var(--mn-bg-body);
 }
 .table-premium td {
-    padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+    padding: 1rem 1.25rem; border-bottom: 1px solid var(--mn-bg-soft); vertical-align: middle;
 }
 .table-premium tr:last-child td { border-bottom: none; }
-.table-premium tr:hover td { background: #f8fafc; }
+.table-premium tr:hover td { background: var(--mn-bg-body); }
 </style>
 @endpush
 
@@ -42,7 +42,7 @@
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success rounded-3 mb-4" style="font-size:.85rem; border: none; background: #f0fdf4; color: #166534;">
+    <div class="alert alert-success rounded-3 mb-4" style="font-size:.85rem; border: none; background: var(--mn-success-bg); color: var(--mn-success-text);">
         {{ session('success') }}
     </div>
 @endif
@@ -62,17 +62,17 @@
                     <input type="hidden" name="filter_header" value="{{ request('filter_header') }}">
                 @endif
                 <div style="position:relative; width: 250px;">
-                    <i data-feather="search" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
-                    <input type="text" name="search" class="form-control" placeholder="Cari kode atau nama akun..." value="{{ request('search') }}" style="padding-left:36px !important; border-radius:8px; border:1px solid #e2e8f0;">
+                    <i data-feather="search" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mn-text-faint);"></i>
+                    <input type="text" name="search" class="form-control" placeholder="Cari kode atau nama akun..." value="{{ request('search') }}" style="padding-left:36px !important; border-radius:8px; border:1px solid var(--mn-border-color);">
                 </div>
                 
                 <div class="dropdown">
-                    <button class="btn btn-light d-flex align-items-center gap-2 shadow-sm" type="button" data-bs-toggle="dropdown" style="border-radius: 8px; border: 1px solid #e2e8f0; height: 38px; padding: 0 1rem; background: #fff;" title="Filter Kategori">
-                        <i data-feather="filter" style="width: 16px; height: 16px; color: {{ request('filter_header') ? '#2563eb' : '#475569' }};"></i>
-                        <span style="font-size: 0.85rem; font-weight: 500; color: {{ request('filter_header') ? '#2563eb' : '#475569' }};">Filter</span>
+                    <button class="btn btn-light d-flex align-items-center gap-2 shadow-sm" type="button" data-bs-toggle="dropdown" style="border-radius: 8px; border: 1px solid var(--mn-border-color); height: 38px; padding: 0 1rem; background: #fff;" title="Filter Kategori">
+                        <i data-feather="filter" style="width: 16px; height: 16px; color: {{ request('filter_header') ? 'var(--mn-primary)' : 'var(--mn-text-muted)' }};"></i>
+                        <span style="font-size: 0.85rem; font-weight: 500; color: {{ request('filter_header') ? 'var(--mn-primary)' : 'var(--mn-text-muted)' }};">Filter</span>
                     </button>
                     <ul class="dropdown-menu shadow border-0" style="border-radius: 10px; font-size: 0.85rem; padding: 0.5rem; min-width: 160px; margin-top: 5px;">
-                        <li><h6 class="dropdown-header text-uppercase fw-bold" style="font-size: 0.65rem; color: #94a3b8; letter-spacing: 0.5px;">Filter Berdasarkan</h6></li>
+                        <li><h6 class="dropdown-header text-uppercase fw-bold" style="font-size: 0.65rem; color: var(--mn-text-faint); letter-spacing: 0.5px;">Filter Berdasarkan</h6></li>
                         <li><a class="dropdown-item rounded-2 py-2 mb-1 {{ request('filter_header') == '' ? 'bg-primary text-white fw-medium' : '' }}" href="{{ route('umkm.coa.index', ['search' => request('search')]) }}">Semua Header</a></li>
                         <li><a class="dropdown-item rounded-2 py-2 mb-1 {{ request('filter_header') == '1' ? 'bg-primary text-white fw-medium' : '' }}" href="{{ route('umkm.coa.index', ['filter_header' => '1', 'search' => request('search')]) }}">1 - Aset</a></li>
                         <li><a class="dropdown-item rounded-2 py-2 mb-1 {{ request('filter_header') == '2' ? 'bg-primary text-white fw-medium' : '' }}" href="{{ route('umkm.coa.index', ['filter_header' => '2', 'search' => request('search')]) }}">2 - Kewajiban</a></li>
@@ -119,13 +119,13 @@
                             <span class="badge bg-light text-dark border" style="font-size: 0.8rem; font-family: monospace;">{{ $r->kode_akun }}</span>
                         </td>
                         <td>
-                            <span style="font-size: 0.9rem; color: #334155;">{{ $r->nama_akun }}</span>
+                            <span style="font-size: 0.9rem; color: var(--mn-text-main);">{{ $r->nama_akun }}</span>
                         </td>
                         <td>
                             @if($r->posisi_dr_cr == 'Debit')
-                                <span style="background: #eff6ff; color: #2563eb; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">Debit</span>
+                                <span style="background: var(--mn-bg-soft); color: var(--mn-primary); font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">Debit</span>
                             @else
-                                <span style="background: #fdf4ff; color: #c026d3; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">Kredit</span>
+                                <span style="background: var(--mn-info-bg); color: var(--mn-info-text); font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">Kredit</span>
                             @endif
                         </td>
                         <td class="text-end">
@@ -152,8 +152,8 @@
                     <tr>
                         <td colspan="5" class="text-center py-5">
                             <div class="mb-3">
-                                <div style="width: 64px; height: 64px; background: #f1f5f9; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
-                                    <i data-feather="search" style="width: 28px; height: 28px; color: #94a3b8;"></i>
+                                <div style="width: 64px; height: 64px; background: var(--mn-bg-soft); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i data-feather="search" style="width: 28px; height: 28px; color: var(--mn-text-faint);"></i>
                                 </div>
                             </div>
                             <h6 class="fw-bold text-dark mb-1">COA Tidak Ditemukan</h6>
@@ -192,13 +192,13 @@ function confirmDeleteCoa(id, nama) {
     Swal.fire({
         title: 'Konfirmasi Hapus',
         html: `Apakah Anda yakin ingin menghapus Chart of Account (COA): <strong>${nama}</strong>?<br><br>
-               <span style="font-size:0.85rem; color:#dc3545;">
+               <span style="font-size:0.85rem; color:var(--mn-danger-text);">
                Peringatan: Jika akun ini sudah digunakan di jurnal manapun, laporan bisa menjadi tidak balance.
                </span>`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
+        confirmButtonColor: 'var(--mn-danger-text)',
+        cancelButtonColor: 'var(--mn-text-muted)',
         confirmButtonText: 'Ya, Hapus',
         cancelButtonText: 'Batal'
     }).then((result) => {

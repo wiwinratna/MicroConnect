@@ -1,230 +1,60 @@
 {{-- resources/views/partials/umkm/sidebar.blade.php --}}
-{{-- Sidebar nav dikontrol oleh FeatureAccess helper (feature_can / feature_level) --}}
-<nav id="sidebar" class="sidebar js-sidebar">
-	<div class="sidebar-content js-simplebar">
+{{-- Sidebar nav dikontrol oleh FeatureAccess helper (feature_can / modul_boleh) --}}
+@php
+    $layananUlang = app(\App\Services\PenilaianUlangService::class);
+    $periodeAktif = $layananUlang->periodeBerlaku();
+    $perluIsi = $periodeAktif && auth()->user()->umkm && !$layananUlang->sudahMengisi(auth()->user()->umkm, $periodeAktif);
 
-		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('umkm.dashboard') }}">
-			<img src="{{ asset('assets/img/logo-white.png') }}" alt="Sistem UMKM Logo"
-				style="height: 50px; width: auto; object-fit: contain;">
-		</a>
+    // Returns null when the menu is not allowed, so it is never rendered.
+    // The route is only resolved for allowed menus.
+    $link = fn (bool $show, string $label, string $icon, string $route, $active, ?string $badge = null) => $show ? [
+        'label' => $label, 'icon' => $icon, 'url' => route($route),
+        'active' => is_bool($active) ? $active : request()->routeIs($active),
+        'badge' => $badge,
+    ] : null;
 
-		<ul class="sidebar-nav">
+    $menu = [
+        $link(true, 'Dashboard', 'layout-dashboard', 'umkm.dashboard', 'umkm.dashboard'),
+        ['label' => 'Master Data', 'icon' => 'database', 'items' => [
+            $link(modul_boleh('bahan_baku'), 'Bahan', 'archive', 'umkm.bahan.index', 'umkm.bahan*'),
+            $link(modul_boleh('produk'), modul_label('produk', 'Produk Jadi'), 'shopping-bag', 'umkm.produk.index', 'umkm.produk*'),
+            $link(true, 'Data Pelanggan', 'users', 'umkm.etalase.pelanggan.index', 'umkm.etalase.pelanggan*'),
+            $link(feature_can('coa'), 'COA', 'book', 'umkm.coa.index', 'umkm.coa.*'),
+        ]],
+        ['label' => 'Transaksi', 'icon' => 'arrow-left-right', 'items' => [
+            $link(modul_boleh('pembelian'), 'Pembelian', 'shopping-cart', 'umkm.pembelian.index', 'umkm.pembelian*'),
+            $link(modul_boleh('penjualan'), 'Penjualan / Kas', 'banknote', 'umkm.penjualan.index', 'umkm.penjualan*'),
+            $link(modul_boleh('penjualan'), 'Kasir', 'monitor', 'umkm.etalase.index',
+                request()->routeIs('umkm.etalase*') && !request()->routeIs('umkm.etalase.pelanggan*')),
+            $link(feature_can('piutang'), 'Piutang Pelanggan', 'credit-card', 'umkm.piutang.index', 'umkm.piutang*'),
+        ]],
+        ['label' => 'Keuangan & Iuran', 'icon' => 'wallet', 'items' => [
+            $link(modul_boleh('beban'), 'Beban Operasional', 'trending-down', 'umkm.beban.index', 'umkm.beban*'),
+            $link(true, 'Iuran Bulanan', 'calendar', 'umkm.iuran.index', 'umkm.iuran*'),
+        ]],
+        ['label' => 'Akuntansi & Laporan', 'icon' => 'chart-column', 'items' => [
+            $link(feature_can('jurnal_umum'), 'Jurnal Umum', 'book-open', 'umkm.jurnal.index', 'umkm.jurnal*'),
+            $link(modul_boleh('kartu_stok'), 'Kartu Stok', 'layers', 'umkm.laporan.kartu_stok', 'umkm.laporan.kartu_stok'),
+            $link(true, 'Laporan Keuangan', 'file-chart-column', 'umkm.laporan.index', 'umkm.laporan.index'),
+        ]],
+        ['label' => 'Penilaian', 'icon' => 'award', 'items' => [
+            $link(true, 'Penilaian Ulang', 'refresh-cw', 'umkm.penilaian-ulang.index', 'umkm.penilaian-ulang*', $perluIsi ? 'Baru' : null),
+            $link(true, 'Hasil Penilaian', 'clipboard-check', 'umkm.penilaian.index', 'umkm.penilaian.*'),
+        ]],
+        ['label' => 'Akun & Bantuan', 'icon' => 'life-buoy', 'items' => [
+            $link(true, 'Profil UMKM', 'user', 'umkm.profile', 'umkm.profile*'),
+            $link(true, 'Notifikasi', 'bell', 'umkm.notifikasi.index', 'umkm.notifikasi*'),
+            $link(true, 'Pengaduan & Konsultasi', 'message-circle', 'umkm.tickets.index', 'umkm.tickets*'),
+        ]],
+    ];
+@endphp
+<nav id="sidebar" class="sidebar js-sidebar" aria-label="Menu utama">
+    <div class="sidebar-content js-simplebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('umkm.dashboard') }}">
+            <img src="{{ asset('assets/img/logo-white.png') }}" alt="Sistem UMKM Logo">
+        </a>
 
-			<li class="sidebar-header">Menu Utama</li>
-
-			{{-- DASHBOARD — semua level --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.dashboard') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.dashboard') }}">
-					<i class="align-middle" data-feather="sliders"></i>
-					<span class="align-middle">Dashboard</span>
-				</a>
-			</li>
-
-			{{-- PROFIL UMKM — semua level --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.profile*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.profile') }}">
-					<i class="align-middle" data-feather="user"></i>
-					<span class="align-middle">Profil UMKM</span>
-				</a>
-			</li>
-
-
-			{{-- ============================================================ --}}
-			{{-- MASTER DATA — Level 1+ --}}
-			{{-- ============================================================ --}}
-			<li class="sidebar-header">Master Data</li>
-
-			{{-- BAHAN BAKU — Level 1+ --}}
-			@if(modul_boleh('bahan_baku'))
-			<li class="sidebar-item {{ request()->routeIs('umkm.bahan*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.bahan.index') }}">
-					<i class="align-middle" data-feather="archive"></i>
-					<span class="align-middle">Bahan</span>
-				</a>
-			</li>
-			@endif
-
-			{{-- PRODUK JADI — Level 1+ --}}
-			@if(modul_boleh('produk'))
-			<li class="sidebar-item {{ request()->routeIs('umkm.produk*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.produk.index') }}">
-					<i class="align-middle" data-feather="shopping-bag"></i>
-					<span class="align-middle">{{ modul_label('produk', 'Produk Jadi') }}</span>
-				</a>
-			</li>
-			@endif
-
-			{{-- PELANGGAN — Level 1+ --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.etalase.pelanggan*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.etalase.pelanggan.index') }}">
-					<i class="align-middle" data-feather="users"></i>
-					<span class="align-middle">Data Pelanggan</span>
-				</a>
-			</li>
-
-			{{-- COA — Level 3 only --}}
-			@if(feature_can('coa'))
-				<li class="sidebar-item {{ request()->routeIs('umkm.coa.*') ? 'active' : '' }}">
-					<a class="sidebar-link" href="{{ route('umkm.coa.index') }}">
-						<i class="align-middle" data-feather="book"></i>
-						<span class="align-middle">COA</span>
-					</a>
-				</li>
-			@endif
-
-
-			{{-- ============================================================ --}}
-			{{-- TRANSAKSI UTAMA — Level 1+ --}}
-			{{-- ============================================================ --}}
-			<li class="sidebar-header">Transaksi Utama</li>
-
-			{{-- PEMBELIAN — Level 1+ --}}
-			@if(modul_boleh('pembelian'))
-			<li class="sidebar-item {{ request()->routeIs('umkm.pembelian*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.pembelian.index') }}">
-					<i class="align-middle" data-feather="shopping-cart"></i>
-					<span class="align-middle">Pembelian</span>
-				</a>
-			</li>
-			@endif
-
-			{{-- PENJUALAN — Level 1+ --}}
-			@if(modul_boleh('penjualan'))
-			<li class="sidebar-item {{ request()->routeIs('umkm.penjualan*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.penjualan.index') }}">
-					<i class="align-middle" data-feather="dollar-sign"></i>
-					<span class="align-middle">Penjualan / Kas</span>
-				</a>
-			</li>
-			@endif
-
-			{{-- MODE KASIR — Level 1+ --}}
-			@if(modul_boleh('penjualan'))
-			<li
-				class="sidebar-item {{ request()->routeIs('umkm.etalase*') && !request()->routeIs('umkm.etalase.pelanggan*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.etalase.index') }}">
-					<i class="align-middle" data-feather="monitor"></i>
-					<span class="align-middle">Kasir</span>
-				</a>
-			</li>
-			@endif
-
-			{{-- PIUTANG PELANGGAN — Level 2+ --}}
-			@if(feature_can('piutang'))
-				<li class="sidebar-item {{ request()->routeIs('umkm.piutang*') ? 'active' : '' }}">
-					<a class="sidebar-link" href="{{ route('umkm.piutang.index') }}">
-						<i class="align-middle" data-feather="credit-card"></i>
-						<span class="align-middle">Piutang Pelanggan</span>
-					</a>
-				</li>
-			@endif
-
-
-			{{-- ============================================================ --}}
-			{{-- KEUANGAN & IURAN — Level 1+ --}}
-			{{-- ============================================================ --}}
-			<li class="sidebar-header">Keuangan & Iuran</li>
-
-			{{-- BEBAN OPERASIONAL AKTUAL — Level 1+ --}}
-			@if(modul_boleh('beban'))
-			<li class="sidebar-item {{ request()->routeIs('umkm.beban*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.beban.index') }}">
-					<i class="align-middle" data-feather="trending-down"></i>
-					<span class="align-middle">Beban Operasional</span>
-				</a>
-			</li>
-			@endif
-
-			{{-- IURAN BULANAN — Level 1+ --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.iuran*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.iuran.index') }}">
-					<i class="align-middle" data-feather="calendar"></i>
-					<span class="align-middle">Iuran Bulanan</span>
-				</a>
-			</li>
-
-
-			{{-- ============================================================ --}}
-			{{-- AKUNTANSI & LAPORAN --}}
-			{{-- ============================================================ --}}
-			<li class="sidebar-header">Akuntansi & Laporan</li>
-
-			{{-- JURNAL UMUM — Level 1+ --}}
-			@if(feature_can('jurnal_umum'))
-				<li class="sidebar-item {{ request()->routeIs('umkm.jurnal*') ? 'active' : '' }}">
-					<a class="sidebar-link" href="{{ route('umkm.jurnal.index') }}">
-						<i class="align-middle" data-feather="book-open"></i>
-						<span class="align-middle">Jurnal Umum</span>
-					</a>
-				</li>
-			@endif
-
-			{{-- KARTU STOK — Level 2+ --}}
-			@if(modul_boleh('kartu_stok'))
-				<li class="sidebar-item {{ request()->routeIs('umkm.laporan.kartu_stok') ? 'active' : '' }}">
-					<a class="sidebar-link" href="{{ route('umkm.laporan.kartu_stok') }}">
-						<i class="align-middle" data-feather="layers"></i>
-						<span class="align-middle">Kartu Stok</span>
-					</a>
-				</li>
-			@endif
-
-			{{-- PENILAIAN ULANG (v1.1) --}}
-			@php
-				$layananUlang = app(\App\Services\PenilaianUlangService::class);
-				$periodeAktif = $layananUlang->periodeBerlaku();
-				$perluIsi = $periodeAktif && auth()->user()->umkm && !$layananUlang->sudahMengisi(auth()->user()->umkm, $periodeAktif);
-			@endphp
-			<li class="sidebar-item {{ request()->routeIs('umkm.penilaian-ulang*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.penilaian-ulang.index') }}">
-					<i class="align-middle" data-feather="refresh-cw"></i>
-					<span class="align-middle">Penilaian Ulang</span>
-					@if($perluIsi)
-						<span class="sidebar-badge badge bg-warning text-dark">Baru</span>
-					@endif
-				</a>
-			</li>
-
-			{{-- NOTIFIKASI (v1.1) --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.notifikasi*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.notifikasi.index') }}">
-					<i class="align-middle" data-feather="bell"></i>
-					<span class="align-middle">Notifikasi</span>
-				</a>
-			</li>
-
-			{{-- HASIL PENILAIAN (v1.1) --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.penilaian*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.penilaian.index') }}">
-					<i class="align-middle" data-feather="award"></i>
-					<span class="align-middle">Hasil Penilaian</span>
-				</a>
-			</li>
-
-			{{-- LAPORAN KEUANGAN — Level 1+ --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.laporan.index') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.laporan.index') }}">
-					<i class="align-middle" data-feather="bar-chart-2"></i>
-					<span class="align-middle">Laporan Keuangan</span>
-				</a>
-			</li>
-
-
-			{{-- ============================================================ --}}
-			{{-- PENGATURAN & BANTUAN --}}
-			{{-- ============================================================ --}}
-			<li class="sidebar-header">Pengaturan & Bantuan</li>
-
-			{{-- TICKETING — Level 1+ --}}
-			<li class="sidebar-item {{ request()->routeIs('umkm.tickets*') ? 'active' : '' }}">
-				<a class="sidebar-link" href="{{ route('umkm.tickets.index') }}">
-					<i class="align-middle" data-feather="message-circle"></i>
-					<span class="align-middle">Pengaduan & Konsultasi</span>
-				</a>
-			</li>
-
-		</ul>
-
-
-	</div>
+        @include('partials.sidebar-menu', ['menu' => $menu])
+    </div>
 </nav>
+<button type="button" class="sidebar-backdrop" aria-label="Tutup menu"></button>

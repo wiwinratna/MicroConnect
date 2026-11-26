@@ -4,10 +4,10 @@
 @push('styles')
 <style>
     /* ── Premium Table ── */
-    .table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0 !important; padding: 1rem 1.25rem; background: #fafbfc; }
-    .table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .table-premium th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mn-text-faint); border-bottom: 1px solid var(--mn-border-color) !important; padding: 1rem 1.25rem; background: var(--mn-bg-body); }
+    .table-premium td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--mn-bg-soft); vertical-align: middle; }
     .table-premium tr:last-child td { border-bottom: none; }
-    .table-premium tr:hover td { background: #f8fafc; }
+    .table-premium tr:hover td { background: var(--mn-bg-body); }
 
     /* ── Summary Card ── */
     .summary-card { border-radius: 16px; transition: transform 0.2s; background: #fff; }
@@ -33,14 +33,14 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-1 fw-bold" style="font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;">Total Beban Bulan Ini</p>
-                        <h3 class="fw-bold mb-0" style="color: #1e293b; letter-spacing: -0.02em;">{{ rupiah($totalBeban) }}</h3>
+                        <h3 class="fw-bold mb-0" style="color: var(--mn-text-main); letter-spacing: -0.02em;">{{ rupiah($totalBeban) }}</h3>
                     </div>
                     <div class="p-3 bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i data-feather="activity" class="text-warning" style="width: 28px; height: 28px;"></i>
                     </div>
                 </div>
                 <div class="mt-3">
-                    <div class="progress" style="height: 4px; background-color: #f1f5f9;">
+                    <div class="progress" style="height: 4px; background-color: var(--mn-bg-soft);">
                         <div class="progress-bar bg-warning" role="progressbar" style="width: 100%; border-radius: 2px;"></div>
                     </div>
                     <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">Biaya operasional mencakup 6xx di Jurnal</p>
@@ -75,8 +75,8 @@
         @if($bebanList->isEmpty())
             <div class="text-center py-5">
                 <div class="mb-3">
-                    <div style="width: 64px; height: 64px; background: #f1f5f9; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
-                        <i data-feather="file-text" style="width: 28px; height: 28px; color: #94a3b8;"></i>
+                    <div style="width: 64px; height: 64px; background: var(--mn-bg-soft); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <i data-feather="file-text" style="width: 28px; height: 28px; color: var(--mn-text-faint);"></i>
                     </div>
                 </div>
                 <h5 class="text-dark fw-bold mb-1">Belum Ada Catatan</h5>
@@ -127,7 +127,7 @@
                         </tr>
                     @endforeach
                 </tbody>
-                <tfoot style="background: #fafbfc;">
+                <tfoot style="background: var(--mn-bg-body);">
                     <tr>
                         <td colspan="3" class="ps-4 py-3 fw-bold text-dark">TOTAL PENGELUARAN</td>
                         <td class="text-end pe-4 py-3 fw-bold text-danger h5 mb-0">{{ rupiah($totalBeban) }}</td>

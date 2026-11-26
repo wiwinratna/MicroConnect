@@ -104,13 +104,13 @@ function confirmDeleteProduk(id, nama) {
     Swal.fire({
         title: 'Konfirmasi Hapus',
         html: `Apakah Anda yakin ingin menghapus produk <strong>${nama}</strong>?<br><br>
-               <span style="font-size:0.85rem; color:#6c757d;">
+               <span style="font-size:0.85rem; color:var(--mn-text-muted);">
                Menghapus produk juga akan menghapus data resep (komposisi bahan) yang terkait.
                </span>`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
+        confirmButtonColor: 'var(--mn-danger-text)',
+        cancelButtonColor: 'var(--mn-text-muted)',
         confirmButtonText: 'Ya, Hapus',
         cancelButtonText: 'Batal'
     }).then((result) => {

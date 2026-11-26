@@ -12,13 +12,13 @@
 	<link rel="shortcut icon" href="{{ asset('img/icons/icon-48x48.png') }}" />
 
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="{{ asset('css/custom-polish.css') }}" rel="stylesheet">
     <link href="{{ asset('css/minect-theme/main.css') }}" rel="stylesheet">
 
 	@stack('styles')
 </head>
-<body>
+<body class="mn-app">
 	<div class="wrapper">
 
 		{{-- SIDEBAR admin --}}
@@ -42,6 +42,8 @@
 	</div>
 
 	<script src="{{ asset('js/app.js') }}"></script>
+	<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+	<script src="{{ asset('js/layout.js') }}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		// Global Elegant Toast / Alert
@@ -52,7 +54,7 @@
 			timer: 6000,
 			timerProgressBar: true,
 			background: '#fff',
-			color: '#1F2937',
+			color: '#263B38',
 			customClass: {
 				popup: 'rounded-4 shadow-sm border border-light'
 			},
@@ -91,7 +93,7 @@
 							icon: 'warning',
 							showCancelButton: true,
 							confirmButtonColor: 'var(--mn-danger-bg)',
-							cancelButtonColor: '#6B7280',
+							cancelButtonColor: '#5F706C',
 							confirmButtonText: 'Ya, Hapus!',
 							cancelButtonText: 'Batal',
 							customClass: {

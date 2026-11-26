@@ -3,7 +3,7 @@
 @section('title', 'Buat Tiket Baru')
 
 @section('content')
-<main class="content">
+<div>
     <div class="container-fluid p-0">
         <h1 class="h3 mb-3"><strong>Buat Tiket</strong> Pengaduan & Konsultasi</h1>
 
@@ -71,5 +71,5 @@
             </div>
         </div>
     </div>
-</main>
+</div>
 @endsection

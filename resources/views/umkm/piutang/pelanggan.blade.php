@@ -6,45 +6,45 @@
 /* ── Table & Actions ── */
 .btn-action-edit {
     width: 32px; height: 32px; border-radius: 8px;
-    background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b;
+    background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted);
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s;
 }
-.btn-action-edit:hover { background: #eff6ff; border-color: #bfdbfe; color: #2563eb; }
+.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
 
 .btn-action-delete {
     width: 32px; height: 32px; border-radius: 8px;
-    background: #f8fafc; border: 1px solid #e2e8f0; color: #94a3b8;
+    background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-faint);
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s;
 }
-.btn-action-delete:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+.btn-action-delete:hover { background: var(--mn-danger-bg); border-color: var(--mn-danger-border); color: var(--mn-danger-text); }
 
 /* ── Pelanggan UI ── */
 .avatar-circle {
     width: 42px; height: 42px; border-radius: 50%;
-    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-    color: #475569; font-weight: 700; font-size: 1rem;
+    background: linear-gradient(135deg, var(--mn-bg-soft), var(--mn-border-color));
+    color: var(--mn-text-muted); font-weight: 700; font-size: 1rem;
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; border: 1px solid #cbd5e1;
+    flex-shrink: 0; border: 1px solid var(--mn-border-strong);
 }
 
 .table-premium th {
     font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0 !important;
-    padding: 1rem 1.25rem; background: #fafbfc;
+    letter-spacing: 0.05em; color: var(--mn-text-faint); border-bottom: 1px solid var(--mn-border-color) !important;
+    padding: 1rem 1.25rem; background: var(--mn-bg-body);
 }
 .table-premium td {
-    padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+    padding: 1rem 1.25rem; border-bottom: 1px solid var(--mn-bg-soft); vertical-align: middle;
 }
 .table-premium tr:last-child td { border-bottom: none; }
-.table-premium tr:hover td { background: #f8fafc; }
+.table-premium tr:hover td { background: var(--mn-bg-body); }
 
 .contact-item {
-    display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: #475569; margin-bottom: 3px;
+    display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--mn-text-muted); margin-bottom: 3px;
 }
 .contact-item:last-child { margin-bottom: 0; }
-.contact-item i { width: 12px; height: 12px; color: #94a3b8; }
+.contact-item i { width: 12px; height: 12px; color: var(--mn-text-faint); }
 </style>
 @endpush
 
@@ -64,7 +64,7 @@
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success rounded-3 mb-4" style="font-size:.85rem; border: none; background: #f0fdf4; color: #166534;">
+    <div class="alert alert-success rounded-3 mb-4" style="font-size:.85rem; border: none; background: var(--mn-success-bg); color: var(--mn-success-text);">
         {{ session('success') }}
     </div>
 @endif
@@ -78,8 +78,8 @@
 <div class="card border-0 shadow-sm" style="border-radius:12px; overflow:hidden;">
     <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
         <form action="{{ route('umkm.etalase.pelanggan.index') }}" method="GET" style="position:relative; width: 300px;">
-            <i data-feather="search" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
-            <input type="text" name="search" class="form-control" placeholder="Cari nama, alamat, no WA..." value="{{ request('search') }}" style="padding-left:36px !important; border-radius:8px; border:1px solid #e2e8f0; border-radius: 8px;">
+            <i data-feather="search" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mn-text-faint);"></i>
+            <input type="text" name="search" class="form-control" placeholder="Cari nama, alamat, no WA..." value="{{ request('search') }}" style="padding-left:36px !important; border-radius:8px; border:1px solid var(--mn-border-color); border-radius: 8px;">
         </form>
         <a href="{{ route('umkm.etalase.pelanggan.create') }}" class="btn btn-primary shadow-sm" style="border-radius:8px; padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight:500;">
             <i data-feather="plus" style="width:14px;height:14px; margin-right:6px; margin-bottom: 2px;"></i> Tambah Pelanggan
@@ -148,11 +148,11 @@
                             @php $total = $p->totalPiutangAktif(); @endphp
                             <div class="d-flex flex-column">
                                 @if($total > 0)
-                                    <strong style="font-size: 0.9rem; color: #b91c1c;">
+                                    <strong style="font-size: 0.9rem; color: var(--mn-danger-text);">
                                         {{ rupiah($total) }}
                                     </strong>
                                 @else
-                                    <span style="font-size: 0.9rem; color: #64748b; font-weight: 600;">
+                                    <span style="font-size: 0.9rem; color: var(--mn-text-muted); font-weight: 600;">
                                         Rp 0
                                     </span>
                                 @endif
@@ -160,11 +160,11 @@
                         </td>
                         <td>
                             @if($total > 0)
-                                <span style="background: #fef2f2; color: #b91c1c; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">
+                                <span style="background: var(--mn-danger-bg); color: var(--mn-danger-text); font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">
                                     Ada Piutang
                                 </span>
                             @else
-                                <span style="background: #f0fdf4; color: #15803d; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">
+                                <span style="background: var(--mn-success-bg); color: var(--mn-success-text); font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.6rem; border-radius: 6px; display: inline-block;">
                                     Lunas / Bersih
                                 </span>
                             @endif
@@ -187,8 +187,8 @@
                     <tr>
                         <td colspan="6" class="text-center py-5">
                             <div class="mb-3">
-                                <div style="width: 64px; height: 64px; background: #f1f5f9; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
-                                    <i data-feather="users" style="width: 28px; height: 28px; color: #94a3b8;"></i>
+                                <div style="width: 64px; height: 64px; background: var(--mn-bg-soft); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i data-feather="users" style="width: 28px; height: 28px; color: var(--mn-text-faint);"></i>
                                 </div>
                             </div>
                             <h6 class="fw-bold text-dark mb-1">Belum Ada Pelanggan</h6>

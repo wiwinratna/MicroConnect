@@ -3,7 +3,7 @@
 @section('title', 'Kelola Tiket: ' . $ticket->kode_ticket)
 
 @section('content')
-<main class="content">
+<div>
     <div class="container-fluid p-0">
         <div class="row mb-3">
             <div class="col-auto">
@@ -49,7 +49,7 @@
                     <div class="card-header bg-light">
                         <h5 class="card-title mb-0"><i class="align-middle" data-feather="message-circle"></i> Riwayat Konsultasi</h5>
                     </div>
-                    <div class="card-body" style="background-color: #f8f9fa;">
+                    <div class="card-body" style="background-color: var(--mn-bg-body);">
                         
                         @foreach($ticket->messages as $msg)
                             @php
@@ -57,7 +57,7 @@
                             @endphp
                             
                             <div class="d-flex mb-4 {{ $isAdmin ? 'justify-content-end' : 'justify-content-start' }}">
-                                <div class="card border mb-0 shadow-sm" style="max-width: 75%; border-radius: 12px; {{ $isAdmin ? 'background-color: #dcf8c6; border-color: #c4e5ac;' : 'background-color: #ffffff; border-color: #ddd;' }}">
+                                <div class="card border mb-0 shadow-sm" style="max-width: 75%; border-radius: 12px; {{ $isAdmin ? 'background-color: #dcf8c6; border-color: #c4e5ac;' : 'background-color: #ffffff; border-color: var(--mn-border-color);' }}">
                                     <div class="card-header py-2 px-3 border-bottom-0 bg-transparent">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="fw-bold mb-0 text-dark">
@@ -105,5 +105,5 @@
             </div>
         </div>
     </div>
-</main>
+</div>
 @endsection

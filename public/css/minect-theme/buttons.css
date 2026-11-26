@@ -1,52 +1,65 @@
-/* BUTTON SYSTEM OVERRIDES — Compact Desktop Scale */
+/* BUTTONS */
 .btn {
-  border-radius: 7px !important; /* was var --mn-radius-md = 8px, keep close */
-  padding: 0.4rem 0.9rem !important; /* was 0.5rem 1rem */
-  font-weight: 500 !important;
-  font-size: 0.8125rem !important; /* 13px, was default ~14px */
+  border-radius: var(--mn-radius-md) !important;
+  padding: 0.5rem 1rem !important;
+  min-height: 38px;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
   transition: var(--mn-transition) !important;
-  box-shadow: none !important;
 }
+.btn:focus-visible { box-shadow: var(--mn-focus-ring) !important; }
+.btn:disabled, .btn.disabled { opacity: 0.55; }
+.btn-sm { padding: 0.32rem 0.75rem !important; min-height: 32px; font-size: 0.775rem !important; }
+.btn-lg { padding: 0.7rem 1.4rem !important; min-height: 46px; font-size: 0.95rem !important; }
 
 .btn-primary {
   background-color: var(--mn-primary) !important;
   border-color: var(--mn-primary) !important;
   color: #fff !important;
 }
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
   background-color: var(--mn-primary-hover) !important;
   border-color: var(--mn-primary-hover) !important;
-  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.2) !important;
-  transform: translateY(-1px);
 }
 
-.btn-outline-secondary {
+.btn-secondary {
+  background-color: var(--mn-bg-soft) !important;
+  border-color: var(--mn-border-strong) !important;
   color: var(--mn-text-main) !important;
-  border-color: var(--mn-border-color) !important;
-  background-color: #fff !important;
 }
-.btn-outline-secondary:hover {
-  background-color: var(--mn-bg-body) !important;
-  border-color: #D1D5DB !important;
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+  background-color: var(--mn-primary-soft) !important;
 }
 
-/* Icon+text helper */
-.btn-icon-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
+.btn-outline-primary {
+  background-color: var(--mn-surface) !important;
+  border-color: var(--mn-primary) !important;
+  color: var(--mn-primary) !important;
+}
+.btn-outline-primary:hover, .btn-outline-primary:active,
+.btn-check:checked + .btn-outline-primary {
+  background-color: var(--mn-primary) !important;
+  color: #fff !important;
 }
 
-/* Small button */
-.btn-sm {
-  padding: 0.28rem 0.65rem !important; /* was 0.375rem 0.75rem */
-  font-size: 0.75rem !important;
-  border-radius: 6px !important;
+.btn-outline-secondary, .btn-light {
+  color: var(--mn-text-main) !important;
+  border-color: var(--mn-border-strong) !important;
+  background-color: var(--mn-surface) !important;
+}
+.btn-outline-secondary:hover, .btn-light:hover,
+.btn-check:checked + .btn-outline-secondary {
+  background-color: var(--mn-bg-soft) !important;
+  border-color: var(--mn-secondary) !important;
 }
 
-/* Large button */
-.btn-lg {
-  padding: 0.6rem 1.25rem !important;
-  font-size: 0.9375rem !important;
-}
+.btn-success { background-color: #1E7F5C !important; border-color: #1E7F5C !important; color: #fff !important; }
+.btn-danger { background-color: #C0392B !important; border-color: #C0392B !important; color: #fff !important; }
+.btn-success:hover, .btn-danger:hover { filter: brightness(0.92); }
+.btn-warning { background-color: #F6C453 !important; border-color: #F6C453 !important; color: #3D2E00 !important; }
+.btn-warning:hover { filter: brightness(0.95); }
+
+.btn-ghost { background: transparent !important; border-color: transparent !important; color: var(--mn-primary) !important; }
+.btn-ghost:hover { background: var(--mn-bg-soft) !important; }
+
+.btn-icon-text { display: inline-flex; align-items: center; gap: 0.4rem; }

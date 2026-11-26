@@ -12,46 +12,14 @@
 	<link rel="shortcut icon" href="{{ asset('img/icons/icon-48x48.png') }}" />
 
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="{{ asset('css/custom-polish.css') }}" rel="stylesheet">
     <link href="{{ asset('css/minect-theme/main.css') }}" rel="stylesheet">
 
-    <style>
-        /* Modern App Layout — Fixed Sidebar & Navbar */
-        html, body { height: 100%; overflow: hidden; }
-        .wrapper { height: 100vh; overflow: hidden; display: flex; width: 100%; }
-        
-        /* Sidebar stays fixed by nature of flex */
-        .sidebar, .sidebar-content { min-width: 220px !important; max-width: 220px !important; height: 100vh; }
-        .sidebar.collapsed { margin-left: -220px !important; }
-        
-        /* Main container is the vertical flex parent */
-        .main { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            overflow: hidden; 
-            min-width: 0; /* Prevents flex children from pushing width */
-        }
-        
-        /* This makes the navbar stick to the top of the .main container */
-        .navbar { flex-shrink: 0; }
-        
-        /* The content area is the one that actually scrolls */
-        .content { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 1.25rem 1.25rem 2rem !important; 
-            background: #f8fafc;
-        }
-        
-        .hamburger { padding: 0; }
-    </style>
 
 	@stack('styles')
 </head>
-<body>
+<body class="mn-app">
 	@php
 		$umkmLevel = feature_level();
 	@endphp
@@ -78,6 +46,8 @@
 	</div>
 
 	<script src="{{ asset('js/app.js') }}"></script>
+	<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+	<script src="{{ asset('js/layout.js') }}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		// Global Elegant Toast / Alert
@@ -88,7 +58,7 @@
 			timer: 6000,
 			timerProgressBar: true,
 			background: '#fff',
-			color: '#1F2937',
+			color: '#263B38',
 			customClass: {
 				popup: 'rounded-4 shadow-sm border border-light'
 			},
@@ -150,7 +120,7 @@
 							icon: 'warning',
 							showCancelButton: true,
 							confirmButtonColor: 'var(--mn-danger-bg)',
-							cancelButtonColor: '#6B7280',
+							cancelButtonColor: '#5F706C',
 							confirmButtonText: 'Ya, Hapus!',
 							cancelButtonText: 'Batal',
 							customClass: {

@@ -1,43 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.auth')
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'Pendaftaran Diterima | MINECT')
 
-	<title>Pendaftaran Diterima | MINECT</title>
+@section('content')
+<main class="mn-center">
+    <img class="mn-center-logo" src="{{ asset('assets/img/logo.png') }}" alt="MINECT Logo">
 
-	<link rel="shortcut icon" href="{{ asset('img/icons/icon-48x48.png') }}" />
-	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
-</head>
-
-<body>
-	<main class="d-flex w-100">
-		<div class="container d-flex flex-column">
-			<div class="row vh-100">
-				<div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
-					<div class="d-table-cell align-middle">
-
-						<div class="card">
-							<div class="card-body text-center p-4">
-								<h1 class="h3 mb-3">Pendaftaran diterima</h1>
-								<p class="mb-2">
-									Terima kasih. Data dan jawaban Anda sudah kami terima dan sedang
-									menunggu verifikasi dari Admin KADIN.
-								</p>
-								<p class="mb-4">
-									Setelah disetujui, akun Anda akan diaktifkan. Silakan masuk memakai
-									email yang Anda daftarkan.
-								</p>
-								<a href="{{ route('umkm.login') }}" class="btn btn-lg btn-primary">Ke halaman masuk</a>
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</div>
-	</main>
-</body>
-
-</html>
+    <div class="mn-panel" style="text-align: center;">
+        <div class="mn-success-icon" aria-hidden="true">✓</div>
+        <h1 class="mn-title">Pendaftaran diterima</h1>
+        <p class="mn-lead">
+            Terima kasih. Data dan jawaban Anda sudah kami terima dan sedang
+            menunggu verifikasi dari Admin KADIN.
+        </p>
+        <p class="mn-lead">
+            Setelah disetujui, akun Anda akan diaktifkan. Silakan masuk memakai
+            email yang Anda daftarkan.
+        </p>
+        <a href="{{ route('umkm.login') }}" class="mn-submit"
+           style="display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none;">Ke halaman masuk</a>
+    </div>
+</main>
+@endsection

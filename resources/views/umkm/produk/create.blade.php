@@ -9,8 +9,8 @@
 {{-- Page Header --}}
 <div class="mb-4">
     <a href="{{ route('umkm.produk.index') }}"
-       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.775rem;font-weight:500;color:#64748b;text-decoration:none;margin-bottom:.7rem;transition:color .15s;"
-       onmouseover="this.style.color='#334155'" onmouseout="this.style.color='#64748b'">
+       style="display:inline-flex;align-items:center;gap:.35rem;font-size:.775rem;font-weight:500;color:var(--mn-text-muted);text-decoration:none;margin-bottom:.7rem;transition:color .15s;"
+       onmouseover="this.style.color='var(--mn-text-main)'" onmouseout="this.style.color='var(--mn-text-muted)'">
         <i data-feather="arrow-left" style="width:13px;height:13px;"></i>
         Kembali ke Daftar Produk
     </a>
@@ -35,7 +35,7 @@
             <p class="section-label">
                 Informasi Produk
                 @if(isset($kode))
-                    <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.68rem;color:#cbd5e1;font-family:monospace;">{{ $kode }}</span>
+                    <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.68rem;color:var(--mn-border-strong);font-family:monospace;">{{ $kode }}</span>
                 @endif
             </p>
 
@@ -94,7 +94,7 @@
                     <div class="foto-zone" id="fotoZone" onclick="document.getElementById('fotoFile').click()">
                         <input type="file" name="foto" id="fotoFile" accept="image/*">
                         <div id="fotoPH">
-                            <i data-feather="image" style="width:22px;height:22px;color:#94a3b8;display:block;margin:0 auto 5px;"></i>
+                            <i data-feather="image" style="width:22px;height:22px;color:var(--mn-text-faint);display:block;margin:0 auto 5px;"></i>
                             <div class="foto-ph-text">
                                 <strong>Klik untuk unggah</strong>
                                 JPG, PNG, WebP · maks 2MB
@@ -124,7 +124,7 @@
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-body" style="padding:1.25rem 1.5rem;">
             <p class="section-label">Komposisi / Resep
-                <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.7rem;color:#94a3b8;">per 1 unit produk</span>
+                <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.7rem;color:var(--mn-text-faint);">per 1 unit produk</span>
             </p>
 
 

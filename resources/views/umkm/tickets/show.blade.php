@@ -5,34 +5,34 @@
 <style>
     /* ── Chat Container ── */
     .chat-container { border-radius: 16px; min-height: 400px; display: flex; flex-direction: column; background: #fff; }
-    .chat-body { flex: 1; padding: 1.5rem; background: #fafbfc; overflow-y: auto; }
+    .chat-body { flex: 1; padding: 1.5rem; background: var(--mn-bg-body); overflow-y: auto; }
     
     /* ── Chat Bubbles ── */
     .bubble { max-width: 80%; padding: 1rem 1.25rem; border-radius: 18px; position: relative; font-size: 0.9rem; line-height: 1.5; margin-bottom: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     
     /* Admin Bubble (Left) - KADIN */
-    .bubble-admin { background: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; border-bottom-left-radius: 4px; align-self: flex-start; }
+    .bubble-admin { background: #ffffff; border: 1px solid var(--mn-border-color); color: var(--mn-text-main); border-bottom-left-radius: 4px; align-self: flex-start; }
     
     /* User Bubble (Right) - UMKM */
-    .bubble-user { background: #2563eb; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .bubble-user { background: var(--mn-primary); color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
     
     /* Meta info below/above bubbles */
-    .chat-meta { font-size: 0.7rem; color: #94a3b8; margin-bottom: 1.25rem; }
+    .chat-meta { font-size: 0.7rem; color: var(--mn-text-faint); margin-bottom: 1.25rem; }
     .meta-user { text-align: right; }
     .meta-admin { text-align: left; }
 
     /* ── Avatar Circles ── */
-    .avatar-sm { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: #e2e8f0; color: #475569; }
-    .avatar-admin { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
-    .avatar-user { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }
+    .avatar-sm { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: var(--mn-border-color); color: var(--mn-text-muted); }
+    .avatar-admin { background: var(--mn-warning-bg); color: var(--mn-warning-text); border: 1px solid var(--mn-warning-border); }
+    .avatar-user { background: var(--mn-primary-soft); color: var(--mn-primary); border: 1px solid var(--mn-soft-teal); }
 
     /* ── Reply Form ── */
-    .reply-footer { padding: 1.25rem 1.5rem; background: #fff; border-top: 1px solid #f1f5f9; }
-    .form-control-chat { border-radius: 12px; border: 1px solid #e2e8f0; padding: 0.75rem 1rem; resize: none; font-size: 0.9rem; transition: border-color 0.2s; }
-    .form-control-chat:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08); outline: none; }
+    .reply-footer { padding: 1.25rem 1.5rem; background: #fff; border-top: 1px solid var(--mn-bg-soft); }
+    .form-control-chat { border-radius: 12px; border: 1px solid var(--mn-border-color); padding: 0.75rem 1rem; resize: none; font-size: 0.9rem; transition: border-color 0.2s; }
+    .form-control-chat:focus { border-color: var(--mn-primary); box-shadow: 0 0 0 3px rgba(23, 107, 101, 0.08); outline: none; }
     
     /* ── Header Metadata ── */
-    .ticket-header-pill { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 30px; padding: 4px 12px; font-size: 0.75rem; color: #64748b; font-weight: 600; }
+    .ticket-header-pill { background: var(--mn-bg-soft); border: 1px solid var(--mn-border-color); border-radius: 30px; padding: 4px 12px; font-size: 0.75rem; color: var(--mn-text-muted); font-weight: 600; }
 </style>
 @endpush
 
@@ -143,7 +143,7 @@
     })
 </script>
 <style>
-    .shadow-blue { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important; }
+    .shadow-blue { box-shadow: 0 4px 12px rgba(23, 107, 101, 0.2) !important; }
     .ps-5 { padding-left: 2.75rem !important; }
     .pe-5 { padding-right: 2.75rem !important; }
 </style>

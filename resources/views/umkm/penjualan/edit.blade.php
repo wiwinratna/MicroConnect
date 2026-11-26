@@ -5,42 +5,42 @@
 <style>
     /* ── Header & Layout ── */
     .page-header { margin-bottom: 2rem; }
-    .page-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem; }
-    .page-subtitle { font-size: 0.875rem; color: #64748b; }
+    .page-title { font-size: 1.5rem; font-weight: 800; color: var(--mn-text-main); margin-bottom: 0.25rem; }
+    .page-subtitle { font-size: 0.875rem; color: var(--mn-text-muted); }
 
     /* ── Form Cards ── */
-    .premium-card { background: #ffffff; border-radius: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); overflow: hidden; }
-    .card-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
-    .card-section-title i { width: 14px; height: 14px; color: #3b82f6; }
+    .premium-card { background: #ffffff; border-radius: 16px; border: 1px solid var(--mn-bg-soft); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); overflow: hidden; }
+    .card-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mn-text-faint); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+    .card-section-title i { width: 14px; height: 14px; color: var(--mn-primary); }
 
     /* ── Form Controls ── */
     .form-group-custom { margin-bottom: 1.25rem; }
-    .label-custom { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 0.5rem; }
-    .input-custom { width: 100%; padding: 0.625rem 0.875rem; font-size: 0.875rem; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; transition: all 0.2s; color: #1e293b; }
-    .input-custom:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+    .label-custom { display: block; font-size: 0.8rem; font-weight: 600; color: var(--mn-text-muted); margin-bottom: 0.5rem; }
+    .input-custom { width: 100%; padding: 0.625rem 0.875rem; font-size: 0.875rem; border-radius: 10px; border: 1px solid var(--mn-border-color); background: #fff; transition: all 0.2s; color: var(--mn-text-main); }
+    .input-custom:focus { outline: none; border-color: var(--mn-primary); box-shadow: 0 0 0 4px rgba(23, 107, 101, 0.1); }
     .select-custom { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
 
     /* ── Item Rows ── */
-    .row-item { background: #f8fafc; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; border: 1px solid #f1f5f9; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
-    .row-item:hover { border-color: #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .btn-delete-row { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #fee2e2; background: #fff1f2; color: #ef4444; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
-    .btn-delete-row:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+    .row-item { background: var(--mn-bg-body); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; border: 1px solid var(--mn-bg-soft); position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+    .row-item:hover { border-color: var(--mn-border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .btn-delete-row { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--mn-danger-bg); background: var(--mn-danger-bg); color: var(--mn-danger-text); display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; }
+    .btn-delete-row:hover { background: var(--mn-danger-text); color: #fff; border-color: var(--mn-danger-text); }
 
     /* ── Action Section ── */
-    .form-actions { background: #ffffff; border-top: 1px solid #f1f5f9; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-    .btn-submit-premium { padding: 0.75rem 2rem; border-radius: 10px; font-weight: 600; font-size: 0.9375rem; background: #2563eb; color: #fff; border: none; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
-    .btn-submit-premium:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2); }
-    .btn-add-row { display: inline-flex; align-items: center; gap: 0.5rem; color: #2563eb; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; border-radius: 8px; background: #eff6ff; border: 1px solid #dbeafe; transition: all 0.2s; cursor: pointer; text-decoration: none; }
-    .btn-add-row:hover { background: #dbeafe; }
+    .form-actions { background: #ffffff; border-top: 1px solid var(--mn-bg-soft); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .btn-submit-premium { padding: 0.75rem 2rem; border-radius: 10px; font-weight: 600; font-size: 0.9375rem; background: var(--mn-primary); color: #fff; border: none; box-shadow: 0 10px 15px -3px rgba(23, 107, 101, 0.2); transition: all 0.2s; }
+    .btn-submit-premium:hover { background: var(--mn-primary-hover); transform: translateY(-1px); box-shadow: 0 20px 25px -5px rgba(23, 107, 101, 0.2); }
+    .btn-add-row { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--mn-primary); font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; border-radius: 8px; background: var(--mn-bg-soft); border: 1px solid var(--mn-primary-soft); transition: all 0.2s; cursor: pointer; text-decoration: none; }
+    .btn-add-row:hover { background: var(--mn-primary-soft); }
 
     /* ── Special Notification ── */
-    .piutang-banner { padding: 1rem; border-radius: 12px; background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
-    .piutang-banner i { color: #f59e0b; }
+    .piutang-banner { padding: 1rem; border-radius: 12px; background: var(--mn-warning-bg); border: 1px solid var(--mn-warning-bg); color: var(--mn-warning-text); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .piutang-banner i { color: var(--mn-warning-text); }
     
     /* Tom Select Overrides */
-    .ts-control { border-radius: 10px; border: 1px solid #e2e8f0; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #1e293b; background-color: #fff; box-shadow: none; min-height: 42px; }
-    .ts-control.focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-    .ts-dropdown { border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); font-size: 0.85rem; }
+    .ts-control { border-radius: 10px; border: 1px solid var(--mn-border-color); padding: 0.625rem 0.875rem; font-size: 0.875rem; color: var(--mn-text-main); background-color: #fff; box-shadow: none; min-height: 42px; }
+    .ts-control.focus { border-color: var(--mn-primary); box-shadow: 0 0 0 4px rgba(23, 107, 101, 0.1); }
+    .ts-dropdown { border-radius: 10px; border: 1px solid var(--mn-border-color); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); font-size: 0.85rem; }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 @endpush
@@ -53,13 +53,13 @@
                 <h1 class="page-title">Edit <strong>Penjualan</strong></h1>
                 <p class="page-subtitle">Menyesuaikan transaksi <strong>{{ $penjualan->kode_penjualan }}</strong>. Sistem akan merestorasi stok dan jurnal otomatis.</p>
             </div>
-            <a href="{{ route('umkm.penjualan.index') }}" class="btn btn-light shadow-sm" style="border-radius: 10px; padding: 0.625rem 1.25rem; font-weight: 600; color: #64748b; font-size: 0.8125rem; display: flex; align-items: center; gap: 0.5rem;">
+            <a href="{{ route('umkm.penjualan.index') }}" class="btn btn-light shadow-sm" style="border-radius: 10px; padding: 0.625rem 1.25rem; font-weight: 600; color: var(--mn-text-muted); font-size: 0.8125rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i data-feather="arrow-left" style="width: 14px; height: 14px;"></i> Kembali
             </a>
         </div>
 
         @if($errors->any())
-        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px; background: #fef2f2; color: #991b1b;">
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px; background: var(--mn-danger-bg); color: var(--mn-danger-text);">
             <ul class="mb-0 small fw-medium">
                 @foreach($errors->all() as $e)
                     <li>{{ $e }}</li>

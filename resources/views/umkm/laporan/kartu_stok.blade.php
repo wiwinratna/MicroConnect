@@ -323,7 +323,7 @@
                 @if(count($ledger) > 0 || $saldoAwalQty > 0)
                     @if($methodStr !== 'AVERAGE' && count($activeBatches) > 0)
                         @foreach($activeBatches as $idx => $batch)
-                        <tr class="fw-bold text-end bg-light" style="{{ $idx === 0 ? 'border-top: 2px solid #ccc;' : '' }}">
+                        <tr class="fw-bold text-end bg-light" style="{{ $idx === 0 ? 'border-top: 2px solid var(--mn-border-strong);' : '' }}">
                             @if($idx === 0)
                             <td colspan="2" class="text-start text-dark" rowspan="{{ count($activeBatches) }}">TOTAL PERGERAKAN & SALDO AKHIR</td>
                             <td class="text-success" rowspan="{{ count($activeBatches) }}">{{ format_angka($sumMasukQty) }}</td>
@@ -339,7 +339,7 @@
                         </tr>
                         @endforeach
                     @else
-                        <tr class="fw-bold text-end bg-light" style="border-top: 2px solid #ccc;">
+                        <tr class="fw-bold text-end bg-light" style="border-top: 2px solid var(--mn-border-strong);">
                             <td colspan="2" class="text-start text-dark">TOTAL PERGERAKAN & SALDO AKHIR</td>
                             <td class="text-success">{{ format_angka($sumMasukQty) }}</td>
                             <td class="text-success">―</td>

@@ -98,10 +98,11 @@ class PembuatTransaksi
     {
         $hasil = [];
 
-        foreach ($daftar as $nama => [$harga, $komposisi]) {
+        foreach ($daftar as $nama => [$harga, $komposisi, $satuan]) {
             $this->panggil(ProdukController::class, 'store', [
-                'nama_produk' => $nama,
-                'harga_jual'  => $harga,
+                'nama_produk'   => $nama,
+                'satuan_produk' => $satuan,
+                'harga_jual'    => $harga,
                 'bahan_id'    => array_map(fn ($n) => $bahan[$n], array_keys($komposisi)),
                 'qty'         => array_values($komposisi),
             ]);

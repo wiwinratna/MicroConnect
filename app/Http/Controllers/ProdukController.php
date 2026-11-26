@@ -71,6 +71,7 @@ public function create()
         $request->validate([
             'nama_produk'  => 'required|string|max:255',
             'kategori'     => 'nullable|string|max:100',
+            'satuan_produk' => 'nullable|string|max:50',
             'harga_jual'   => 'nullable|numeric|min:0',
             'keterangan'   => 'nullable|string',
             'foto'         => 'nullable|image|max:2048',
@@ -91,7 +92,7 @@ public function create()
         'kode_produk' => Produk::generateKode(),
         'nama_produk' => $request->nama_produk,
         'kategori'    => $request->kategori,
-        'satuan'      => $request->satuan_produk,   // kalau kamu punya kolom satuan di produk
+        'satuan'      => $request->satuan_produk,
         'harga_pokok' => $request->harga_pokok ?? 0, // <-- patokan HPP tersimpan
         'harga_jual'  => $request->harga_jual ?? 0,
         'aktif'       => true,
@@ -175,6 +176,7 @@ public function create()
         $request->validate([
             'nama_produk'  => 'required|string|max:255',
             'kategori'     => 'nullable|string|max:100',
+            'satuan_produk' => 'nullable|string|max:50',
             'harga_jual'   => 'nullable|numeric|min:0',
             'keterangan'   => 'nullable|string',
             'foto'         => 'nullable|image|max:2048',
@@ -190,6 +192,10 @@ public function create()
             'harga_jual'  => $request->harga_jual ?? 0,
             'keterangan'  => $request->keterangan,
         ];
+
+        if ($request->has('satuan_produk')) {
+            $dataUpdate['satuan'] = $request->satuan_produk;
+        }
 
         if ($request->hasFile('foto')) {
             if ($produk->foto_path && Storage::disk('public')->exists($produk->foto_path)) {

@@ -5,7 +5,7 @@ namespace Database\Seeders\Demo;
 /**
  * Data demo K5: seluruhnya fiktif. Huruf jawaban: a = pilihan pertama, dst.
  * `bahan`: nama => [satuan, stok awal, harga, jumlah beli per bulan].
- * `produk`: nama => [harga jual, komposisi per unit (nama bahan => jumlah)].
+ * `produk`: nama => [harga jual, komposisi per unit (nama bahan => jumlah), satuan].
  * `jual`: daftar [tanggal dalam bulan, nama produk, jumlah], diulang tiap bulan.
  */
 final class DataDemo
@@ -23,8 +23,8 @@ final class DataDemo
                     'Kemasan 250 g'  => ['pcs', 50, 700, 150],
                 ],
                 'produk' => [
-                    'Keripik Original 250 g' => [18000, ['Singkong' => 0.5, 'Minyak goreng' => 0.15, 'Kemasan 250 g' => 1]],
-                    'Keripik Balado 250 g'   => [20000, ['Singkong' => 0.5, 'Minyak goreng' => 0.15, 'Kemasan 250 g' => 1]],
+                    'Keripik Original 250 g' => [18000, ['Singkong' => 0.5, 'Minyak goreng' => 0.15, 'Kemasan 250 g' => 1], 'bungkus'],
+                    'Keripik Balado 250 g'   => [20000, ['Singkong' => 0.5, 'Minyak goreng' => 0.15, 'Kemasan 250 g' => 1], 'bungkus'],
                 ],
                 'jual'  => [[10, 'Keripik Original 250 g', 50], [20, 'Keripik Original 250 g', 40], [20, 'Keripik Balado 250 g', 20]],
                 'beban' => [['610', 'Listrik produksi', 250000], ['613', 'Upah pekerja', 1500000]],
@@ -40,8 +40,8 @@ final class DataDemo
                     'Kampas rem' => ['pcs', 4, 40000, 12],
                 ],
                 'produk' => [
-                    'Jasa Ganti Oli'        => [75000, ['Oli mesin' => 1]],
-                    'Jasa Ganti Kampas Rem' => [90000, ['Kampas rem' => 1]],
+                    'Jasa Ganti Oli'        => [75000, ['Oli mesin' => 1], 'jasa'],
+                    'Jasa Ganti Kampas Rem' => [90000, ['Kampas rem' => 1], 'jasa'],
                 ],
                 'jual'  => [[10, 'Jasa Ganti Oli', 9], [20, 'Jasa Ganti Oli', 8], [20, 'Jasa Ganti Kampas Rem', 10]],
                 'beban' => [['612', 'Sewa tempat', 600000], ['610', 'Listrik', 150000]],
@@ -52,8 +52,8 @@ final class DataDemo
                 'modal' => 3000000,
                 'bahan'  => [],
                 'produk' => [
-                    'Pangkas Rambut Dewasa' => [20000, []],
-                    'Pangkas Rambut Anak'   => [15000, []],
+                    'Pangkas Rambut Dewasa' => [20000, [], 'jasa'],
+                    'Pangkas Rambut Anak'   => [15000, [], 'jasa'],
                 ],
                 'jual'  => [[10, 'Pangkas Rambut Dewasa', 45], [20, 'Pangkas Rambut Dewasa', 40], [20, 'Pangkas Rambut Anak', 25]],
                 'beban' => [['612', 'Sewa tempat', 500000], ['610', 'Listrik', 100000]],

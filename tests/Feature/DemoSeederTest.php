@@ -78,6 +78,7 @@ class DemoSeederTest extends TestCase
         }
 
         $this->assertSame(1, DB::table('piutang')->count());
+        $this->assertSame(0, DB::table('produk')->whereNull('satuan')->count());
     }
 
     public function test_running_twice_does_not_duplicate_data(): void

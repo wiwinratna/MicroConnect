@@ -193,7 +193,8 @@ Diperbaiki dan diuji (`KeamananTest`):
 3. Ekstensi logo ditentukan dari isi berkas.
 4. Ganti kata sandi lewat Profil wajib kata sandi lama (FR-13).
 
-Belum diperbaiki: akun yang dinonaktifkan tetap bisa dipakai selama sesinya atau "Ingat saya" masih berlaku, karena status hanya dicek saat login.
+7. Status akun UMKM diperiksa di setiap permintaan (middleware `akun.aktif`, `AkunNonaktifTest`); akun nonaktif langsung dikeluarkan, termasuk sesi "Ingat saya" (BR-07).
+
 Sebelum dipasang daring: ganti kata sandi Admin bawaan `UserSeeder` dan setel `APP_DEBUG=false`. Dependensi belum diperiksa.
 
 ## 12. Keputusan yang sudah diambil (K0)

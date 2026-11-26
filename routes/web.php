@@ -45,7 +45,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // ================== GANTI PASSWORD (WAJIB) ==================
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'akun.aktif'])->group(function () {
     Route::get('/ganti-password', [AuthController::class, 'changePassword'])->name('password.change');
     Route::post('/ganti-password', [AuthController::class, 'updatePassword'])->name('password.change.update');
 });
@@ -120,7 +120,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
 
 
 // ================== UMKM AREA ==================
-Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'must_change_password'])->group(function () {
+Route::prefix('umkm')->name('umkm.')->middleware(['auth', 'pelakuusaha', 'akun.aktif', 'must_change_password'])->group(function () {
 
     // Pilih Level ditutup di v1.1: level hanya ditetapkan Admin (BR-01).
 

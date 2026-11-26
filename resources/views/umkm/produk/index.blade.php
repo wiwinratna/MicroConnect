@@ -31,8 +31,7 @@
                         <tr>
                             <th>Produk</th>
                             <th>Satuan</th>
-                            <th class="text-end">Stok</th>
-                            <th class="text-end">HPP (Rp)</th>
+                            <th class="text-end" title="Resep x harga beli terakhir bahan">Estimasi HPP (Rp)</th>
                             <th class="text-end">Harga Jual (Rp)</th>
                             <th width="130" class="text-center">Aksi</th>
                         </tr>
@@ -60,8 +59,13 @@
                                     </div>
                                 </td>
                                 <td>{{ $p->satuan }}</td>
-                                <td  class="text-end fw-medium">{{ format_angka($p->stok) }}</td>
-                                <td  class="text-end fw-medium">{{ rupiah($p->harga_pokok) }}
+                                @php $hpp = $p->estimasiHpp(); @endphp
+                                <td class="text-end fw-medium">
+                                    @if($hpp === null)
+                                        <span class="text-muted fw-normal" title="Isi resep dan catat pembelian semua bahannya">Belum ada</span>
+                                    @else
+                                        {{ rupiah($hpp) }}
+                                    @endif
                                 </td>
                                 <td  class="text-end fw-medium">{{ rupiah($p->harga_jual) }}
                                 </td>

@@ -277,39 +277,9 @@ public function hitungHpp(Produk $produk, Request $request)
     if ($produk->umkm_id !== $umkm->id) abort(403);
 
     // === 1. Detail biaya bahan dari resep ===
-    $detailBahan = [];
-    $biayaBahan  = 0.0;
-
-    $komposisi = $produk->komposisi()->with('bahan')->get();
-
-    foreach ($komposisi as $row) {
-        $bahan = $row->bahan;
-        if (!$bahan) continue;
-
-        $satuanResep   = $row->satuan ?? $bahan->satuan;
-        $satuanDasar   = $bahan->satuan;
-        $qtyResep      = (float) $row->qty;
-
-        // Konversi qty resep ke satuan dasar bahan
-        $qtyBase = \App\Helpers\UnitConverter::isCompatible($satuanResep, $satuanDasar)
-            ? \App\Helpers\UnitConverter::convert($qtyResep, $satuanResep, $satuanDasar)
-            : $qtyResep;
-
-        // Harga beli terakhir (per satuan dasar)
-        $hargaUnit = (float) $bahan->hargaBeliTerakhir();
-        $biaya     = $qtyBase * $hargaUnit;
-        $biayaBahan += $biaya;
-
-        $detailBahan[] = [
-            'nama_bahan'    => $bahan->nama_bahan,
-            'qty_resep'     => $qtyResep,
-            'satuan_resep'  => $satuanResep,
-            'qty_base'      => round($qtyBase, 3),
-            'satuan_dasar'  => $satuanDasar,
-            'harga_unit'    => $hargaUnit,
-            'biaya'         => round($biaya, 2),
-        ];
-    }
+    $rincian     = $produk->rincianBiayaBahan();
+    $biayaBahan  = (float) array_sum(array_column($rincian, 'biaya'));
+    $detailBahan = array_map(fn ($r) => ['biaya' => round($r['biaya'], 2)] + $r, $rincian);
 
     // === 2. [NONAKTIF SEMENTARA] Overhead dari AnggaranBulanan dinonaktifkan ===
     // $periode = now()->format('Y-m');

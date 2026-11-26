@@ -71,7 +71,7 @@
               <td>{{ $labelJenis[$n->jenis] ?? $n->jenis }}</td>
               <td class="text-capitalize">{{ $n->saluran }}</td>
               <td class="text-nowrap">{{ $n->no_tujuan }}</td>
-              <td style="min-width: 280px;">{{ $n->isi }}</td>
+              <td style="min-width: 280px;">{{ $n->isiTersamar() }}</td>
               <td>
                 <span class="badge bg-{{ $warnaStatus[$n->status] ?? 'secondary' }}">{{ ucfirst($n->status) }}</span>
                 @if($n->pesan_galat)

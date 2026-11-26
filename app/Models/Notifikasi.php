@@ -23,6 +23,12 @@ class Notifikasi extends Model
         'dikirim_pada' => 'datetime',
     ];
 
+    /** Isi untuk layar Admin: kata sandi awal disamarkan. Pesan tersimpan tidak diubah. */
+    public function isiTersamar(): string
+    {
+        return preg_replace('/(Kata sandi awal: ).*?(\. Silakan|$)/u', '$1••••••••$2', (string) $this->isi);
+    }
+
     public function umkm(): BelongsTo
     {
         return $this->belongsTo(Umkm::class, 'umkm_id');

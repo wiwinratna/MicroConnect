@@ -44,6 +44,53 @@ class Produk extends Model
         return $this->hasMany(ProdukBahan::class, 'produk_id');
     }
 
+    /**
+     * Biaya tiap bahan per 1 unit produk: qty resep (dalam satuan dasar bahan) x harga beli
+     * terakhir. Dipakai tombol estimasi dan Daftar Produk agar angkanya sama.
+     */
+    public function rincianBiayaBahan(): array
+    {
+        $rincian = [];
+
+        foreach ($this->komposisi()->with('bahan')->get() as $baris) {
+            $bahan = $baris->bahan;
+            if (!$bahan) {
+                continue;
+            }
+
+            $satuanResep = $baris->satuan ?? $bahan->satuan;
+            $qtyResep    = (float) $baris->qty;
+            $qtyDasar    = \App\Helpers\UnitConverter::isCompatible($satuanResep, $bahan->satuan)
+                ? \App\Helpers\UnitConverter::convert($qtyResep, $satuanResep, $bahan->satuan)
+                : $qtyResep;
+            $harga = (float) $bahan->hargaBeliTerakhir();
+
+            $rincian[] = [
+                'nama_bahan'   => $bahan->nama_bahan,
+                'qty_resep'    => $qtyResep,
+                'satuan_resep' => $satuanResep,
+                'qty_base'     => round($qtyDasar, 3),
+                'satuan_dasar' => $bahan->satuan,
+                'harga_unit'   => $harga,
+                'biaya'        => $qtyDasar * $harga,
+            ];
+        }
+
+        return $rincian;
+    }
+
+    /** Estimasi HPP per unit; null bila belum ada resep atau ada bahan yang belum pernah dibeli. */
+    public function estimasiHpp(): ?float
+    {
+        $rincian = $this->rincianBiayaBahan();
+
+        if ($rincian === [] || collect($rincian)->contains(fn ($r) => $r['harga_unit'] <= 0)) {
+            return null;
+        }
+
+        return round(array_sum(array_column($rincian, 'biaya')), 2);
+    }
+
     public function recalculateHpp(): float
     {
         $totalHpp = 0;

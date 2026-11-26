@@ -12,6 +12,18 @@
   margin-left: -220px !important;
 }
 
+/* Layar kecil: tema AdminKit menggeser sidebar 260px, padahal lebarnya 220px.
+   Di sini sidebar tersembunyi secara bawaan dan muncul saat tombol menu ditekan. */
+@media (max-width: 991.98px) {
+  .wrapper .sidebar {
+    margin-left: -220px !important;
+  }
+
+  .wrapper .sidebar.collapsed {
+    margin-left: 0 !important;
+  }
+}
+
 /* Sidebar section headers */
 .sidebar-header {
   padding: 1.1rem 1rem 0.25rem !important;

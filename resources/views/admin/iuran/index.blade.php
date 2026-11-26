@@ -19,7 +19,7 @@
                 <thead class="table-light">
                     <tr>
                         <th class="ps-4">Periode Tagihan</th>
-                        <th>Nominal Default</th>
+                        <th>Nominal Tanpa Level</th>
                         <th>Batas Waktu</th>
                         <th class="text-center">Status</th>
                         <th class="text-center">Peserta (UMKM)</th>

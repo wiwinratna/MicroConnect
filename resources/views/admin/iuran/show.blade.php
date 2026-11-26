@@ -12,7 +12,7 @@
             <div>
                 <h1 class="h3 mb-1">Monitoring Iuran <strong>{{ $periode->periodeFormatted() }}</strong></h1>
                 <p class="text-muted small mb-0">
-                    <i data-feather="dollar-sign" class="me-1" style="width: 12px;"></i>{{ rupiah($periode->nominal_default) }} &bull;
+                    <i data-feather="dollar-sign" class="me-1" style="width: 12px;"></i>Nominal mengikuti level &bull;
                     <i data-feather="calendar" class="me-1" style="width: 12px;"></i>Tempo: {{ $periode->jatuh_tempo->format('d M Y') }}
                 </p>
             </div>

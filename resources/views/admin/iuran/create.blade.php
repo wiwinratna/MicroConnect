@@ -40,13 +40,13 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-bold text-dark small">Nominal Standar <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold text-dark small">Nominal untuk UMKM tanpa level <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-0 rounded-start-3 text-muted">Rp</span>
                                 <input type="number" name="nominal_default" class="form-control form-control-lg border-0 bg-light rounded-end-3 shadow-none custom-input" required
                                        value="{{ old('nominal_default', 50000) }}" min="1000" step="1000">
                             </div>
-                            <div class="text-muted mt-1" style="font-size: 10px;">Berlaku untuk seluruh UMKM</div>
+                            <div class="text-muted mt-1" style="font-size: 10px;">UMKM berlevel mengikuti iuran levelnya. Level beriuran Rp0 tidak ditagih.</div>
                         </div>
 
                         <div class="col-md-12">

@@ -11,29 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class ProduksiController extends Controller
 {
+    private const PESAN_NONAKTIF = 'Fitur Produksi dinonaktifkan untuk versi MVP. Stok bahan otomatis berkurang saat Penjualan.';
+
     public function index()
     {
-        $umkm = auth()->user()->umkm;
-
-        $data = Produksi::where('umkm_id', $umkm->id)
-            ->with('details.produk')
-            ->orderByDesc('tanggal')
-            ->orderByDesc('id')
-            ->get();
-
-        return view('umkm.produksi.index', compact('data'));
+        return redirect()->route('umkm.dashboard')->with('error', self::PESAN_NONAKTIF);
     }
 
     public function create()
     {
-        $umkm = auth()->user()->umkm;
-
-        $kode = Produksi::generateKode();
-        $produk = Produk::where('umkm_id', $umkm->id)
-            ->orderBy('nama_produk')
-            ->get();
-
-        return view('umkm.produksi.create', compact('kode', 'produk'));
+        return redirect()->route('umkm.dashboard')->with('error', self::PESAN_NONAKTIF);
     }
 
     public function store(Request $request)

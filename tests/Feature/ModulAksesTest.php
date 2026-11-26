@@ -129,11 +129,12 @@ class ModulAksesTest extends TestCase
         $this->assertTersedia($u, self::URL['produk']);
     }
 
-    public function test_goods_with_production_sees_production_at_top_level_and_uses_goods_label(): void
+    public function test_goods_with_production_gets_raw_materials_and_goods_label(): void
     {
         $u = $this->buatUmkm(['rumpun' => 'barang', 'memiliki_persediaan' => true, 'melakukan_produksi' => true], 'L3');
 
-        $this->assertTersedia($u, self::URL['produksi']);
+        // Halaman produksi ditutup untuk semua (MVP), walau aturan modul mengizinkan.
+        $this->assertDiblokir($u, self::URL['produksi']);
         $this->assertTersedia($u, self::URL['bahan']);
         $this->ke($u, self::URL['sidebar'])->assertSee('Produk')->assertDontSee('Daftar Layanan Jasa');
     }

@@ -27,10 +27,10 @@ Route::get('/', function () {
 // ================== GUEST ==================
 Route::middleware('guest')->group(function () {
     Route::get('/umkm/login', [AuthController::class, 'showUmkmLoginForm'])->name('umkm.login');
-    Route::post('/umkm/login', [AuthController::class, 'loginUmkm'])->name('umkm.login.process');
+    Route::post('/umkm/login', [AuthController::class, 'loginUmkm'])->middleware('throttle:login')->name('umkm.login.process');
 
     Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
-    Route::post('/admin/login', [AuthController::class, 'loginAdmin'])->name('admin.login.process');
+    Route::post('/admin/login', [AuthController::class, 'loginAdmin'])->middleware('throttle:login')->name('admin.login.process');
 
     // Pendaftaran mandiri calon UMKM (v1.1): tanpa akun, dibatasi 10 kiriman/menit
     Route::get('/register', [\App\Http\Controllers\PendaftaranController::class, 'create'])->name('register');

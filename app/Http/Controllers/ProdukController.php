@@ -77,7 +77,7 @@ public function create()
             'foto'         => 'nullable|image|max:2048',
 
             // komposisi
-            'bahan_id.*'   => 'nullable|exists:bahan_baku,id',
+            'bahan_id.*'   => ['nullable', \Illuminate\Validation\Rule::exists('bahan_baku', 'id')->where('umkm_id', $umkm->id)],
             'qty.*'        => 'nullable|numeric|min:0',
             'satuan.*'     => 'nullable|string|max:50',
         ]);
@@ -181,7 +181,7 @@ public function create()
             'keterangan'   => 'nullable|string',
             'foto'         => 'nullable|image|max:2048',
 
-            'bahan_id.*'   => 'nullable|exists:bahan_baku,id',
+            'bahan_id.*'   => ['nullable', \Illuminate\Validation\Rule::exists('bahan_baku', 'id')->where('umkm_id', $umkm->id)],
             'qty.*'        => 'nullable|numeric|min:0',
             'satuan.*'     => 'nullable|string|max:50',
         ]);

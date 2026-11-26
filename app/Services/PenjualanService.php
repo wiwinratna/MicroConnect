@@ -186,7 +186,7 @@ class PenjualanService
 
         $piutangCreated = null;
         if ($metodePembayaran === 'piutang') {
-            $pelanggan = \App\Models\Pelanggan::findOrFail($pelangganId);
+            $pelanggan = \App\Models\Pelanggan::where('umkm_id', $umkm->id)->findOrFail($pelangganId);
             $piutangCreated = \App\Models\Piutang::create([
                 'umkm_id'      => $umkm->id,
                 'pelanggan_id' => $pelanggan->id,

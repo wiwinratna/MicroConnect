@@ -54,7 +54,8 @@ class Produk extends Model
 
         foreach ($this->komposisi()->with('bahan')->get() as $baris) {
             $bahan = $baris->bahan;
-            if (!$bahan) {
+            // Baris resep lama yang menunjuk bahan UMKM lain diabaikan.
+            if (!$bahan || (int) $bahan->umkm_id !== (int) $this->umkm_id) {
                 continue;
             }
 

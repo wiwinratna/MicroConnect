@@ -61,7 +61,7 @@ class PenjualanController extends Controller
             'produk_id.*'       => 'nullable|integer',
             'qty.*'             => 'nullable|numeric|min:0.001',
             // Khusus piutang
-            'pelanggan_id'      => 'required_if:metode_pembayaran,piutang|nullable|exists:pelanggan,id',
+            'pelanggan_id'      => ['required_if:metode_pembayaran,piutang', 'nullable', \Illuminate\Validation\Rule::exists('pelanggan', 'id')->where('umkm_id', $umkm->id)],
             'jatuh_tempo'       => 'required_if:metode_pembayaran,piutang|nullable|date',
         ]);
 
@@ -150,7 +150,7 @@ class PenjualanController extends Controller
             'catatan'           => 'nullable|string',
             'produk_id.*'       => 'nullable|integer',
             'qty.*'             => 'nullable|numeric|min:0.001',
-            'pelanggan_id'      => 'required_if:metode_pembayaran,piutang|nullable|exists:pelanggan,id',
+            'pelanggan_id'      => ['required_if:metode_pembayaran,piutang', 'nullable', \Illuminate\Validation\Rule::exists('pelanggan', 'id')->where('umkm_id', $umkm->id)],
             'jatuh_tempo'       => 'required_if:metode_pembayaran,piutang|nullable|date',
         ]);
 

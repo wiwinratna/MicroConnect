@@ -71,6 +71,13 @@
                                 Ubah password (opsional).
                             </p>
 
+                            {{-- PASSWORD LAMA: wajib bila mengganti password (FR-13) --}}
+                            <div class="mb-3">
+                                <label class="form-label">Password Lama</label>
+                                <input type="password" name="current_password" class="form-control @error('current_password') is-invalid @enderror" autocomplete="current-password">
+                                @error('current_password')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                            </div>
+
                             {{-- PASSWORD --}}
                             <div class="mb-3">
                                 <label class="form-label">Password Baru</label>

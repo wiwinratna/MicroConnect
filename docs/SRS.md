@@ -186,6 +186,16 @@ Dihitung di satu tempat, `App\Services\LabaModalService`, dipakai halaman Lapora
 - Daftar Produk menampilkan estimasi HPP = resep x harga beli terakhir tiap bahan (sama dengan tombol estimasi, tanpa overhead). Tanpa resep atau ada bahan yang belum pernah dibeli: "Belum ada". Kolom Stok produk dihapus karena produksi nonaktif.
 - Kotak Notifikasi Admin menyamarkan kata sandi awal; isi pesan yang tersimpan tidak diubah.
 
+### 11.6 Cek keamanan terarah (2026-11-26)
+Diperbaiki dan diuji (`KeamananTest`):
+1. ID bahan (pembelian, resep) dan pelanggan (penjualan kredit) hanya diterima bila milik UMKM yang login.
+2. Login dibatasi 5 percobaan per menit per email dan alamat, 20 per menit per alamat.
+3. Ekstensi logo ditentukan dari isi berkas.
+4. Ganti kata sandi lewat Profil wajib kata sandi lama (FR-13).
+
+Belum diperbaiki: akun yang dinonaktifkan tetap bisa dipakai selama sesinya atau "Ingat saya" masih berlaku, karena status hanya dicek saat login.
+Sebelum dipasang daring: ganti kata sandi Admin bawaan `UserSeeder` dan setel `APP_DEBUG=false`. Dependensi belum diperiksa.
+
 ## 12. Keputusan yang sudah diambil (K0)
 Pengenal login tetap email; nama level L2 "Berkembang"; batas skor 4–6 / 7–9 / 10–12; pilihan d omzet dan modal dipakai; bahan baku rumpun barang = `jika_melakukan_produksi`; produksi tetap nonaktif (MVP) dan tetap level Lanjutan; Tabel 3.9 = konfigurasi v1.0; kata sandi awal dari `INITIAL_PASSWORD`; hanya rumpun barang dan jasa; UMKM lama tidak disembunyikan fitur sampai rumpun dan flag terisi. K4: omzet dan modal pada penilaian ulang terisi otomatis dari pembukuan (omzet = pendapatan akun 4xx 12 bulan; modal = modal akhir per hari penilaian), angka apa adanya bila data kurang dari 12 bulan; angka sistem direkam di `data_sistem`; salinan aplikasi `akun_aktif` tanpa kata sandi; driver WhatsApp berupa kerangka; UMKM tanpa nomor WhatsApp tetap mendapat salinan aplikasi.
 

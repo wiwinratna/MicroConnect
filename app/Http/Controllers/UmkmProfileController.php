@@ -37,6 +37,7 @@ class UmkmProfileController extends Controller
             'name'              => 'required|string|max:255',
             'email'             => 'required|email|unique:users,email,' . $user->id,
             'password'          => 'nullable|string|min:6|confirmed',
+            'current_password'  => 'nullable|required_with:password|current_password',
             'nama_usaha'        => 'nullable|string|max:255',
             'nib'               => 'nullable|string|max:100',
             'alamat'            => 'nullable|string|max:500',
@@ -47,6 +48,9 @@ class UmkmProfileController extends Controller
             'inventory_method'  => 'nullable|in:FIFO,LIFO,Average',
             'logo'              => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
             'warna_tema'        => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+        ], [
+            'current_password.required_with'    => 'Isi password lama untuk mengganti password.',
+            'current_password.current_password' => 'Password lama salah.',
         ]);
 
         // Update akun user
@@ -69,7 +73,8 @@ class UmkmProfileController extends Controller
             }
 
             $file = $request->file('logo');
-            $filename = 'umkm_' . $umkm->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            // Ekstensi ditentukan dari isi berkas, bukan dari nama yang dikirim pengguna.
+            $filename = 'umkm_' . $umkm->id . '_' . time() . '.' . $file->guessExtension();
             $path = $file->storeAs('logo', $filename, 'public');
             $logoData['logo_path'] = $path;
         }

@@ -50,7 +50,7 @@ class PembelianController extends Controller
             'catatan'   => 'nullable|string',
             'bukti_pembelian' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
-            'bahan_id.*'    => 'nullable|exists:bahan_baku,id',
+            'bahan_id.*'    => ['nullable', \Illuminate\Validation\Rule::exists('bahan_baku', 'id')->where('umkm_id', $umkm->id)],
             'qty.*'         => 'nullable|numeric|min:0.001',
             'harga_beli.*'  => 'nullable|numeric|min:0',
         ]);

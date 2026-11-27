@@ -29,6 +29,23 @@
 	form.querySelectorAll('input[name="rumpun"]').forEach(function (r) { r.addEventListener('change', segarkan); });
 	segarkan();
 
+	// Nomor WhatsApp diperiksa dengan aturan yang sama seperti server (App\Helpers\NomorWa):
+	// selain angka dibuang, awalan 0 atau 8 menjadi 62, lalu harus 62 diikuti 8-13 angka.
+	const noWa = document.getElementById('no_wa');
+
+	function periksaNoWa() {
+		let angka = noWa.value.replace(/\D+/g, '');
+		if (angka.startsWith('0')) { angka = '62' + angka.slice(1); }
+		else if (angka.startsWith('8')) { angka = '62' + angka; }
+
+		// Isian kosong ditangani oleh atribut "required".
+		noWa.setCustomValidity(noWa.value === '' || /^62[0-9]{8,13}$/.test(angka)
+			? '' : 'Nomor WhatsApp tidak benar. Contoh: 081234567890.');
+	}
+
+	noWa.addEventListener('input', periksaNoWa);
+	periksaNoWa();
+
 	function tampilkanLangkah(nomor) {
 		l1.hidden = nomor !== 1;
 		l2.hidden = nomor !== 2;

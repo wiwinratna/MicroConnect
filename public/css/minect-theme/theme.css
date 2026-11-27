@@ -1,20 +1,21 @@
-/* DESIGN TOKENS: Modern Teal */
+/* DESIGN TOKENS: Navy & Soft Blue */
 :root {
-  --mn-deep-teal: #075B60;
-  --mn-primary: #176B65;
-  --mn-primary-hover: #11544F;
-  --mn-secondary: #278C83;
-  --mn-soft-teal: #A9CFC5;
-  --mn-primary-soft: #DDEEE9;
-  --mn-bg-soft: #EEF5F2;
-  --mn-bg-body: #F8F9F6;
+  --mn-deep: #172B4D;
+  --mn-primary: #233B63;
+  --mn-primary-hover: #1A2D4C;
+  --mn-secondary: #5279B9;
+  --mn-soft-accent: #A9C5EA;
+  --mn-primary-soft: #DCE7F7;
+  --mn-bg-soft: #EAF1FA;
+  --mn-bg-body: #F6F8FC;
   --mn-surface: #FFFFFF;
-  --mn-text-main: #263B38;
-  --mn-text-muted: #5F706C; /* darker than #7B8985 so small text stays readable */
-  --mn-text-faint: #7B8985; /* icons and decoration only */
-  --mn-border-color: #E3ECE8;
-  --mn-border-strong: #C9DAD4;
-  --mn-sidebar-bg: var(--mn-deep-teal);
+  --mn-text-main: #26364D;
+  --mn-text-muted: #5C6A80; /* darker than #778397 so small text stays readable */
+  --mn-text-faint: #778397; /* icons and decoration only */
+  --mn-border-color: #E1E8F1;
+  --mn-border-strong: #C5D2E4;
+  --mn-link: #43689F;          /* Secondary Blue, darkened for small text */
+  --mn-sidebar-bg: var(--mn-deep);
 
   --mn-success-bg: #E0F3E9;
   --mn-success-text: #166B4C;
@@ -25,29 +26,29 @@
   --mn-danger-bg: #FBE5E3;
   --mn-danger-text: #AE2A20;
   --mn-danger-border: #F2C4C0;
-  --mn-info-bg: #E2F1F4;
-  --mn-info-text: #1D6478;
-  --mn-info-border: #C2E0E7;
+  --mn-info-bg: #E5EEFB;
+  --mn-info-text: #28569A;
+  --mn-info-border: #C6D8F2;
 
   --mn-radius-sm: 0.5rem;
   --mn-radius-md: 0.625rem;
   --mn-radius-lg: 0.875rem;
   --mn-radius-pill: 9999px;
-  --mn-shadow-sm: 0 1px 3px rgba(38, 59, 56, 0.06);
-  --mn-shadow-lg: 0 18px 40px rgba(38, 59, 56, 0.16);
-  --mn-focus-ring: 0 0 0 0.2rem rgba(39, 140, 131, 0.28);
+  --mn-shadow-sm: 0 1px 3px rgba(38, 54, 77, 0.06);
+  --mn-shadow-lg: 0 18px 40px rgba(38, 54, 77, 0.16);
+  --mn-focus-ring: 0 0 0 0.2rem rgba(82, 121, 185, 0.28);
   --mn-transition: color .18s ease, background-color .18s ease,
     border-color .18s ease, box-shadow .18s ease;
   --mn-font: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
 
   /* Bootstrap / AdminKit variables */
-  --bs-primary: #176B65;
-  --bs-primary-rgb: 23, 107, 101;
-  --bs-link-color: #176B65;
-  --bs-link-hover-color: #11544F;
-  --bs-body-color: #263B38;
+  --bs-primary: #233B63;
+  --bs-primary-rgb: 35, 59, 99;
+  --bs-link-color: #43689F;
+  --bs-link-hover-color: #233B63;
+  --bs-body-color: #26364D;
   --bs-body-font-family: var(--mn-font);
-  --bs-border-color: #E3ECE8;
+  --bs-border-color: #E1E8F1;
 }
 
 body {
@@ -69,8 +70,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .h5 { font-size: 0.975rem !important; }
 
 code { color: var(--mn-primary-hover); font-weight: 600; }
-a { color: var(--mn-primary); }
-a:hover { color: var(--mn-primary-hover); }
+a { color: var(--mn-link); }
+a:hover { color: var(--mn-primary); }
 
 .text-primary { color: var(--mn-primary) !important; }
 .text-success { color: var(--mn-success-text) !important; }

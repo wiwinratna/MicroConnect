@@ -42,7 +42,7 @@
 /* ── Saldo Awal section ── */
 .saldo-section {
     background: linear-gradient(145deg, var(--mn-bg-soft) 0%, var(--mn-bg-body) 100%);
-    border: 1px solid var(--mn-soft-teal);
+    border: 1px solid var(--mn-soft-accent);
     border-radius: 12px;
     padding: 1.25rem;
     margin-bottom: 1rem;
@@ -52,7 +52,7 @@
     align-items: flex-start;
     gap: 0.875rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(169, 207, 197,0.6);
+    border-bottom: 1px solid rgba(169, 197, 234,0.6);
     margin-bottom: 1rem;
 }
 .saldo-icon-box {
@@ -121,8 +121,8 @@
     gap: 0.6rem;
     margin-top: 0.875rem;
     padding: 0.55rem 0.875rem;
-    background: rgba(23, 107, 101,0.06);
-    border: 1px solid rgba(23, 107, 101,0.18);
+    background: rgba(35, 59, 99,0.06);
+    border: 1px solid rgba(35, 59, 99,0.18);
     border-radius: 8px;
     font-size: 0.775rem;
 }
@@ -150,7 +150,7 @@
     background: #fff;
     border: 1px solid var(--mn-border-color);
     border-radius: 9px;
-    box-shadow: 0 6px 20px rgba(38, 59, 56,.1);
+    box-shadow: 0 6px 20px rgba(38, 54, 77,.1);
     z-index: 999;
     overflow: hidden;
     max-height: 220px;

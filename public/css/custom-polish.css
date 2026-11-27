@@ -76,10 +76,10 @@ svg { max-width: 100%; }
     color: var(--mn-text-muted);
     font-size: 0.8125rem;
 }
-.table-empty-state svg { color: var(--mn-soft-teal); margin-bottom: 0.4rem; width: 28px; height: 28px; }
+.table-empty-state svg { color: var(--mn-soft-accent); margin-bottom: 0.4rem; width: 28px; height: 28px; }
 
 /* Utilities */
-.shadow-sm { box-shadow: 0 1px 3px rgba(38, 59, 56, 0.06) !important; }
+.shadow-sm { box-shadow: 0 1px 3px rgba(38, 54, 77, 0.06) !important; }
 .rounded-3 { border-radius: 12px !important; }
 .rounded-2 { border-radius: 8px !important; }
 .page-title-section { margin-bottom: 1rem !important; }

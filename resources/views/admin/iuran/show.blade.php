@@ -164,10 +164,10 @@
 
 <style>
     .x-small { font-size: 0.7rem; }
-    .bg-primary-subtle { background-color: rgba(23, 107, 101, 0.1) !important; }
+    .bg-primary-subtle { background-color: rgba(35, 59, 99, 0.1) !important; }
     .bg-success-subtle { background-color: rgba(22, 107, 76, 0.1) !important; }
     .bg-danger-subtle { background-color: rgba(174, 42, 32, 0.1) !important; }
-    .bg-secondary-subtle { background-color: rgba(95, 112, 108, 0.1) !important; }
+    .bg-secondary-subtle { background-color: rgba(92, 106, 128, 0.1) !important; }
     .bg-warning-subtle { background-color: rgba(133, 87, 0, 0.1) !important; }
     .text-primary { color: var(--mn-primary) !important; }
     .text-success { color: var(--mn-success-text) !important; }

@@ -24,7 +24,7 @@
     .status-badge i { font-size: 8px; }
     
     .badge-open { background-color: var(--mn-warning-bg); color: var(--mn-warning-text); border: 1px solid var(--mn-warning-border); }
-    .badge-progress { background-color: var(--mn-primary-soft); color: var(--mn-primary-hover); border: 1px solid var(--mn-soft-teal); }
+    .badge-progress { background-color: var(--mn-primary-soft); color: var(--mn-primary-hover); border: 1px solid var(--mn-soft-accent); }
     .badge-resolved { background-color: var(--mn-success-bg); color: var(--mn-success-text); border: 1px solid var(--mn-success-border); }
 </style>
 @endpush

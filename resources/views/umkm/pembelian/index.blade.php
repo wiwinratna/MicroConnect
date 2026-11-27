@@ -6,7 +6,7 @@
 <style>
 /* ── Premium Table & Actions ── */
 .btn-action-edit { width: 32px; height: 32px; border-radius: 8px; background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted); display: inline-flex; align-items: center; justify-content: center;  transition: all .2s; }
-.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
+.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-accent); color: var(--mn-primary); }
 .btn-action-view { width: 32px; height: 32px; border-radius: 8px; background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted); display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
 .btn-action-view:hover { background: var(--mn-info-bg); border-color: var(--mn-info-border); color: var(--mn-info-text); }
 
@@ -20,7 +20,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(38, 59, 56, 0.52);
+    background: rgba(38, 54, 77, 0.52);
     z-index: 9050;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -39,7 +39,7 @@
     max-height: calc(100vh - 3rem);
     background: #fff;
     border-radius: 16px;
-    box-shadow: 0 24px 80px rgba(38, 59, 56,.22), 0 4px 20px rgba(38, 59, 56,.1);
+    box-shadow: 0 24px 80px rgba(38, 54, 77,.22), 0 4px 20px rgba(38, 54, 77,.1);
     overflow: hidden;
     flex-direction: column;
 }

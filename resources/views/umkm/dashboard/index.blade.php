@@ -192,10 +192,10 @@
     const topData   = @json($topData);
 
     Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
-    Chart.defaults.color = '#5F706C';
-    Chart.defaults.scale.grid.color = '#E3ECE8';
+    Chart.defaults.color = '#5C6A80';
+    Chart.defaults.scale.grid.color = '#E1E8F1';
 
-    const tooltip = { backgroundColor: '#263B38', padding: 10, cornerRadius: 8, titleFont: { size: 13 }, bodyFont: { size: 13 } };
+    const tooltip = { backgroundColor: '#26364D', padding: 10, cornerRadius: 8, titleFont: { size: 13 }, bodyFont: { size: 13 } };
     const angka = new Intl.NumberFormat('id-ID', { notation: 'compact' });
 
     // Penjualan Rentang Waktu
@@ -207,12 +207,12 @@
                 label: 'Total Penjualan',
                 data: dataGrafik,
                 tension: 0.35,
-                borderColor: '#176B65',
-                backgroundColor: 'rgba(39, 140, 131, 0.14)',
+                borderColor: '#233B63',
+                backgroundColor: 'rgba(82, 121, 185, 0.14)',
                 borderWidth: 2,
                 fill: true,
                 pointBackgroundColor: '#fff',
-                pointBorderColor: '#176B65',
+                pointBorderColor: '#233B63',
                 pointBorderWidth: 2,
                 pointRadius: 4,
                 pointHoverRadius: 6
@@ -242,7 +242,7 @@
             datasets: [{
                 label: 'Qty Terjual',
                 data: topData,
-                backgroundColor: '#278C83',
+                backgroundColor: '#5279B9',
                 borderRadius: 6
             }]
         },

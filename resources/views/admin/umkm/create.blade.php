@@ -127,7 +127,7 @@
 </div>
 
 <style>
-    .bg-primary-subtle { background-color: rgba(23, 107, 101, 0.08) !important; }
+    .bg-primary-subtle { background-color: rgba(35, 59, 99, 0.08) !important; }
     .custom-input { transition: all 0.2s ease-in-out; }
     .custom-input:focus { background-color: var(--mn-bg-soft) !important; transform: translateY(-1px); }
     .card { border: none !important; }

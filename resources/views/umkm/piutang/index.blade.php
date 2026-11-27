@@ -11,7 +11,7 @@
 
     /* ── Action Buttons ── */
     .btn-action { width: 32px; height: 32px; border-radius: 8px; background: var(--mn-bg-body); border: 1px solid var(--mn-border-color); color: var(--mn-text-muted); display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
-    .btn-action:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
+    .btn-action:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-accent); color: var(--mn-primary); }
     .btn-action-view:hover { background: var(--mn-info-bg); border-color: var(--mn-info-border); color: var(--mn-info-text); }
     .btn-action-whatsapp:hover { background: var(--mn-success-bg); border-color: var(--mn-success-border); color: var(--mn-success-text); }
     .btn-action-pay:hover { background: var(--mn-warning-bg); border-color: var(--mn-warning-border); color: var(--mn-warning-text); }
@@ -21,10 +21,10 @@
     .summary-card:hover { transform: translateY(-3px); }
 
     /* ── Dialog Design ── */
-    #dialogBayarPiutang { border: none; border-radius: 16px; padding: 0; margin: auto; max-width: 500px; width: 95%; box-shadow: 0 25px 50px -12px rgba(38, 59, 56, 0.25); border: 1px solid var(--mn-bg-soft); }
+    #dialogBayarPiutang { border: none; border-radius: 16px; padding: 0; margin: auto; max-width: 500px; width: 95%; box-shadow: 0 25px 50px -12px rgba(38, 54, 77, 0.25); border: 1px solid var(--mn-bg-soft); }
     #dialogBayarPiutang[open] { display: flex; flex-direction: column; animation: dialogIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
     @keyframes dialogIn { from { opacity:0; transform: translateY(20px) scale(0.95); } to { opacity:1; transform: translateY(0) scale(1); } }
-    #dialogBayarPiutang::backdrop { background: rgba(38, 59, 56, 0.4); backdrop-filter: blur(4px); }
+    #dialogBayarPiutang::backdrop { background: rgba(38, 54, 77, 0.4); backdrop-filter: blur(4px); }
 </style>
 @endpush
 

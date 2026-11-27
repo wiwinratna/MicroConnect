@@ -36,7 +36,7 @@
     margin-left: auto;
     display: inline-flex; align-items: center; gap: .3rem;
     font-size: .72rem; font-weight: 600; color: var(--mn-primary);
-    background: var(--mn-bg-soft); border: 1px solid var(--mn-soft-teal);
+    background: var(--mn-bg-soft); border: 1px solid var(--mn-soft-accent);
     border-radius: 6px; padding: .2rem .65rem; cursor: pointer;
     transition: background .15s; white-space: nowrap; text-decoration: none;
 }
@@ -48,7 +48,7 @@
     display: none; position: absolute;
     top: calc(100% + 3px); left: 0; right: 0; z-index: 999;
     background: #fff; border: 1px solid var(--mn-border-color);
-    border-radius: 9px; box-shadow: 0 6px 20px rgba(38, 59, 56,.1);
+    border-radius: 9px; box-shadow: 0 6px 20px rgba(38, 54, 77,.1);
     max-height: 220px; overflow-y: auto;
 }
 .ac-dropdown.open { display: block; }
@@ -75,7 +75,7 @@
     text-align: center; min-height: 96px;
     display: flex; align-items: center; justify-content: center;
 }
-.foto-zone:hover { border-color: var(--mn-soft-teal); background: var(--mn-bg-soft); }
+.foto-zone:hover { border-color: var(--mn-soft-accent); background: var(--mn-bg-soft); }
 .foto-zone input[type="file"] { display: none; }
 .foto-placeholder { pointer-events: none; }
 .foto-placeholder svg { color: var(--mn-text-faint); margin-bottom: 5px; }
@@ -133,7 +133,7 @@
 .bahan-panel {
     position: absolute; top: calc(100% + 2px); left: 0; right: 0; z-index: 30;
     border-radius: 8px; border: 1px solid var(--mn-border-color);
-    box-shadow: 0 6px 18px rgba(38, 59, 56,.1); background: #fff;
+    box-shadow: 0 6px 18px rgba(38, 54, 77,.1); background: #fff;
     max-height: 200px; overflow-y: auto; display: none;
 }
 .bahan-panel .bahan-opt {
@@ -152,7 +152,7 @@
 /* ══ Simulasi Modal ══ */
 .sim-overlay {
     display: none; position: fixed; inset: 0; z-index: 1055;
-    background: rgba(38, 59, 56,.45); backdrop-filter: blur(3px);
+    background: rgba(38, 54, 77,.45); backdrop-filter: blur(3px);
     align-items: center; justify-content: center; padding: 1rem;
 }
 .sim-overlay.open { display: flex; }
@@ -160,7 +160,7 @@
     background: #fff; border-radius: 16px;
     width: 100%; max-width: 500px; max-height: 88vh;
     display: flex; flex-direction: column; overflow: hidden;
-    box-shadow: 0 24px 64px rgba(38, 59, 56,.22);
+    box-shadow: 0 24px 64px rgba(38, 54, 77,.22);
     animation: simIn .18s ease;
 }
 @keyframes simIn { from{opacity:0;transform:scale(.96) translateY(8px)} to{opacity:1;transform:none} }
@@ -192,7 +192,7 @@
 .sc.green { background: var(--mn-success-bg); border-color: var(--mn-success-border); }
 .sc.green .sl { color: var(--mn-success-text); }
 .sc.green .sv { color: var(--mn-success-text); font-size: .95rem; }
-.sc.indigo { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); }
+.sc.indigo { background: var(--mn-bg-soft); border-color: var(--mn-soft-accent); }
 .sc.indigo .sv { color: var(--mn-primary-hover); }
 </style>
 @endpush

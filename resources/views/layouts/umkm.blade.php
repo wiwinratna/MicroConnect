@@ -58,7 +58,7 @@
 			timer: 6000,
 			timerProgressBar: true,
 			background: '#fff',
-			color: '#263B38',
+			color: '#26364D',
 			customClass: {
 				popup: 'rounded-4 shadow-sm border border-light'
 			},
@@ -120,7 +120,7 @@
 							icon: 'warning',
 							showCancelButton: true,
 							confirmButtonColor: 'var(--mn-danger-bg)',
-							cancelButtonColor: '#5F706C',
+							cancelButtonColor: '#5C6A80',
 							confirmButtonText: 'Ya, Hapus!',
 							cancelButtonText: 'Batal',
 							customClass: {

@@ -211,12 +211,12 @@
                                 <div class="d-flex align-items-center gap-3">
                                     <input type="color" name="warna_tema" id="warnaTemaInput"
                                            class="form-control form-control-color shadow-sm"
-                                           value="{{ old('warna_tema', $umkm->warna_tema ?? '#176B65') }}"
+                                           value="{{ old('warna_tema', $umkm->warna_tema ?? '#233B63') }}"
                                            title="Pilih warna tema">
                                     <div>
                                         <span class="badge rounded-pill px-3 py-2" id="warnaTemaPreview"
-                                              style="background-color: {{ $umkm->warna_tema ?? '#176B65' }}; color: #fff; font-size: 0.85rem;">
-                                            {{ $umkm->warna_tema ?? '#176B65' }}
+                                              style="background-color: {{ $umkm->warna_tema ?? '#233B63' }}; color: #fff; font-size: 0.85rem;">
+                                            {{ $umkm->warna_tema ?? '#233B63' }}
                                         </span>
                                         <div class="form-text">Hanya untuk Mode Etalase & nota.</div>
                                     </div>
@@ -326,7 +326,7 @@
         border-radius: 22px;
         background: #ffffff;
         border: 1px solid var(--mn-border-color);
-        box-shadow: 0 6px 18px rgba(38, 59, 56, 0.08);
+        box-shadow: 0 6px 18px rgba(38, 54, 77, 0.08);
     }
 
     /* HEADER CARD – dibikin mirip level-info-card */

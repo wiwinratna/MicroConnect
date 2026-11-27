@@ -26,9 +26,9 @@
     margin-left: auto;
     display: inline-flex; align-items: center; gap: .3rem;
     font-size: .72rem; font-weight: 600; color: var(--mn-primary);
-    background: var(--mn-bg-soft); border: 1px solid var(--mn-soft-teal);
+    background: var(--mn-bg-soft); border: 1px solid var(--mn-soft-accent);
     border-radius: 6px; padding: .2rem .6rem; cursor: pointer;
-    transition: background .15s; white-space: nowrap; border: 1px solid var(--mn-soft-teal);
+    transition: background .15s; white-space: nowrap; border: 1px solid var(--mn-soft-accent);
 }
 .btn-sim-link:hover { background: var(--mn-primary-soft); }
 
@@ -66,7 +66,7 @@
     min-height: 96px; display: flex; align-items: center; justify-content: center;
     transition: border-color .15s, background .15s;
 }
-.foto-zone:hover { border-color: var(--mn-soft-teal); background: var(--mn-bg-soft); }
+.foto-zone:hover { border-color: var(--mn-soft-accent); background: var(--mn-bg-soft); }
 .foto-zone input[type="file"] { display: none; }
 .foto-ph-text { font-size: .73rem; color: var(--mn-text-muted); line-height: 1.4; }
 .foto-ph-text strong { display: block; color: var(--mn-text-main); }
@@ -81,7 +81,7 @@
 .ac-dd {
     display: none; position: absolute; top: calc(100% + 3px); left: 0; right: 0; z-index: 999;
     background: #fff; border: 1px solid var(--mn-border-color); border-radius: 9px;
-    box-shadow: 0 6px 20px rgba(38, 59, 56,.1); max-height: 220px; overflow-y: auto;
+    box-shadow: 0 6px 20px rgba(38, 54, 77,.1); max-height: 220px; overflow-y: auto;
 }
 .ac-dd.open { display: block; }
 .ac-opt {
@@ -116,7 +116,7 @@
 .bahan-panel {
     position: absolute; top: calc(100% + 2px); left: 0; right: 0; z-index: 30;
     background: #fff; border: 1px solid var(--mn-border-color); border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(38, 59, 56,.1); max-height: 200px; overflow-y: auto; display: none;
+    box-shadow: 0 6px 18px rgba(38, 54, 77,.1); max-height: 200px; overflow-y: auto; display: none;
 }
 .bahan-opt { display: flex; justify-content: space-between; align-items: center; padding: .38rem .75rem; font-size: .8rem; cursor: pointer; transition: background .1s; }
 .bahan-opt:hover { background: var(--mn-bg-soft); color: var(--mn-primary-hover); }

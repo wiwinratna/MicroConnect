@@ -26,4 +26,4 @@
 }
 .table td { vertical-align: middle !important; }
 .table tbody tr { transition: var(--mn-transition); }
-.table-hover tbody tr:hover > td { background-color: #F5FAF8 !important; }
+.table-hover tbody tr:hover > td { background-color: #F3F7FD !important; }

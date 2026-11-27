@@ -26,7 +26,7 @@
     .kategori-radio-hidden:checked + .kategori-card-modern {
         border-color: var(--mn-primary);
         background-color: var(--mn-bg-soft);
-        box-shadow: 0 4px 12px rgba(23, 107, 101, 0.1);
+        box-shadow: 0 4px 12px rgba(35, 59, 99, 0.1);
     }
 
     .kategori-radio-hidden:checked + .kategori-card-modern .icon-box {
@@ -74,7 +74,7 @@
     .form-group-modern { margin-bottom: 1.5rem; }
     .form-label-premium { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mn-text-muted); margin-bottom: 0.5rem; display: block;}
     .form-control-premium { border-radius: 10px; padding: 0.625rem 1rem; border: 1px solid var(--mn-border-color); font-size: 0.9rem; transition: border-color 0.2s; }
-    .form-control-premium:focus { border-color: var(--mn-primary); box-shadow: 0 0 0 3px rgba(23, 107, 101, 0.1); outline: none; }
+    .form-control-premium:focus { border-color: var(--mn-primary); box-shadow: 0 0 0 3px rgba(35, 59, 99, 0.1); outline: none; }
 </style>
 @endpush
 

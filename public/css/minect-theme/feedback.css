@@ -8,7 +8,7 @@
 .bg-primary { background-color: var(--mn-primary) !important; }
 .bg-success { background-color: #1E7F5C !important; }
 .bg-danger  { background-color: #C0392B !important; }
-.bg-info    { background-color: #1D6478 !important; }
+.bg-info    { background-color: #28569A !important; }
 .bg-warning { background-color: #F6C453 !important; color: #3D2E00 !important; }
 
 .bg-primary-subtle, .badge-soft-info, .badge-soft-primary {
@@ -54,7 +54,7 @@
 .dropdown-item:hover, .dropdown-item:focus { background: var(--mn-bg-soft); color: var(--mn-text-main); }
 .dropdown-item.active, .dropdown-item:active { background: var(--mn-primary); color: #fff; }
 
-/* SWEETALERT: teal confirm button, delete confirmation keeps its danger style */
+/* SWEETALERT: navy confirm button, delete confirmation keeps its danger style */
 .swal2-popup { border-radius: var(--mn-radius-lg) !important; font-family: var(--mn-font); }
 .swal2-styled.swal2-confirm:not(.btn-danger) { background-color: var(--mn-primary) !important; }
 .swal2-timer-progress-bar { background: var(--mn-secondary); }

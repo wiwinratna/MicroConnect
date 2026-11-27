@@ -24,12 +24,12 @@
     /* ── Avatar Circles ── */
     .avatar-sm { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: var(--mn-border-color); color: var(--mn-text-muted); }
     .avatar-admin { background: var(--mn-warning-bg); color: var(--mn-warning-text); border: 1px solid var(--mn-warning-border); }
-    .avatar-user { background: var(--mn-primary-soft); color: var(--mn-primary); border: 1px solid var(--mn-soft-teal); }
+    .avatar-user { background: var(--mn-primary-soft); color: var(--mn-primary); border: 1px solid var(--mn-soft-accent); }
 
     /* ── Reply Form ── */
     .reply-footer { padding: 1.25rem 1.5rem; background: #fff; border-top: 1px solid var(--mn-bg-soft); }
     .form-control-chat { border-radius: 12px; border: 1px solid var(--mn-border-color); padding: 0.75rem 1rem; resize: none; font-size: 0.9rem; transition: border-color 0.2s; }
-    .form-control-chat:focus { border-color: var(--mn-primary); box-shadow: 0 0 0 3px rgba(23, 107, 101, 0.08); outline: none; }
+    .form-control-chat:focus { border-color: var(--mn-primary); box-shadow: 0 0 0 3px rgba(35, 59, 99, 0.08); outline: none; }
     
     /* ── Header Metadata ── */
     .ticket-header-pill { background: var(--mn-bg-soft); border: 1px solid var(--mn-border-color); border-radius: 30px; padding: 4px 12px; font-size: 0.75rem; color: var(--mn-text-muted); font-weight: 600; }
@@ -143,7 +143,7 @@
     })
 </script>
 <style>
-    .shadow-blue { box-shadow: 0 4px 12px rgba(23, 107, 101, 0.2) !important; }
+    .shadow-blue { box-shadow: 0 4px 12px rgba(35, 59, 99, 0.2) !important; }
     .ps-5 { padding-left: 2.75rem !important; }
     .pe-5 { padding-right: 2.75rem !important; }
 </style>

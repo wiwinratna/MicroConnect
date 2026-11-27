@@ -10,7 +10,7 @@
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s;
 }
-.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-teal); color: var(--mn-primary); }
+.btn-action-edit:hover { background: var(--mn-bg-soft); border-color: var(--mn-soft-accent); color: var(--mn-primary); }
 
 .btn-action-delete {
     width: 32px; height: 32px; border-radius: 8px;

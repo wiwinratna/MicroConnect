@@ -14,7 +14,7 @@
 
     <style>
         :root {
-            --kasir-primary: {{ $umkm->warna_tema ?? '#176B65' }}; 
+            --kasir-primary: {{ $umkm->warna_tema ?? '#233B63' }}; 
             --kasir-primary-hover: color-mix(in srgb, var(--kasir-primary) 85%, black);
             --kasir-primary-light: color-mix(in srgb, var(--kasir-primary) 10%, white);
             --kasir-bg: var(--mn-bg-soft);

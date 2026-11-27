@@ -17,7 +17,7 @@
     .form-group-custom { margin-bottom: 1.25rem; }
     .label-custom { display: block; font-size: 0.8rem; font-weight: 600; color: var(--mn-text-muted); margin-bottom: 0.5rem; }
     .input-custom { width: 100%; padding: 0.625rem 0.875rem; font-size: 0.875rem; border-radius: 10px; border: 1px solid var(--mn-border-color); background: #fff; transition: all 0.2s; color: var(--mn-text-main); }
-    .input-custom:focus { outline: none; border-color: var(--mn-primary); box-shadow: 0 0 0 4px rgba(23, 107, 101, 0.1); }
+    .input-custom:focus { outline: none; border-color: var(--mn-primary); box-shadow: 0 0 0 4px rgba(35, 59, 99, 0.1); }
     .select-custom { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
 
     /* ── Item Rows ── */
@@ -28,8 +28,8 @@
 
     /* ── Action Section ── */
     .form-actions { background: #ffffff; border-top: 1px solid var(--mn-bg-soft); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-    .btn-submit-premium { padding: 0.75rem 2rem; border-radius: 10px; font-weight: 600; font-size: 0.9375rem; background: var(--mn-primary); color: #fff; border: none; box-shadow: 0 10px 15px -3px rgba(23, 107, 101, 0.2); transition: all 0.2s; }
-    .btn-submit-premium:hover { background: var(--mn-primary-hover); transform: translateY(-1px); box-shadow: 0 20px 25px -5px rgba(23, 107, 101, 0.2); }
+    .btn-submit-premium { padding: 0.75rem 2rem; border-radius: 10px; font-weight: 600; font-size: 0.9375rem; background: var(--mn-primary); color: #fff; border: none; box-shadow: 0 10px 15px -3px rgba(35, 59, 99, 0.2); transition: all 0.2s; }
+    .btn-submit-premium:hover { background: var(--mn-primary-hover); transform: translateY(-1px); box-shadow: 0 20px 25px -5px rgba(35, 59, 99, 0.2); }
     .btn-add-row { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--mn-primary); font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; border-radius: 8px; background: var(--mn-bg-soft); border: 1px solid var(--mn-primary-soft); transition: all 0.2s; cursor: pointer; text-decoration: none; }
     .btn-add-row:hover { background: var(--mn-primary-soft); }
 
@@ -39,7 +39,7 @@
     
     /* Tom Select Overrides */
     .ts-control { border-radius: 10px; border: 1px solid var(--mn-border-color); padding: 0.625rem 0.875rem; font-size: 0.875rem; color: var(--mn-text-main); background-color: #fff; box-shadow: none; min-height: 42px; }
-    .ts-control.focus { border-color: var(--mn-primary); box-shadow: 0 0 0 4px rgba(23, 107, 101, 0.1); }
+    .ts-control.focus { border-color: var(--mn-primary); box-shadow: 0 0 0 4px rgba(35, 59, 99, 0.1); }
     .ts-dropdown { border-radius: 10px; border: 1px solid var(--mn-border-color); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); font-size: 0.85rem; }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">

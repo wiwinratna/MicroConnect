@@ -37,6 +37,8 @@
 	<form id="formDaftar" method="POST" action="{{ route('register.process') }}" class="mn-panel mn-panel-wide">
 		@csrf
 
+		<p class="form-text" style="margin: 0 0 1rem;">Isian bertanda <span class="mn-wajib">*</span> wajib diisi.</p>
+
 		{{-- ============ LANGKAH 1: DATA ============ --}}
 		<div id="langkah1" @if($bukaLangkah2) hidden @endif>
 			<h2 class="mn-section-title">Data pemilik</h2>
@@ -76,16 +78,16 @@
 				</div>
 
 				<div class="mn-field">
-					<label class="form-label" for="no_telepon">Telepon usaha (boleh dikosongkan)</label>
+					<label class="form-label" for="no_telepon">Telepon usaha</label>
 					<input type="tel" id="no_telepon" name="no_telepon" class="form-control"
 						value="{{ old('no_telepon') }}" maxlength="20">
 				</div>
 
 				<div class="mn-field mn-span">
-					<label class="form-label" for="nib">NIB (boleh dikosongkan)</label>
+					<label class="form-label" for="nib">NIB</label>
 					<input type="text" id="nib" name="nib" class="form-control" inputmode="numeric"
 						value="{{ old('nib') }}" pattern="[0-9]{13}" maxlength="13">
-					<div class="form-text">Nomor Induk Berusaha, 13 angka. Kosongkan bila belum punya.</div>
+					<div class="form-text">Nomor Induk Berusaha, 13 angka.</div>
 				</div>
 
 				<div class="mn-field mn-span">

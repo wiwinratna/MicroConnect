@@ -109,7 +109,7 @@
                     
                     <div class="input-group mb-2 bg-light rounded-3 p-1 border">
                         <span class="input-group-text border-0 bg-transparent text-muted px-2 py-1"><i data-feather="user" style="width:14px;"></i></span>
-                        <input type="text" name="pembeli" class="form-control form-control-sm border-0 bg-transparent fw-semibold px-1" placeholder="Nama Pembeli (Opsional)">
+                        <input type="text" name="pembeli" class="form-control form-control-sm border-0 bg-transparent fw-semibold px-1" placeholder="Nama Pembeli">
                     </div>
                     
                     <div class="mb-2 position-relative">

@@ -77,7 +77,7 @@
                             <hr>
 
                             <p class="text-muted small mb-2">
-                                Ubah password (opsional).
+                                Ubah password.
                             </p>
 
                             {{-- PASSWORD LAMA: wajib bila mengganti password (FR-13) --}}

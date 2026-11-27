@@ -43,7 +43,7 @@
             <textarea id="pertanyaan" name="pertanyaan" rows="2" class="form-control" maxlength="1000" required>{{ old('pertanyaan', $indikator->pertanyaan) }}</textarea>
           </div>
           <div class="col-12">
-            <label class="form-label" for="definisi">Keterangan untuk Admin (boleh dikosongkan)</label>
+            <label class="form-label" for="definisi">Keterangan untuk Admin</label>
             <textarea id="definisi" name="definisi" rows="2" class="form-control" maxlength="1000">{{ old('definisi', $indikator->definisi) }}</textarea>
           </div>
         </div>

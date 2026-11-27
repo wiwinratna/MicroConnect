@@ -21,6 +21,7 @@
     @yield('content')
 
     <script src="{{ asset('js/password-toggle.js') }}"></script>
+    <script src="{{ asset('js/wajib.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

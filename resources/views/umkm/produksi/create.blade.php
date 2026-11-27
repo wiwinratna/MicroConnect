@@ -34,7 +34,7 @@
                     <input type="date" name="tanggal" class="form-control" value="{{ old('tanggal', now()->toDateString()) }}" required>
                 </div>
                 <div class="col-md-12">
-                    <label class="form-label">Catatan (opsional)</label>
+                    <label class="form-label">Catatan</label>
                     <textarea name="catatan" class="form-control" rows="2">{{ old('catatan') }}</textarea>
                 </div>
             </div>

@@ -79,6 +79,7 @@ a:hover { color: var(--mn-primary); }
 .text-danger { color: var(--mn-danger-text) !important; }
 .text-muted { color: var(--mn-text-muted) !important; }
 .text-subtext { font-size: 0.8125rem; color: var(--mn-text-muted); }
+.mn-wajib { color: var(--mn-danger-text); font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

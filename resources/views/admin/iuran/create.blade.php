@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold text-dark small">Keterangan Tambahan <small class="text-muted fw-normal">(opsional)</small></label>
+                            <label class="form-label fw-bold text-dark small">Keterangan Tambahan</label>
                             <textarea name="keterangan" class="form-control border-0 bg-light rounded-3 shadow-none custom-input" rows="3"
                                       placeholder="Tambahkan informasi pendukung iuran jika diperlukan...">{{ old('keterangan') }}</textarea>
                         </div>

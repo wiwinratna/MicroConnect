@@ -45,7 +45,7 @@
                       @endforeach
                     </select>
                     <input type="text" name="aturan[{{ $m->id }}][{{ $rumpun }}][label_tampil]" maxlength="150"
-                           class="form-control form-control-sm" placeholder="Label khusus (opsional)"
+                           class="form-control form-control-sm" placeholder="Label khusus"
                            value="{{ old("aturan.{$m->id}.{$rumpun}.label_tampil", $a?->label_tampil) }}">
                   </td>
                 @endforeach

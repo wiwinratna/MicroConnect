@@ -183,7 +183,7 @@
               </select>
             </div>
             <div class="col-12">
-              <input type="text" name="catatan" class="form-control form-control-sm" placeholder="Catatan (opsional)">
+              <input type="text" name="catatan" class="form-control form-control-sm" placeholder="Catatan">
             </div>
             <div class="col-12 d-flex justify-content-end">
               <button type="submit" class="btn btn-success btn-sm">Simpan Pembayaran</button>

@@ -234,7 +234,7 @@
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label small fw-bold">Metode Bayar (Opsional)</label>
+                    <label class="form-label small fw-bold">Metode Bayar</label>
                     <select name="metode_bayar" class="form-select">
                         <option value="">-- Pilih --</option>
                         <option>Tunai</option><option>Transfer Bank</option><option>QRIS</option>

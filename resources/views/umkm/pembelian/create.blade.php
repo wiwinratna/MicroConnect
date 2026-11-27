@@ -50,17 +50,17 @@
                     <div class="col-md-6">
                         <label class="form-label">Supplier</label>
                         <input type="text" name="supplier" class="form-control"
-                               value="{{ old('supplier') }}" placeholder="Nama toko / pemasok (opsional)">
+                               value="{{ old('supplier') }}" placeholder="Nama toko / pemasok">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Catatan</label>
                         <textarea name="catatan" rows="1" class="form-control"
-                                  placeholder="Catatan tambahan (opsional)">{{ old('catatan') }}</textarea>
+                                  placeholder="Catatan tambahan">{{ old('catatan') }}</textarea>
                     </div>
 
                     <div class="col-md-12">
-                        <label class="form-label">Bukti Pembelian (Opsional)</label>
+                        <label class="form-label">Bukti Pembelian</label>
                         <input type="file" name="bukti_pembelian" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
                         <small class="text-muted">Maksimal 2MB. Format: JPG, PNG, PDF.</small>
                     </div>

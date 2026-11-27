@@ -15,7 +15,7 @@
   </div>
   <div class="col-md-8">
     <input type="text" name="pilihan[{{ $i }}][contoh]" class="form-control" maxlength="1000"
-           value="{{ $p['contoh'] ?? '' }}" placeholder="Contoh untuk membantu UMKM (boleh dikosongkan)" aria-label="Contoh">
+           value="{{ $p['contoh'] ?? '' }}" placeholder="Contoh untuk membantu UMKM" aria-label="Contoh">
   </div>
   <div class="col-md-4">
     <label class="form-check mt-2">

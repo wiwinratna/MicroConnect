@@ -68,7 +68,7 @@
 
       {{-- Catatan --}}
       <div class="col-md-12">
-        <label class="form-label">Catatan (opsional)</label>
+        <label class="form-label">Catatan</label>
         <input type="text" name="catatan" class="form-control" value="{{ old('catatan') }}"
                placeholder="Misal: hutang makanan tgl 10 Maret...">
       </div>

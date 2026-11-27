@@ -71,23 +71,23 @@
                             <label class="form-label">Nama Instansi / Toko / Perusahaan</label>
                             <input type="text" name="nama_instansi" class="form-control"
                                    value="{{ old('nama_instansi') }}"
-                                   placeholder="Contoh: PT. Maju Bersama (Opsional)">
+                                   placeholder="Contoh: PT. Maju Bersama">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Nama PIC / Penanggung Jawab</label>
                             <input type="text" name="nama_pic" class="form-control"
                                    value="{{ old('nama_pic') }}"
-                                   placeholder="Bila perlu (Opsional)">
+                                   placeholder="Bila perlu">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">No. Identitas (KTP)</label>
                             <input type="text" name="no_ktp" class="form-control"
                                    value="{{ old('no_ktp') }}"
-                                   placeholder="Untuk administrasi (Opsional)">
+                                   placeholder="Untuk administrasi">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Upload Foto KTP <span class="text-muted small fw-normal">(Opsional)</span></label>
+                            <label class="form-label">Upload Foto KTP</label>
                             <div class="upload-zone" id="ktpZone">
                                 <input type="file" name="foto_ktp" id="foto_ktp" accept="image/*">
                                 <div class="placeholder-content">
@@ -119,7 +119,7 @@
                                 <i data-feather="mail" class="icon"></i>
                                 <input type="email" name="email" class="form-control"
                                        value="{{ old('email') }}"
-                                       placeholder="contoh@email.com (Opsional)">
+                                       placeholder="contoh@email.com">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -128,7 +128,7 @@
                                 <i data-feather="phone-call" class="icon"></i>
                                 <input type="text" name="kontak_alternatif" class="form-control"
                                        value="{{ old('kontak_alternatif') }}"
-                                       placeholder="08xxxxxxxxxx (Opsional)">
+                                       placeholder="08xxxxxxxxxx">
                             </div>
                         </div>
 
@@ -141,7 +141,7 @@
                             <label class="form-label">Catatan Tambahan</label>
                             <input type="text" name="catatan" class="form-control"
                                    value="{{ old('catatan') }}"
-                                   placeholder="Info opsional tentang pelanggan ini...">
+                                   placeholder="Info tambahan tentang pelanggan ini...">
                         </div>
                     </div>
 

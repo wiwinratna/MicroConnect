@@ -63,7 +63,7 @@
                                name="supplier"
                                class="form-control"
                                value="{{ old('supplier', $pembelian->supplier) }}"
-                               placeholder="Nama toko / pemasok (opsional)">
+                               placeholder="Nama toko / pemasok">
                     </div>
 
                     <div class="col-md-6">
@@ -71,7 +71,7 @@
                         <textarea name="catatan"
                                   rows="1"
                                   class="form-control"
-                                  placeholder="Catatan tambahan (opsional)">{{ old('catatan', $pembelian->catatan) }}</textarea>
+                                  placeholder="Catatan tambahan">{{ old('catatan', $pembelian->catatan) }}</textarea>
                     </div>
 
                     <div class="col-12 mt-4">

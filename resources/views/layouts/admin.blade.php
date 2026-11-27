@@ -44,6 +44,7 @@
 	<script src="{{ asset('js/app.js') }}"></script>
 	<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 	<script src="{{ asset('js/layout.js') }}"></script>
+	<script src="{{ asset('js/wajib.js') }}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		// Global Elegant Toast / Alert

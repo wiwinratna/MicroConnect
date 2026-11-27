@@ -172,7 +172,7 @@
 
                 <p class="form-section-label">Catatan Tambahan</p>
                 <div class="mb-0">
-                    <label class="form-label">Keterangan <span class="text-muted" style="font-size:0.72rem;">(opsional)</span></label>
+                    <label class="form-label">Keterangan</label>
                     <textarea name="keterangan" class="form-control" rows="2"
                               placeholder="Contoh: Beli di supplier A, kualitas ekspor, dsb.">{{ old('keterangan', $bahan->keterangan) }}</textarea>
                 </div>
@@ -274,7 +274,7 @@
             <div class="card-body" style="padding:1.25rem;">
                 <p class="form-section-label">Catatan Tambahan</p>
                 <div class="mb-0">
-                    <label class="form-label">Keterangan <span class="text-muted" style="font-size:0.72rem;">(opsional)</span></label>
+                    <label class="form-label">Keterangan</label>
                     <textarea name="keterangan" class="form-control" rows="2"
                               placeholder="Contoh: Beli di supplier A, kualitas ekspor, dsb.">{{ old('keterangan', $bahan->keterangan) }}</textarea>
                 </div>

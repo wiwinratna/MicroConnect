@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="col-md-8">
-                    <label class="form-label">Catatan (opsional)</label>
+                    <label class="form-label">Catatan</label>
                     <input type="text" name="catatan" class="form-control"
                            value="{{ old('catatan', $anggaran->catatan ?? '') }}"
                            placeholder="Contoh: estimasi kasar dulu, nanti update akhir bulan.">

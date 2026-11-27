@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\PengenalLogin;
 use App\Models\User;
 use App\Models\Umkm;
 use App\Models\PengajuanPendaftaran;
@@ -35,20 +36,22 @@ class AuthController extends Controller
     public function loginUmkm(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
+            'email'    => 'required|string|max:150',
             'password' => 'required|min:6',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        $kredensial = PengenalLogin::kredensial($request->input('email'));
+
+        if (!Auth::attempt($kredensial + $request->only('password'), $request->boolean('remember'))) {
             // Calon UMKM belum punya akun: beri tahu bahwa pendaftarannya masih menunggu.
             $menunggu = PengajuanPendaftaran::where('status', 'menunggu')
-                ->where('email', strtolower(trim((string) $request->email)))
+                ->where($kredensial)
                 ->exists();
 
             return back()->withErrors([
                 'email' => $menunggu
                     ? 'Pendaftaran Anda masih menunggu verifikasi Admin.'
-                    : 'Email atau password salah.',
+                    : 'ID/email atau password salah.',
             ])->onlyInput('email');
         }
 
@@ -101,13 +104,15 @@ class AuthController extends Controller
     public function loginAdmin(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
+            'email'    => 'required|string|max:150',
             'password' => 'required|min:6',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        $kredensial = PengenalLogin::kredensial($request->input('email'));
+
+        if (!Auth::attempt($kredensial + $request->only('password'), $request->boolean('remember'))) {
             return back()->withErrors([
-                'email' => 'Email atau password salah.',
+                'email' => 'ID/email atau password salah.',
             ])->onlyInput('email');
         }
 

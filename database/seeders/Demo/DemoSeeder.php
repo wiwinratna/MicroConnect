@@ -75,7 +75,7 @@ class DemoSeeder extends Seeder
         }
     }
 
-    private function sudahAda(array $daftar): bool
+    protected function sudahAda(array $daftar): bool
     {
         $email = $daftar['form']['email'];
 
@@ -84,7 +84,7 @@ class DemoSeeder extends Seeder
     }
 
     /** Daftarkan lewat formulir yang sama dengan calon UMKM (validasi dan skor ikut jalan). */
-    private function daftarkan(array $daftar): PengajuanPendaftaran
+    protected function daftarkan(array $daftar): PengajuanPendaftaran
     {
         auth()->forgetUser();
 

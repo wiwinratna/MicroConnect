@@ -27,7 +27,7 @@ Dokumen ini menetapkan kebutuhan fungsional dan nonfungsional MINECT v1.1 sebaga
 | BR-04 | Perubahan level tidak menghapus data historis |
 | BR-05 | Hanya dua peran: `admin` dan `pelakuusaha` (nilai v1.0 dipertahankan). Admin dibuat lewat seeder; `/admin/register` sudah ditutup (K0) |
 | BR-06 | Pengajuan `menunggu` hanya dibuat setelah data usaha dan kuesioner lengkap dikirim; tidak ada draf dan tidak ada akun sebelum disetujui |
-| BR-07 | Login hanya untuk akun yang ada dan berstatus `aktif`; pengenal login tetap email |
+| BR-07 | Login hanya untuk akun yang ada dan berstatus `aktif`. **Keputusan pemilik (2026-11-27):** pengenal login adalah ID login (`username` diikuti `.id`, misalnya `minestore.id`) atau email; akun tanpa `username` memakai email |
 | BR-08 | Kata sandi awal seragam dari `INITIAL_PASSWORD`; selalu ter-hash. **Keputusan pemilik (setelah K3):** mengganti kata sandi awal tidak wajib (pilihan pemilik akun, lewat menu Profil). Aturan wajib ganti saat login pertama tetap tersedia dan dihidupkan dengan `FORCE_CHANGE_INITIAL_PASSWORD=true` di `.env` |
 | BR-09 | Batas skor level dan skor pilihan disimpan di basis data, bukan hardcode |
 | BR-10 | Indikator dan jenis usaha yang dipakai hanya boleh dinonaktifkan |
@@ -189,7 +189,7 @@ Dihitung di satu tempat, `App\Services\LabaModalService`, dipakai halaman Lapora
 ### 11.6 Cek keamanan terarah (2026-11-26)
 Diperbaiki dan diuji (`KeamananTest`):
 1. ID bahan (pembelian, resep) dan pelanggan (penjualan kredit) hanya diterima bila milik UMKM yang login.
-2. Login dibatasi 5 percobaan per menit per email dan alamat, 20 per menit per alamat.
+2. Login dibatasi 5 percobaan per menit per akun (ID dan email dihitung bersama) dan alamat, 20 per menit per alamat.
 3. Ekstensi logo ditentukan dari isi berkas.
 4. Ganti kata sandi lewat Profil wajib kata sandi lama (FR-13).
 
@@ -198,6 +198,6 @@ Diperbaiki dan diuji (`KeamananTest`):
 Sebelum dipasang daring: ganti kata sandi Admin bawaan `UserSeeder` dan setel `APP_DEBUG=false`. Dependensi belum diperiksa.
 
 ## 12. Keputusan yang sudah diambil (K0)
-Pengenal login tetap email; nama level L2 "Berkembang"; batas skor 4–6 / 7–9 / 10–12; pilihan d omzet dan modal dipakai; bahan baku rumpun barang = `jika_melakukan_produksi`; produksi tetap nonaktif (MVP) dan tetap level Lanjutan; Tabel 3.9 = konfigurasi v1.0; kata sandi awal dari `INITIAL_PASSWORD`; hanya rumpun barang dan jasa; UMKM lama tidak disembunyikan fitur sampai rumpun dan flag terisi. K4: omzet dan modal pada penilaian ulang terisi otomatis dari pembukuan (omzet = pendapatan akun 4xx 12 bulan; modal = modal akhir per hari penilaian), angka apa adanya bila data kurang dari 12 bulan; angka sistem direkam di `data_sistem`; salinan aplikasi `akun_aktif` tanpa kata sandi; driver WhatsApp berupa kerangka; UMKM tanpa nomor WhatsApp tetap mendapat salinan aplikasi.
+Pengenal login: ID login atau email (lihat BR-07); nama level L2 "Berkembang"; batas skor 4–6 / 7–9 / 10–12; pilihan d omzet dan modal dipakai; bahan baku rumpun barang = `jika_melakukan_produksi`; produksi tetap nonaktif (MVP) dan tetap level Lanjutan; Tabel 3.9 = konfigurasi v1.0; kata sandi awal dari `INITIAL_PASSWORD`; hanya rumpun barang dan jasa; UMKM lama tidak disembunyikan fitur sampai rumpun dan flag terisi. K4: omzet dan modal pada penilaian ulang terisi otomatis dari pembukuan (omzet = pendapatan akun 4xx 12 bulan; modal = modal akhir per hari penilaian), angka apa adanya bila data kurang dari 12 bulan; angka sistem direkam di `data_sistem`; salinan aplikasi `akun_aktif` tanpa kata sandi; driver WhatsApp berupa kerangka; UMKM tanpa nomor WhatsApp tetap mendapat salinan aplikasi.
 
 Terbuka: nama level L3 ("Lanjut" di basis data vs "Lanjutan" di master prompt).

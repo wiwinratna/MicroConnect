@@ -35,8 +35,8 @@
             <form method="POST" action="{{ route('admin.login.process') }}">
                 @csrf
                 <div class="mn-field">
-                    <label class="form-label" for="email">Email Admin</label>
-                    <input class="form-control" type="email" id="email" name="email" value="{{ old('email') }}" placeholder="admin@kadin.bengkalis" required autofocus />
+                    <label class="form-label" for="email">ID atau Email</label>
+                    <input class="form-control" type="text" id="email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" value="{{ old('email') }}" placeholder="contoh: admin.id atau email" required autofocus />
                 </div>
 
                 <div class="mn-field">

@@ -15,8 +15,11 @@
         </p>
         <p class="mn-lead">
             Setelah disetujui, akun Anda akan diaktifkan. Silakan masuk memakai
-            email yang Anda daftarkan.
+            ID login di bawah ini atau email yang Anda daftarkan.
         </p>
+        @if(session('id_login'))
+            <p class="mn-notice mn-notice-warn">ID login Anda: <strong>{{ session('id_login') }}</strong><br>Catat ID ini.</p>
+        @endif
         <a href="{{ route('umkm.login') }}" class="mn-submit"
            style="display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none;">Ke halaman masuk</a>
     </div>

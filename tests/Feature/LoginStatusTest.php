@@ -53,7 +53,7 @@ class LoginStatusTest extends TestCase
         $this->akun('aktif');
 
         $this->masuk('pemilik@example.test', 'salahsalah')
-            ->assertSessionHasErrors(['email' => 'Email atau password salah.']);
+            ->assertSessionHasErrors(['email' => 'ID/email atau password salah.']);
         $this->assertGuest();
     }
 
@@ -74,6 +74,6 @@ class LoginStatusTest extends TestCase
     public function test_unknown_email_gets_generic_message(): void
     {
         $this->masuk('tidak.ada@example.test', 'x12345')
-            ->assertSessionHasErrors(['email' => 'Email atau password salah.']);
+            ->assertSessionHasErrors(['email' => 'ID/email atau password salah.']);
     }
 }

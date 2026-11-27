@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\PengenalLogin;
 use App\Models\Notifikasi;
 use App\Models\PengajuanPendaftaran;
 use App\Models\Umkm;
@@ -72,7 +73,7 @@ class NotificationService
     {
         return $this->catat('akun_aktif', [
             'nama_usaha'      => $pengajuan->nama_usaha,
-            'username'        => $pengajuan->username,
+            'username'        => PengenalLogin::dariUsername($pengajuan->username),
             'kata_sandi_awal' => $sandiAwal,
         ], $pengajuan->no_wa, $umkm->id, $pengajuan->id);
     }

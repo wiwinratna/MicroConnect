@@ -48,7 +48,7 @@
 				</div>
 
 				<div class="mn-field">
-					<label class="form-label" for="email">Email (dipakai untuk login)</label>
+					<label class="form-label" for="email">Email</label>
 					<input type="email" id="email" name="email" class="form-control"
 						value="{{ old('email') }}" maxlength="150" required>
 				</div>
@@ -57,7 +57,7 @@
 					<label class="form-label" for="username">Username</label>
 					<input type="text" id="username" name="username" class="form-control"
 						value="{{ old('username') }}" pattern="[a-z0-9_]{4,30}" maxlength="30" required>
-					<div class="form-text">Huruf kecil, angka, dan garis bawah, 4-30 karakter. Contoh: warung_budi</div>
+					<div class="form-text">Huruf kecil, angka, dan garis bawah, 4-30 karakter. Contoh: warung_budi. Anda masuk memakai warung_budi.id</div>
 				</div>
 
 				<div class="mn-field">

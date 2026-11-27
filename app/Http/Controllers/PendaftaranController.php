@@ -93,7 +93,8 @@ class PendaftaranController extends Controller
             report($e);
         }
 
-        return redirect()->route('register.selesai')->with('pendaftaran_selesai', true);
+        return redirect()->route('register.selesai')->with('pendaftaran_selesai', true)
+            ->with('id_login', \App\Support\PengenalLogin::dariUsername($request->input('username')));
     }
 
     public function selesai()

@@ -109,7 +109,7 @@ class NotifikasiTest extends TestCase
 
         $wa = $this->baris('akun_aktif', 'whatsapp');
         $this->assertSame(
-            'Akun MINECT Warung Budi telah aktif. Username: budi_baru. Kata sandi awal: ' . self::SANDI_AWAL . '. Silakan ganti kata sandi saat login pertama.',
+            'Akun MINECT Warung Budi telah aktif. Username: budi_baru.id. Kata sandi awal: ' . self::SANDI_AWAL . '. Silakan ganti kata sandi saat login pertama.',
             $wa->isi
         );
         $this->assertSame('terkirim', $wa->status);

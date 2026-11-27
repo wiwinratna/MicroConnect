@@ -25,6 +25,11 @@ class PembuatTransaksi
 {
     private int $detik = 0;
 
+    /** @param int $jam jam transaksi; pakai jam lain bila kode berbasis waktu bisa bentrok */
+    public function __construct(private int $jam = 8)
+    {
+    }
+
     /** @param Carbon[] $bulan awal tiap bulan, urut dari yang terlama */
     public function isi(Umkm $umkm, array $data, array $bulan, Carbon $hariIni): void
     {
@@ -82,7 +87,11 @@ class PembuatTransaksi
 
         foreach ($daftar as $nama => [$satuan, $stokAwal, $harga]) {
             $this->detik++;
+            // Kode bawaan aplikasi diambil dari baris terbaru; jam di sini mundur, jadi
+            // pada database yang sudah berisi data kodenya bisa bentrok. Pakai kode terbesar.
+            $nomor = (int) substr((string) BahanBaku::max('kode_bahan'), -5) + 1;
             $this->panggil(BahanBakuController::class, 'store', [
+                'kode_bahan' => 'BB' . str_pad((string) $nomor, 5, '0', STR_PAD_LEFT),
                 'nama_bahan' => $nama, 'satuan' => $satuan,
                 'stok_awal'  => $stokAwal, 'harga_unit_awal' => $harga,
             ]);
@@ -137,7 +146,7 @@ class PembuatTransaksi
     /** Setel jam aplikasi ke tanggal transaksi, maju satu detik tiap transaksi. */
     private function pada(Carbon $tanggal): void
     {
-        Carbon::setTestNow($tanggal->copy()->setTime(8, 0)->addSeconds(++$this->detik));
+        Carbon::setTestNow($tanggal->copy()->setTime($this->jam, 0)->addSeconds(++$this->detik));
     }
 
     private function panggil(string $controller, string $aksi, array $data): void

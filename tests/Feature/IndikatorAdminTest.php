@@ -189,8 +189,7 @@ class IndikatorAdminTest extends TestCase
         )->all();
 
         return [
-            'nama_pemilik' => 'Pemilik Uji', 'email' => 'nib@contoh.test', 'username' => 'pemilik_nib',
-            'no_wa' => '081288880001', 'nama_usaha' => 'Usaha NIB', 'alamat' => 'Jl. Uji 1',
+            'nama_pemilik' => 'Pemilik Uji', 'email' => 'nib@contoh.test', 'no_wa' => '081288880001', 'nama_usaha' => 'Usaha NIB', 'alamat' => 'Jl. Uji 1',
             'rumpun' => 'barang', 'mengolah_bahan' => '1',
             'jenis_usaha_id' => \App\Models\JenisUsaha::where('nama', 'like', 'Jasa boga%')->value('id'),
             'jawaban' => $pilihan, 'persetujuan_data_pribadi' => '1',

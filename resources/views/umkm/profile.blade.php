@@ -57,15 +57,6 @@
                                        value="{{ old('name', $user->name) }}" required>
                             </div>
 
-                            {{-- ID LOGIN: dibentuk dari username, tidak bisa diubah di sini --}}
-                            @if($user->username)
-                            <div class="mb-3">
-                                <label class="form-label" for="id_login">ID Login</label>
-                                <input type="text" id="id_login" class="form-control" readonly
-                                       value="{{ \App\Support\PengenalLogin::dariUsername($user->username) }}">
-                            </div>
-                            @endif
-
                             {{-- EMAIL --}}
                             <div class="mb-3">
                                 <label class="form-label">Email</label>

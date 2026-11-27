@@ -45,7 +45,6 @@ class PendaftaranController extends Controller
                 $pengajuan = PengajuanPendaftaran::create([
                     'nama_pemilik'             => $request->input('nama_pemilik'),
                     'email'                    => $request->input('email'),
-                    'username'                 => $request->input('username'),
                     'no_wa'                    => $request->input('no_wa'),
                     'nama_usaha'               => $request->input('nama_usaha'),
                     'nib'                      => $request->input('nib'),
@@ -94,8 +93,7 @@ class PendaftaranController extends Controller
             report($e);
         }
 
-        return redirect()->route('register.selesai')->with('pendaftaran_selesai', true)
-            ->with('id_login', \App\Support\PengenalLogin::dariUsername($request->input('username')));
+        return redirect()->route('register.selesai')->with('pendaftaran_selesai', true);
     }
 
     public function selesai()

@@ -36,9 +36,8 @@ class AkunUjiSeeder extends DemoSeeder
         // Notifikasi akun uji tidak boleh terkirim ke luar.
         config(['mail.default' => 'array', 'minect.notif_driver' => 'simulasi']);
 
-        $admin = User::firstOrCreate(['username' => 'adminuji'], [
+        $admin = User::firstOrCreate(['email' => 'adminuji@contoh.test'], [
             'name'                 => 'Admin Uji',
-            'email'                => 'adminuji@contoh.test',
             'password'             => Hash::make($sandi),
             'user_group'           => 'admin',
             'must_change_password' => false,

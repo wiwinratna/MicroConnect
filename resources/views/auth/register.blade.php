@@ -43,23 +43,16 @@
 		<div id="langkah1" @if($bukaLangkah2) hidden @endif>
 			<h2 class="mn-section-title">Data pemilik</h2>
 			<div class="mn-grid">
-				<div class="mn-field">
+				<div class="mn-field mn-span">
 					<label class="form-label" for="nama_pemilik">Nama pemilik</label>
 					<input type="text" id="nama_pemilik" name="nama_pemilik" class="form-control"
 						value="{{ old('nama_pemilik') }}" maxlength="150" required>
 				</div>
 
 				<div class="mn-field">
-					<label class="form-label" for="email">Email</label>
+					<label class="form-label" for="email">Email (dipakai untuk masuk)</label>
 					<input type="email" id="email" name="email" class="form-control"
 						value="{{ old('email') }}" maxlength="150" required>
-				</div>
-
-				<div class="mn-field">
-					<label class="form-label" for="username">Username</label>
-					<input type="text" id="username" name="username" class="form-control"
-						value="{{ old('username') }}" pattern="[a-z0-9_]{4,30}" maxlength="30" required>
-					<div class="form-text">Huruf kecil, angka, dan garis bawah, 4-30 karakter. Contoh: warung_budi. Anda masuk memakai warung_budi.id</div>
 				</div>
 
 				<div class="mn-field">

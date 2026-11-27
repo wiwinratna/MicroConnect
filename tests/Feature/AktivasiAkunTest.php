@@ -34,7 +34,7 @@ class AktivasiAkunTest extends TestCase
 
         $user = User::where('email', 'budi.baru@example.test')->firstOrFail();
         $this->assertSame('pelakuusaha', $user->user_group);
-        $this->assertSame('budi_baru', $user->username);
+        $this->assertNull($user->username);
         $this->assertSame('6281234567890', $user->no_wa);
         $this->assertFalse((bool) $user->must_change_password); // bawaan: ganti kata sandi tidak wajib
 

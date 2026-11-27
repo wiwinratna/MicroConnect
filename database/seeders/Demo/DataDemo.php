@@ -76,7 +76,6 @@ final class DataDemo
             'form' => [
                 'nama_pemilik' => $pemilik,
                 'email'        => str_replace('demo_', '', $username) . '@contoh.test',
-                'username'     => $username,
                 'no_wa'        => '08130000000' . $nomor,
                 'nama_usaha'   => $usaha,
                 'alamat'       => "Jl. Contoh No. {$nomor}, Bengkalis",

@@ -51,20 +51,18 @@ class PersetujuanPengajuanService
             }
 
             $bentrok = User::where('email', $pengajuan->email)
-                ->orWhere('username', $pengajuan->username)
                 ->orWhere('no_wa', $pengajuan->no_wa)
                 ->exists();
 
             if ($bentrok) {
                 throw new DomainException(
-                    'Email, username, atau nomor WhatsApp pengajuan ini sudah dipakai akun lain, sehingga tidak dapat disetujui.'
+                    'Email atau nomor WhatsApp pengajuan ini sudah dipakai akun lain, sehingga tidak dapat disetujui.'
                 );
             }
 
             $user = User::create([
                 'name'                 => $pengajuan->nama_pemilik,
                 'email'                => $pengajuan->email,
-                'username'             => $pengajuan->username,
                 'no_wa'                => $pengajuan->no_wa,
                 'password'             => Hash::make($sandiAwal),
                 'user_group'           => 'pelakuusaha',

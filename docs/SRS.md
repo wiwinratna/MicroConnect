@@ -27,7 +27,7 @@ Dokumen ini menetapkan kebutuhan fungsional dan nonfungsional MINECT v1.1 sebaga
 | BR-04 | Perubahan level tidak menghapus data historis |
 | BR-05 | Hanya dua peran: `admin` dan `pelakuusaha` (nilai v1.0 dipertahankan). Admin dibuat lewat seeder; `/admin/register` sudah ditutup (K0) |
 | BR-06 | Pengajuan `menunggu` hanya dibuat setelah data usaha dan kuesioner lengkap dikirim; tidak ada draf dan tidak ada akun sebelum disetujui |
-| BR-07 | Login hanya untuk akun yang ada dan berstatus `aktif`. **Keputusan pemilik (2026-11-27):** pengenal login adalah ID login (`username` diikuti `.id`, misalnya `minestore.id`) atau email; akun tanpa `username` memakai email |
+| BR-07 | Login hanya untuk akun yang ada dan berstatus `aktif`. **Keputusan pemilik (2026-11-27):** pengenal login hanya email; pendaftaran tidak meminta username. Sebelum disetujui, percobaan masuk memakai email pendaftar menampilkan pesan masih menunggu verifikasi |
 | BR-08 | Kata sandi awal seragam dari `INITIAL_PASSWORD`; selalu ter-hash. **Keputusan pemilik (setelah K3):** mengganti kata sandi awal tidak wajib (pilihan pemilik akun, lewat menu Profil). Aturan wajib ganti saat login pertama tetap tersedia dan dihidupkan dengan `FORCE_CHANGE_INITIAL_PASSWORD=true` di `.env` |
 | BR-09 | Batas skor level dan skor pilihan disimpan di basis data, bukan hardcode |
 | BR-10 | Indikator dan jenis usaha yang dipakai hanya boleh dinonaktifkan |
@@ -88,7 +88,7 @@ Konvensi v1.0 dipakai; perubahan lewat migrasi yang dapat dibatalkan.
 | `notifikasi` | `notifikasi_log` (`umkm_id` wajib) | Tabel baru `notifikasi`; `notifikasi_log` tetap untuk piutang/iuran |
 | Baru | — | `jenis_usaha`, `modul`, `aturan_modul`, `indikator`, `pilihan_jawaban`, `pengajuan_pendaftaran`, `periode_penilaian`, `penilaian_level`, `detail_penilaian`, `log_audit` |
 
-Constraint unik: `users.username`, `users.no_wa`; `detail_penilaian(penilaian_id, indikator_id)`; `penilaian_level(umkm_id, periode_id)`; satu pengajuan `menunggu` per `no_wa`, `username`, dan `email` (kolom virtual `*_menunggu`). Snapshot skor dan teks pilihan di `detail_penilaian`. Penyimpangan: `tanggal_persetujuan` dan `tanggal_pengajuan` pada pengajuan boleh null; `pengajuan_pendaftaran` punya kolom `email`. Migrasi 2026-11-27 menambah `pengajuan_pendaftaran.nib` (boleh null), disalin ke `umkm.nib` saat disetujui. K4b menambah `penilaian_level.data_sistem` (JSON, boleh null): angka pembukuan yang direkam saat penilaian ulang dikirim, agar Admin bisa melihat apakah UMKM mengubah pilihan dari saran sistem.
+Constraint unik: `users.username`, `users.no_wa`; `detail_penilaian(penilaian_id, indikator_id)`; `penilaian_level(umkm_id, periode_id)`; satu pengajuan `menunggu` per `no_wa`, `username`, dan `email` (kolom virtual `*_menunggu`). Snapshot skor dan teks pilihan di `detail_penilaian`. Penyimpangan: `tanggal_persetujuan` dan `tanggal_pengajuan` pada pengajuan boleh null; `pengajuan_pendaftaran` punya kolom `email`. Migrasi 2026-11-27 menambah `pengajuan_pendaftaran.nib` (boleh null), disalin ke `umkm.nib` saat disetujui. Migrasi 2026-11-27 juga membuat `pengajuan_pendaftaran.username` boleh null karena tidak lagi diisi. K4b menambah `penilaian_level.data_sistem` (JSON, boleh null): angka pembukuan yang direkam saat penilaian ulang dikirim, agar Admin bisa melihat apakah UMKM mengubah pilihan dari saran sistem.
 
 ## 6. Alur dan status
 Status pengajuan: `menunggu` → (Admin setujui) `disetujui` atau (Admin tolak) `ditolak`. Status UMKM (v1.0): `aktif` / `nonaktif`. Calon UMKM tidak punya akun sampai disetujui; yang ditolak boleh mengajukan lagi.
@@ -98,13 +98,13 @@ Status pengajuan: `menunggu` → (Admin setujui) `disetujui` atau (Admin tolak) 
 ## 7. Kebutuhan fungsional dan kriteria uji
 | ID | Kebutuhan | Kriteria uji | Prioritas |
 |---|---|---|---|
-| FR-01 | Registrasi mandiri tanpa kata sandi dan tanpa login (nama pemilik, email, no WA, username, data usaha termasuk NIB opsional (13 angka), persetujuan data pribadi) sebagai bagian formulir yang dikirim bersama kuesioner | Kolom wajib kosong / no WA, username, atau email sudah dipakai akun atau pengajuan `menunggu` / persetujuan tidak dicentang → ditolak dengan pesan. Belum ada data tersimpan sebelum pengiriman akhir | WAJIB |
+| FR-01 | Registrasi mandiri tanpa kata sandi dan tanpa login (nama pemilik, email, no WA, data usaha termasuk NIB opsional (13 angka), persetujuan data pribadi) sebagai bagian formulir yang dikirim bersama kuesioner | Kolom wajib kosong / no WA, username, atau email sudah dipakai akun atau pengajuan `menunggu` / persetujuan tidak dicentang → ditolak dengan pesan. Belum ada data tersimpan sebelum pengiriman akhir | WAJIB |
 | FR-02 | Pilih jenis usaha (barang/jasa), lalu kategori usaha yang sesuai; pertanyaan produksi (barang) atau persediaan (jasa) | Tanpa jenis ditolak; kategori yang tidak sesuai jenis ditolak; dropdown hanya menampilkan kategori sesuai jenis; barang → `memiliki_persediaan` true; jasa sesuai jawaban | WAJIB |
 | FR-03 | Kuesioner pilihan ganda dari pertanyaan aktif (data awal 4 pertanyaan) | Ada yang belum dijawab → ditolak; satu pilihan per pertanyaan; contoh P4 tampil | WAJIB |
 | FR-04 | Hitung skor, total, level rekomendasi dari tabel | Semua a → 4 Dasar; a,a,a,c → 6 Dasar; a,a,b,c → 7 Berkembang; c,b,b,b → 9 Berkembang; c,c,b,b → 10 Lanjutan; semua c → 12 Lanjutan; pilihan d P1/P2/P3 = skor 3 + `perlu_keputusan_admin`; ubah tabel mengubah hasil tanpa ubah kode | WAJIB |
 | FR-05 | Saat dikirim: satu transaksi membuat pengajuan `menunggu`, penilaian, detail; tanpa akun/login; layar konfirmasi tanpa skor/level | Klik ganda → satu pengajuan; gagal di tengah → tidak ada data setengah jadi; layar tanpa skor/level | WAJIB |
 | FR-06 | Notifikasi registrasi diterima | Tercatat; WA gagal → notifikasi aplikasi tetap ada | WAJIB |
-| FR-07 | Login hanya akun yang ada dan `aktif` | Akun `nonaktif` ditolak dengan pesan; email/username/no WA yang masih pengajuan tidak bisa login | WAJIB |
+| FR-07 | Login hanya akun yang ada dan `aktif` | Akun `nonaktif` ditolak dengan pesan; email/no WA yang masih pengajuan tidak bisa login | WAJIB |
 | FR-08 | Admin melihat pengajuan `menunggu` | Hanya status itu tampil | WAJIB |
 | FR-09 | Admin melihat detail usaha, jawaban, skor, total, rekomendasi | Sesuai data | WAJIB |
 | FR-10 | Keputusan: setujui / level berbeda (alasan wajib) / tolak (alasan wajib) | Tanpa alasan ditolak; tersimpan level akhir, alasan, admin, tanggal | WAJIB |
@@ -189,7 +189,7 @@ Dihitung di satu tempat, `App\Services\LabaModalService`, dipakai halaman Lapora
 ### 11.6 Cek keamanan terarah (2026-11-26)
 Diperbaiki dan diuji (`KeamananTest`):
 1. ID bahan (pembelian, resep) dan pelanggan (penjualan kredit) hanya diterima bila milik UMKM yang login.
-2. Login dibatasi 5 percobaan per menit per akun (ID dan email dihitung bersama) dan alamat, 20 per menit per alamat.
+2. Login dibatasi 5 percobaan per menit per email dan alamat, 20 per menit per alamat.
 3. Ekstensi logo ditentukan dari isi berkas.
 4. Ganti kata sandi lewat Profil wajib kata sandi lama (FR-13).
 
@@ -198,6 +198,6 @@ Diperbaiki dan diuji (`KeamananTest`):
 Sebelum dipasang daring: ganti kata sandi Admin bawaan `UserSeeder` dan setel `APP_DEBUG=false`. Dependensi belum diperiksa.
 
 ## 12. Keputusan yang sudah diambil (K0)
-Pengenal login: ID login atau email (lihat BR-07); nama level L2 "Berkembang"; batas skor 4–6 / 7–9 / 10–12; pilihan d omzet dan modal dipakai; bahan baku rumpun barang = `jika_melakukan_produksi`; produksi tetap nonaktif (MVP) dan tetap level Lanjutan; Tabel 3.9 = konfigurasi v1.0; kata sandi awal dari `INITIAL_PASSWORD`; hanya rumpun barang dan jasa; UMKM lama tidak disembunyikan fitur sampai rumpun dan flag terisi. K4: omzet dan modal pada penilaian ulang terisi otomatis dari pembukuan (omzet = pendapatan akun 4xx 12 bulan; modal = modal akhir per hari penilaian), angka apa adanya bila data kurang dari 12 bulan; angka sistem direkam di `data_sistem`; salinan aplikasi `akun_aktif` tanpa kata sandi; driver WhatsApp berupa kerangka; UMKM tanpa nomor WhatsApp tetap mendapat salinan aplikasi.
+Pengenal login tetap email; nama level L2 "Berkembang"; batas skor 4–6 / 7–9 / 10–12; pilihan d omzet dan modal dipakai; bahan baku rumpun barang = `jika_melakukan_produksi`; produksi tetap nonaktif (MVP) dan tetap level Lanjutan; Tabel 3.9 = konfigurasi v1.0; kata sandi awal dari `INITIAL_PASSWORD`; hanya rumpun barang dan jasa; UMKM lama tidak disembunyikan fitur sampai rumpun dan flag terisi. K4: omzet dan modal pada penilaian ulang terisi otomatis dari pembukuan (omzet = pendapatan akun 4xx 12 bulan; modal = modal akhir per hari penilaian), angka apa adanya bila data kurang dari 12 bulan; angka sistem direkam di `data_sistem`; salinan aplikasi `akun_aktif` tanpa kata sandi; driver WhatsApp berupa kerangka; UMKM tanpa nomor WhatsApp tetap mendapat salinan aplikasi.
 
 Terbuka: nama level L3 ("Lanjut" di basis data vs "Lanjutan" di master prompt).

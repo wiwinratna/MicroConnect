@@ -31,8 +31,8 @@
             <form method="POST" action="{{ $formAction ?? route('umkm.login.process') }}">
                 @csrf
                 <div class="mn-field">
-                    <label class="form-label" for="email">ID atau Email</label>
-                    <input class="form-control" type="text" id="email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" value="{{ old('email') }}" placeholder="contoh: minestore.id" required autofocus />
+                    <label class="form-label" for="email">Email Anda</label>
+                    <input class="form-control" type="email" id="email" name="email" autocomplete="username" value="{{ old('email') }}" placeholder="contoh@email.com" required autofocus />
                 </div>
 
                 <div class="mn-field">

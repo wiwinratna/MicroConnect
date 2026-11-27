@@ -12,14 +12,14 @@ class TemplatPesan
 {
     public const TEMPLAT = [
         'registrasi_diterima' => 'Halo {nama_pemilik}, registrasi {nama_usaha} di MINECT telah kami terima. Mohon menunggu verifikasi dari Admin KADIN.',
-        'akun_aktif'          => 'Akun MINECT {nama_usaha} telah aktif. Username: {username}. Kata sandi awal: {kata_sandi_awal}. Silakan ganti kata sandi saat login pertama.',
+        'akun_aktif'          => 'Akun MINECT {nama_usaha} telah aktif. Email: {username}. Kata sandi awal: {kata_sandi_awal}. Silakan ganti kata sandi saat login pertama.',
         'pengajuan_ditolak'   => 'Pengajuan {nama_usaha} belum dapat disetujui. Alasan: {alasan}. Anda dapat mendaftar ulang.',
         'periode_dibuka'      => 'Periode penilaian ulang MINECT dibuka {tanggal_mulai}–{tanggal_selesai}. Silakan isi penilaian melalui menu Penilaian.',
         'hasil_penilaian'     => 'Hasil penilaian {nama_usaha}: level {level_akhir}. {alasan_jika_berbeda}',
     ];
 
     /** Salinan aplikasi akun_aktif: tanpa kata sandi (sudah dikirim ke WhatsApp). */
-    public const AKUN_AKTIF_APLIKASI = 'Akun MINECT {nama_usaha} telah aktif. Username: {username}. Anda dapat mengganti kata sandi awal kapan saja lewat menu Profil UMKM.';
+    public const AKUN_AKTIF_APLIKASI = 'Akun MINECT {nama_usaha} telah aktif. Email: {username}. Anda dapat mengganti kata sandi awal kapan saja lewat menu Profil UMKM.';
 
     public static function render(string $jenis, array $data, bool $untukAplikasi = false): string
     {

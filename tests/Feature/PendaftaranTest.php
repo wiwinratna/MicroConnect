@@ -81,7 +81,7 @@ class PendaftaranTest extends TestCase
     public function test_missing_required_fields_are_rejected_and_nothing_is_saved(): void
     {
         $this->post('/register', [])->assertSessionHasErrors([
-            'nama_pemilik', 'email', 'username', 'no_wa', 'nama_usaha', 'alamat',
+            'nama_pemilik', 'email', 'no_wa', 'nama_usaha', 'alamat',
             'jenis_usaha_id', 'jawaban', 'persetujuan_data_pribadi',
         ]);
 
@@ -96,19 +96,6 @@ class PendaftaranTest extends TestCase
         $this->assertSame(0, PengajuanPendaftaran::count());
     }
 
-    public function test_username_format_is_enforced(): void
-    {
-        foreach (['bu', 'budi baru', 'budi@baru', 'budi.baru', str_repeat('a', 31)] as $salah) {
-            $this->kirim(['username' => $salah])->assertSessionHasErrors('username');
-        }
-
-        $this->assertSame(0, PengajuanPendaftaran::count());
-
-        // Huruf besar tidak ditolak, tetapi disimpan sebagai huruf kecil.
-        $this->kirim(['username' => 'Budi_Baru'])->assertRedirect(route('register.selesai'));
-        $this->assertSame('budi_baru', PengajuanPendaftaran::first()->username);
-    }
-
     public function test_duplicates_with_existing_accounts_are_rejected(): void
     {
         $this->buatAkun(
@@ -116,7 +103,6 @@ class PendaftaranTest extends TestCase
         );
 
         $this->kirim(['email' => 'dipakai@example.test'])->assertSessionHasErrors('email');
-        $this->kirim(['username' => 'dipakai'])->assertSessionHasErrors('username');
         $this->kirim(['no_wa' => '0811-1111-1111'])->assertSessionHasErrors('no_wa');
 
         $this->assertSame(0, PengajuanPendaftaran::count());
@@ -133,7 +119,7 @@ class PendaftaranTest extends TestCase
     {
         $this->kirim()->assertRedirect(route('register.selesai'));
 
-        $this->kirim()->assertSessionHasErrors(['email', 'username', 'no_wa']);
+        $this->kirim()->assertSessionHasErrors(['email', 'no_wa']);
         $this->assertSame(1, PengajuanPendaftaran::count());
     }
 

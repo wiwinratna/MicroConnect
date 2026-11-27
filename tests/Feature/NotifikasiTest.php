@@ -109,7 +109,7 @@ class NotifikasiTest extends TestCase
 
         $wa = $this->baris('akun_aktif', 'whatsapp');
         $this->assertSame(
-            'Akun MINECT Warung Budi telah aktif. Username: budi_baru.id. Kata sandi awal: ' . self::SANDI_AWAL . '. Silakan ganti kata sandi saat login pertama.',
+            'Akun MINECT Warung Budi telah aktif. Email: budi.baru@example.test. Kata sandi awal: ' . self::SANDI_AWAL . '. Silakan ganti kata sandi saat login pertama.',
             $wa->isi
         );
         $this->assertSame('terkirim', $wa->status);
@@ -118,7 +118,7 @@ class NotifikasiTest extends TestCase
         $this->assertSame('6281234567890', $wa->no_tujuan);
 
         $app = $this->baris('akun_aktif', 'aplikasi');
-        $this->assertStringContainsString('Username: budi_baru', $app->isi);
+        $this->assertStringContainsString('Email: budi.baru@example.test', $app->isi);
         $this->assertStringNotContainsString(self::SANDI_AWAL, $app->isi);
         $this->assertSame($umkm->id, $app->umkm_id);
     }

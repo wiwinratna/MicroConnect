@@ -49,7 +49,6 @@ final class DataAkunUji
             'form' => [
                 'nama_pemilik' => 'Pemilik ' . $usaha,
                 'email'        => $username . '@contoh.test',
-                'username'     => $username,
                 'no_wa'        => '08139900000' . $nomor,
                 'nama_usaha'   => $usaha,
                 'alamat'       => "Jl. Uji Coba No. {$nomor}, Bengkalis",

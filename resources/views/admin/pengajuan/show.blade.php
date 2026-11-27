@@ -39,7 +39,6 @@
           <dl class="row mb-0">
             <dt class="col-sm-5">Nama pemilik</dt><dd class="col-sm-7">{{ $pengajuan->nama_pemilik }}</dd>
             <dt class="col-sm-5">Email</dt><dd class="col-sm-7">{{ $pengajuan->email }}</dd>
-            <dt class="col-sm-5">Username</dt><dd class="col-sm-7">{{ $pengajuan->username }}</dd>
             <dt class="col-sm-5">WhatsApp</dt><dd class="col-sm-7">{{ $pengajuan->no_wa }}</dd>
             <dt class="col-sm-5">Nama usaha</dt><dd class="col-sm-7">{{ $pengajuan->nama_usaha }}</dd>
             <dt class="col-sm-5">NIB</dt><dd class="col-sm-7">{{ $pengajuan->nib ?: '-' }}</dd>

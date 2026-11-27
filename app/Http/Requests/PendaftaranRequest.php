@@ -25,7 +25,6 @@ class PendaftaranRequest extends FormRequest
     {
         $this->merge([
             'email'    => strtolower(trim((string) $this->input('email'))),
-            'username' => strtolower(trim((string) $this->input('username'))),
             'no_wa'    => NomorWa::normalisasi($this->input('no_wa')),
         ]);
     }
@@ -38,11 +37,6 @@ class PendaftaranRequest extends FormRequest
                 'required', 'email', 'max:150',
                 Rule::unique('users', 'email'),
                 Rule::unique('pengajuan_pendaftaran', 'email')->where('status', 'menunggu'),
-            ],
-            'username'     => [
-                'required', 'regex:/^[a-z0-9_]{4,30}$/',
-                Rule::unique('users', 'username'),
-                Rule::unique('pengajuan_pendaftaran', 'username')->where('status', 'menunggu'),
             ],
             'no_wa'        => [
                 'required', 'regex:/^62[0-9]{8,13}$/',
@@ -72,8 +66,6 @@ class PendaftaranRequest extends FormRequest
             'accepted'  => 'Anda harus menyetujui pemrosesan data pribadi untuk melanjutkan.',
             'email.email'      => 'Format email tidak benar.',
             'email.unique'     => 'Email ini sudah dipakai akun yang ada atau pendaftaran yang sedang menunggu.',
-            'username.regex'   => 'Username hanya boleh huruf kecil, angka, dan garis bawah (4-30 karakter).',
-            'username.unique'  => 'Username ini sudah dipakai akun yang ada atau pendaftaran yang sedang menunggu.',
             'no_wa.regex'      => 'Nomor WhatsApp tidak benar. Contoh: 081234567890.',
             'no_wa.unique'     => 'Nomor WhatsApp ini sudah dipakai akun yang ada atau pendaftaran yang sedang menunggu.',
             'no_telepon.regex' => 'Nomor telepon usaha tidak benar.',
@@ -86,7 +78,6 @@ class PendaftaranRequest extends FormRequest
         return $this->atributProfilUsaha() + [
             'nama_pemilik' => 'Nama pemilik',
             'email'        => 'Email',
-            'username'     => 'Username',
             'no_wa'        => 'Nomor WhatsApp',
             'nama_usaha'   => 'Nama usaha',
             'alamat'       => 'Alamat',

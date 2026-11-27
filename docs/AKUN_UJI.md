@@ -5,18 +5,18 @@ Accounts made only for trying out the application. All data is fictitious.
 **Password:** the value of `INITIAL_PASSWORD` in `.env` (never written here).
 Skip the "change password" pop-up so the password stays the same.
 
-| Login ID | Page | Business type | Level |
+| Email (login) | Page | Business type | Level |
 |---|---|---|---|
-| `adminuji.id` | `/admin/login` | Admin | - |
-| `barang1.id` | `/umkm/login` | Goods, processes materials | 1 |
-| `barang2.id` | `/umkm/login` | Goods, processes materials | 2 |
-| `barang3.id` | `/umkm/login` | Goods, processes materials | 3 |
-| `dagang.id` | `/umkm/login` | Goods, no processing | 3 |
-| `jasa.id` | `/umkm/login` | Service with stock | 3 |
-| `jasanonstok.id` | `/umkm/login` | Service without stock | 3 |
+| `adminuji@contoh.test` | `/admin/login` | Admin | - |
+| `barang1@contoh.test` | `/umkm/login` | Goods, processes materials | 1 |
+| `barang2@contoh.test` | `/umkm/login` | Goods, processes materials | 2 |
+| `barang3@contoh.test` | `/umkm/login` | Goods, processes materials | 3 |
+| `dagang@contoh.test` | `/umkm/login` | Goods, no processing | 3 |
+| `jasa@contoh.test` | `/umkm/login` | Service with stock | 3 |
+| `jasanonstok@contoh.test` | `/umkm/login` | Service without stock | 3 |
 
-Each UMKM has sample transactions for three months. Emails are `<username>@contoh.test`.
-The production module is disabled for every account (MVP scope).
+Each UMKM has sample transactions for three months. The production module is disabled
+for every account (MVP scope).
 
 ## Create or restore the accounts
 

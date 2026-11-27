@@ -32,7 +32,7 @@ Dokumen ini menetapkan kebutuhan fungsional dan nonfungsional MINECT v1.1 sebaga
 | BR-09 | Batas skor level dan skor pilihan disimpan di basis data, bukan hardcode |
 | BR-10 | Indikator dan jenis usaha yang dipakai hanya boleh dinonaktifkan |
 | BR-11 | Pilihan `di_luar_batas_mikro` (pilihan d Pertanyaan 1, 2, 3): skor 3 dan `perlu_keputusan_admin = true`; tidak ditolak otomatis |
-| BR-12 | Skor total = jumlah skor empat pertanyaan; semua wajib dijawab; skor dari tabel `pilihan_jawaban` |
+| BR-12 | Skor total = jumlah skor semua pertanyaan aktif (data awal empat pertanyaan); semua wajib dijawab; skor dari tabel `pilihan_jawaban`. **Keputusan pemilik (2026-11-27):** Admin boleh mengubah pertanyaan, skor, dan batas level; batas level harus bersambung dan mencakup seluruh rentang skor |
 | BR-13 | `users` dan `umkm` dibuat hanya saat Admin menyetujui pengajuan, dalam satu transaksi bersama pengisian level dan notifikasi |
 | BR-14 | UMKM lama tetap `aktif` dengan level sekarang; migrasi tidak boleh menyembunyikan fitur yang mereka pakai |
 | BR-15 | Iuran bulanan mengikuti level seperti v1.0; logika Midtrans tidak diubah |
@@ -88,7 +88,7 @@ Konvensi v1.0 dipakai; perubahan lewat migrasi yang dapat dibatalkan.
 | `notifikasi` | `notifikasi_log` (`umkm_id` wajib) | Tabel baru `notifikasi`; `notifikasi_log` tetap untuk piutang/iuran |
 | Baru | — | `jenis_usaha`, `modul`, `aturan_modul`, `indikator`, `pilihan_jawaban`, `pengajuan_pendaftaran`, `periode_penilaian`, `penilaian_level`, `detail_penilaian`, `log_audit` |
 
-Constraint unik: `users.username`, `users.no_wa`; `detail_penilaian(penilaian_id, indikator_id)`; `penilaian_level(umkm_id, periode_id)`; satu pengajuan `menunggu` per `no_wa`, `username`, dan `email` (kolom virtual `*_menunggu`). Snapshot skor dan teks pilihan di `detail_penilaian`. Penyimpangan: `tanggal_persetujuan` dan `tanggal_pengajuan` pada pengajuan boleh null; `pengajuan_pendaftaran` punya kolom `email`. K4b menambah `penilaian_level.data_sistem` (JSON, boleh null): angka pembukuan yang direkam saat penilaian ulang dikirim, agar Admin bisa melihat apakah UMKM mengubah pilihan dari saran sistem.
+Constraint unik: `users.username`, `users.no_wa`; `detail_penilaian(penilaian_id, indikator_id)`; `penilaian_level(umkm_id, periode_id)`; satu pengajuan `menunggu` per `no_wa`, `username`, dan `email` (kolom virtual `*_menunggu`). Snapshot skor dan teks pilihan di `detail_penilaian`. Penyimpangan: `tanggal_persetujuan` dan `tanggal_pengajuan` pada pengajuan boleh null; `pengajuan_pendaftaran` punya kolom `email`. Migrasi 2026-11-27 menambah `pengajuan_pendaftaran.nib` (boleh null), disalin ke `umkm.nib` saat disetujui. K4b menambah `penilaian_level.data_sistem` (JSON, boleh null): angka pembukuan yang direkam saat penilaian ulang dikirim, agar Admin bisa melihat apakah UMKM mengubah pilihan dari saran sistem.
 
 ## 6. Alur dan status
 Status pengajuan: `menunggu` → (Admin setujui) `disetujui` atau (Admin tolak) `ditolak`. Status UMKM (v1.0): `aktif` / `nonaktif`. Calon UMKM tidak punya akun sampai disetujui; yang ditolak boleh mengajukan lagi.
@@ -98,9 +98,9 @@ Status pengajuan: `menunggu` → (Admin setujui) `disetujui` atau (Admin tolak) 
 ## 7. Kebutuhan fungsional dan kriteria uji
 | ID | Kebutuhan | Kriteria uji | Prioritas |
 |---|---|---|---|
-| FR-01 | Registrasi mandiri tanpa kata sandi dan tanpa login (nama pemilik, email, no WA, username, data usaha, persetujuan data pribadi) sebagai bagian formulir yang dikirim bersama kuesioner | Kolom wajib kosong / no WA, username, atau email sudah dipakai akun atau pengajuan `menunggu` / persetujuan tidak dicentang → ditolak dengan pesan. Belum ada data tersimpan sebelum pengiriman akhir | WAJIB |
+| FR-01 | Registrasi mandiri tanpa kata sandi dan tanpa login (nama pemilik, email, no WA, username, data usaha termasuk NIB opsional (13 angka), persetujuan data pribadi) sebagai bagian formulir yang dikirim bersama kuesioner | Kolom wajib kosong / no WA, username, atau email sudah dipakai akun atau pengajuan `menunggu` / persetujuan tidak dicentang → ditolak dengan pesan. Belum ada data tersimpan sebelum pengiriman akhir | WAJIB |
 | FR-02 | Pilih jenis usaha (barang/jasa), lalu kategori usaha yang sesuai; pertanyaan produksi (barang) atau persediaan (jasa) | Tanpa jenis ditolak; kategori yang tidak sesuai jenis ditolak; dropdown hanya menampilkan kategori sesuai jenis; barang → `memiliki_persediaan` true; jasa sesuai jawaban | WAJIB |
-| FR-03 | Kuesioner 4 pertanyaan pilihan ganda | Ada yang belum dijawab → ditolak; satu pilihan per pertanyaan; contoh P4 tampil | WAJIB |
+| FR-03 | Kuesioner pilihan ganda dari pertanyaan aktif (data awal 4 pertanyaan) | Ada yang belum dijawab → ditolak; satu pilihan per pertanyaan; contoh P4 tampil | WAJIB |
 | FR-04 | Hitung skor, total, level rekomendasi dari tabel | Semua a → 4 Dasar; a,a,a,c → 6 Dasar; a,a,b,c → 7 Berkembang; c,b,b,b → 9 Berkembang; c,c,b,b → 10 Lanjutan; semua c → 12 Lanjutan; pilihan d P1/P2/P3 = skor 3 + `perlu_keputusan_admin`; ubah tabel mengubah hasil tanpa ubah kode | WAJIB |
 | FR-05 | Saat dikirim: satu transaksi membuat pengajuan `menunggu`, penilaian, detail; tanpa akun/login; layar konfirmasi tanpa skor/level | Klik ganda → satu pengajuan; gagal di tengah → tidak ada data setengah jadi; layar tanpa skor/level | WAJIB |
 | FR-06 | Notifikasi registrasi diterima | Tercatat; WA gagal → notifikasi aplikasi tetap ada | WAJIB |
@@ -112,7 +112,7 @@ Status pengajuan: `menunggu` → (Admin setujui) `disetujui` atau (Admin tolak) 
 | FR-12 | Notifikasi akun aktif atau penolakan | Isi sesuai keputusan FR-10 | WAJIB |
 | FR-13 | Ganti kata sandi | Lama salah / konfirmasi beda → ditolak; berhasil → ter-hash, flag false | WAJIB |
 | FR-14 | UMKM melihat skor per indikator, total, rekomendasi, level akhir, alasan | Alasan tampil hanya jika level akhir ≠ rekomendasi | WAJIB |
-| FR-15 | Admin kelola indikator dan pilihan jawaban | Nonaktif tidak muncul di kuesioner baru; riwayat utuh | TUNDA (seeder) |
+| FR-15 | Admin kelola indikator, pilihan jawaban, skor, dan batas skor level | Nonaktif tidak muncul di kuesioner baru; riwayat utuh; pertanyaan baru tersimpan nonaktif; aktivasi/penonaktifan ditolak bila batas level tidak mencakup rentang skor; yang pernah dijawab tidak bisa dihapus; nama indikator omzet dan modal terkunci; perubahan tercatat di `log_audit` | WAJIB |
 | FR-16 | Admin kelola kategori usaha dan jenisnya (barang, jasa, atau keduanya) | Nama kosong/duplikat ditolak; tidak ada hapus, hanya nonaktifkan; jenis tidak bisa diubah bila membuat UMKM atau pengajuan `menunggu` tidak sesuai | WAJIB |
 | FR-17 | Admin atur aturan modul per rumpun | Perubahan memengaruhi menu UMKM; satu aturan per modul per rumpun | WAJIB |
 | FR-18 | Admin atur laporan per level (layar sederhana) | Memengaruhi daftar laporan FR-20 | WAJIB |

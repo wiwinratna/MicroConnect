@@ -59,6 +59,7 @@ class PendaftaranRequest extends FormRequest
             ],
             'nama_usaha'   => ['required', 'string', 'max:150'],
             'alamat'       => ['required', 'string', 'max:500'],
+            'nib'          => ['nullable', 'digits:13'],
             'no_telepon'   => ['nullable', 'regex:/^[0-9+\-\s]{6,20}$/'],
         ];
     }
@@ -76,6 +77,7 @@ class PendaftaranRequest extends FormRequest
             'no_wa.regex'      => 'Nomor WhatsApp tidak benar. Contoh: 081234567890.',
             'no_wa.unique'     => 'Nomor WhatsApp ini sudah dipakai akun yang ada atau pendaftaran yang sedang menunggu.',
             'no_telepon.regex' => 'Nomor telepon usaha tidak benar.',
+            'nib.digits'       => 'NIB harus berisi 13 angka. Kosongkan bila belum punya.',
         ];
     }
 

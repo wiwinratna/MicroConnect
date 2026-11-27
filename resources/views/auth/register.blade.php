@@ -82,6 +82,13 @@
 				</div>
 
 				<div class="mn-field mn-span">
+					<label class="form-label" for="nib">NIB (boleh dikosongkan)</label>
+					<input type="text" id="nib" name="nib" class="form-control" inputmode="numeric"
+						value="{{ old('nib') }}" pattern="[0-9]{13}" maxlength="13">
+					<div class="form-text">Nomor Induk Berusaha, 13 angka. Kosongkan bila belum punya.</div>
+				</div>
+
+				<div class="mn-field mn-span">
 					<label class="form-label" for="alamat">Alamat usaha</label>
 					<textarea id="alamat" name="alamat" rows="2" class="form-control"
 						maxlength="500" required>{{ old('alamat') }}</textarea>

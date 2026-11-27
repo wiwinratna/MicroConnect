@@ -13,6 +13,7 @@
             $link('Pengajuan', 'user-plus', 'admin.pengajuan.index', 'admin.pengajuan.*', $jumlahMenunggu),
             $link('Periode Penilaian', 'calendar', 'admin.periode.index', 'admin.periode.*'),
             $link('Tinjau Penilaian', 'clipboard-list', 'admin.penilaian-ulang.index', 'admin.penilaian-ulang.*', $jumlahTinjau),
+            $link('Indikator Penilaian', 'list-checks', 'admin.indikator.index', 'admin.indikator.*'),
         ]],
         ['label' => 'Data UMKM', 'icon' => 'database', 'items' => [
             $link('Daftar UMKM', 'users', 'admin.umkm.index', 'admin.umkm.*'),

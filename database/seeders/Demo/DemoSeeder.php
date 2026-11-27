@@ -89,9 +89,11 @@ class DemoSeeder extends Seeder
         auth()->forgetUser();
 
         $jawaban = [];
-        foreach (str_split($daftar['jawaban']) as $i => $huruf) {
-            $indikator = Indikator::where('urutan', $i + 1)->firstOrFail();
-            $jawaban[$indikator->id] = $indikator->pilihan()->where('urutan', ord($huruf) - 96)->firstOrFail()->id;
+        foreach (Indikator::aktif()->orderBy('urutan')->orderBy('id')->get() as $i => $indikator) {
+            // Pertanyaan tambahan dari Admin dijawab dengan pilihan pertama.
+            $posisi = ord($daftar['jawaban'][$i] ?? 'a') - 97;
+            $pilihan = $indikator->pilihan()->get();
+            $jawaban[$indikator->id] = ($pilihan->get($posisi) ?? $pilihan->firstOrFail())->id;
         }
 
         $kategori = JenisUsaha::where('nama', 'like', $daftar['kategori'] . '%')->firstOrFail();

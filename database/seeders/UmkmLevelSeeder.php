@@ -29,8 +29,6 @@ class UmkmLevelSeeder extends Seeder
         UmkmLevel::updateOrCreate(['kode' => 'L1'], [
             'nama_level'    => 'Level 1 - Dasar',
             'urutan'        => 1,
-            'skor_min'      => 4,
-            'skor_max'      => 6,
             'deskripsi'     => 'Fitur dasar: transaksi harian, bahan baku, produk, kasir, iuran, '
                              . 'jurnal umum, laporan penjualan & pembelian.',
             'iuran_bulanan' => 0,
@@ -42,8 +40,6 @@ class UmkmLevelSeeder extends Seeder
         UmkmLevel::updateOrCreate(['kode' => 'L2'], [
             'nama_level'    => 'Level 2 - Berkembang',
             'urutan'        => 2,
-            'skor_min'      => 7,
-            'skor_max'      => 9,
             'deskripsi'     => 'Semua fitur Level 1, ditambah: kartu stok, buku besar, '
                              . 'laba rugi, dan manajemen piutang pelanggan.',
             'iuran_bulanan' => 20000,
@@ -55,12 +51,16 @@ class UmkmLevelSeeder extends Seeder
         UmkmLevel::updateOrCreate(['kode' => 'L3'], [
             'nama_level'    => 'Level 3 - Lanjut',
             'urutan'        => 3,
-            'skor_min'      => 10,
-            'skor_max'      => 12,
             'deskripsi'     => 'Akses penuh semua fitur termasuk COA, produksi, '
                              . 'perubahan modal, dan arus kas.',
             'iuran_bulanan' => 30000,
         ]);
+
+        // Batas skor hanya diisi bila masih kosong; Admin dapat mengubahnya (BR-09).
+        foreach (['L1' => [4, 6], 'L2' => [7, 9], 'L3' => [10, 12]] as $kode => [$min, $max]) {
+            UmkmLevel::where('kode', $kode)->whereNull('skor_min')->update(['skor_min' => $min]);
+            UmkmLevel::where('kode', $kode)->whereNull('skor_max')->update(['skor_max' => $max]);
+        }
 
         // v1.1 (FR-18): `fitur` diisi dari FEATURES_MAP hanya jika masih kosong, supaya
         // pengaturan laporan per level oleh Admin tidak tertimpa saat seeder dijalankan ulang.

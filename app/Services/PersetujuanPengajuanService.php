@@ -78,6 +78,7 @@ class PersetujuanPengajuanService
                 'user_id'                  => $user->id,
                 'level_id'                 => $levelAkhir->id,
                 'nama_usaha'               => $pengajuan->nama_usaha,
+                'nib'                      => $pengajuan->nib,
                 'alamat'                   => $pengajuan->alamat,
                 'no_telepon'               => $pengajuan->no_telepon,
                 'no_whatsapp'              => $pengajuan->no_wa,

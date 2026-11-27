@@ -99,6 +99,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'adminonly'])->group
     Route::patch('/kategori-usaha/{id}/status', [\App\Http\Controllers\Admin\KategoriUsahaController::class, 'ubahStatus'])->name('kategori-usaha.status');
     Route::get('/aturan-modul', [\App\Http\Controllers\Admin\AturanModulController::class, 'index'])->name('aturan-modul.index');
     Route::put('/aturan-modul', [\App\Http\Controllers\Admin\AturanModulController::class, 'update'])->name('aturan-modul.update');
+    // Indikator penilaian dan batas skor level (FR-15)
+    Route::prefix('indikator')->name('indikator.')->controller(\App\Http\Controllers\Admin\IndikatorController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::put('/batas-level', 'simpanBatas')->name('batas');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::patch('/{id}/status', 'ubahStatus')->name('status');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
     Route::get('/laporan-level', [\App\Http\Controllers\Admin\LaporanLevelController::class, 'index'])->name('laporan-level.index');
     Route::put('/laporan-level', [\App\Http\Controllers\Admin\LaporanLevelController::class, 'update'])->name('laporan-level.update');
 

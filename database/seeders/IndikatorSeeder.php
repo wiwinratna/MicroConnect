@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Instrumen kuesioner — Tabel 3.6 (teks persis seperti master prompt Bagian 4).
- * Skor ada di data (BR-09, BR-12). Aman dijalankan ulang:
- * indikator dikenali dari urutan, pilihan dari (indikator, urutan).
+ * Skor ada di data (BR-09, BR-12). Hanya mengisi tabel yang masih kosong, agar
+ * perubahan Admin lewat menu Indikator Penilaian tidak tertimpa.
  *
  * Jalankan: php artisan db:seed --class=IndikatorSeeder
  */
@@ -16,6 +16,10 @@ class IndikatorSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('indikator')->exists()) {
+            return;
+        }
+
         $now = now();
 
         // [nama, pertanyaan, [ [teks, skor, di_luar_batas_mikro, nilai_min, nilai_max, contoh], ... ]]

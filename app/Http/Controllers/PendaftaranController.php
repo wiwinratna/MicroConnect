@@ -48,6 +48,7 @@ class PendaftaranController extends Controller
                     'username'                 => $request->input('username'),
                     'no_wa'                    => $request->input('no_wa'),
                     'nama_usaha'               => $request->input('nama_usaha'),
+                    'nib'                      => $request->input('nib'),
                     'alamat'                   => $request->input('alamat'),
                     'no_telepon'               => $request->input('no_telepon'),
                     'jenis_usaha_id'           => $request->input('jenis_usaha_id'),

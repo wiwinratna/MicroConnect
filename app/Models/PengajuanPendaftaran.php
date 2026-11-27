@@ -13,7 +13,7 @@ class PengajuanPendaftaran extends Model
 
     protected $fillable = [
         'umkm_id', 'nama_pemilik', 'email', 'username', 'no_wa',
-        'nama_usaha', 'alamat', 'no_telepon',
+        'nama_usaha', 'nib', 'alamat', 'no_telepon',
         'jenis_usaha_id', 'rumpun', 'memiliki_persediaan', 'melakukan_produksi',
         'persetujuan_data_pribadi', 'tanggal_persetujuan',
         'perlu_keputusan_admin', 'tanggal_pengajuan', 'status',
